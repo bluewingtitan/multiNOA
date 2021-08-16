@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiNOA", "MultiNOA.csproj", "{12665BB8-3425-4241-9D7C-3999F9EFB017}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{12665BB8-3425-4241-9D7C-3999F9EFB017}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12665BB8-3425-4241-9D7C-3999F9EFB017}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12665BB8-3425-4241-9D7C-3999F9EFB017}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12665BB8-3425-4241-9D7C-3999F9EFB017}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
