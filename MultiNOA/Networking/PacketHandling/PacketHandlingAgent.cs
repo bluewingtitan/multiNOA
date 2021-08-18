@@ -5,6 +5,7 @@ using System.Reflection;
 using MultiNOA.Attributes.PacketHandling;
 using MultiNOA.Middleware;
 using MultiNOA.Networking.Common;
+using MultiNOA.Tests.PacketHandling;
 
 namespace MultiNOA.Networking.PacketHandling
 {

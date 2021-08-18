@@ -15,9 +15,9 @@ namespace MultiNOA.Attributes.PacketHandling
         public readonly Enum ActOn;
         public readonly Type PacketType;
         
-        public PacketHandlerAttribute(Enum actOn, Type packetType)
+        public PacketHandlerAttribute(Type actOnEnum, string enumString,Type packetType)
         {
-            ActOn = actOn;
+            ActOn = (Enum) Enum.Parse(actOnEnum, enumString);
             PacketType = packetType;
             // Check for parameterless constructor
             ConstructorInfo parameterlessConstructor = null;
