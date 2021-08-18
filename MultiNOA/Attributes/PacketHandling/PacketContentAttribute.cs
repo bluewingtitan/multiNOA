@@ -9,7 +9,7 @@ namespace MultiNOA.Attributes.PacketHandling
     /// Only works on bool, byte, string, int, float, long, doubles
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
-    public class PacketContentAttribute
+    public class PacketContentAttribute: Attribute
     {
         public readonly byte Index;
         public PacketContentAttribute(byte index)

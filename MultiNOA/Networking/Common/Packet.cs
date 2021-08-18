@@ -50,7 +50,7 @@ namespace MultiNOA.Networking.Common
         /// <summary>
         /// Writes the length of the packet and turns it into read-only mode
         /// </summary>
-        public void Finalize()
+        public void Lock()
         {
             if(Finalized) return; // Only write length once!
             Finalized = true;
