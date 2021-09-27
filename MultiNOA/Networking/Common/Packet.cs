@@ -25,7 +25,7 @@ namespace MultiNOA.Networking.Common
         /// Creates a packet of a specific packet type.
         /// </summary>
         /// <param name="packetType">Type of the packet</param>
-        public Packet(Enum packetType)
+        public Packet(int type)
         {
             _buffer = new List<byte>();
             
