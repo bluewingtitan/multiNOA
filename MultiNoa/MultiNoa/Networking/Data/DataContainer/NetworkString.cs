@@ -8,6 +8,12 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
     /// </summary>
     public class NetworkString: INetworkDataContainer<string>
     {
+        #region Operators
+        public static NetworkString operator +(NetworkString nb, string s) => new NetworkString(nb._v + s);
+        public static NetworkString operator +(string s, NetworkString nb) => new NetworkString(s + nb._v);
+
+        #endregion
+
         private string _v;
 
         public NetworkString(string value = "")

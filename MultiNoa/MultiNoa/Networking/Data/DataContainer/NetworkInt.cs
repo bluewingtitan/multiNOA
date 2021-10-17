@@ -7,6 +7,25 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
     /// </summary>
     public struct NetworkInt: INetworkDataContainer<int>
     {
+        #region Operators
+        public static NetworkInt operator +(NetworkInt nb, int n) => new NetworkInt( (nb._v + n));
+        public static NetworkInt operator +(byte n, NetworkInt nb) => new NetworkInt( (nb._v + n));
+        public static NetworkInt operator -(NetworkInt nb, byte n) => new NetworkInt( (nb._v - n));
+        public static NetworkInt operator -(byte n, NetworkInt nb) => new NetworkInt((n - nb._v));
+        public static NetworkInt operator + (NetworkInt nb) => new NetworkInt(nb._v);
+        public static NetworkInt operator ++(NetworkInt nb)
+        {
+            nb._v++;
+            return nb;
+        }
+        public static NetworkInt operator --(NetworkInt nb)
+        {
+            nb._v--;
+            return nb;
+        }
+
+        #endregion
+        
         private const int IntegerByteLength = 4;
         
         private int _v;
