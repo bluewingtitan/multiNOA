@@ -1,0 +1,9 @@
+/home/dominik/dev/c#/multiNOA/MultiNoa/MultiNoa/bin/Debug/netcoreapp3.1/MultiNoa.deps.json
+/home/dominik/dev/c#/multiNOA/MultiNoa/MultiNoa/bin/Debug/netcoreapp3.1/MultiNoa.dll
+/home/dominik/dev/c#/multiNOA/MultiNoa/MultiNoa/bin/Debug/netcoreapp3.1/MultiNoa.pdb
+/home/dominik/dev/c#/multiNOA/MultiNoa/MultiNoa/obj/Debug/netcoreapp3.1/MultiNoa.csprojAssemblyReference.cache
+/home/dominik/dev/c#/multiNOA/MultiNoa/MultiNoa/obj/Debug/netcoreapp3.1/MultiNoa.AssemblyInfoInputs.cache
+/home/dominik/dev/c#/multiNOA/MultiNoa/MultiNoa/obj/Debug/netcoreapp3.1/MultiNoa.AssemblyInfo.cs
+/home/dominik/dev/c#/multiNOA/MultiNoa/MultiNoa/obj/Debug/netcoreapp3.1/MultiNoa.csproj.CoreCompileInputs.cache
+/home/dominik/dev/c#/multiNOA/MultiNoa/MultiNoa/obj/Debug/netcoreapp3.1/MultiNoa.dll
+/home/dominik/dev/c#/multiNOA/MultiNoa/MultiNoa/obj/Debug/netcoreapp3.1/MultiNoa.pdb

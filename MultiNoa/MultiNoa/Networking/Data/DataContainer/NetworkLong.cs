@@ -2,7 +2,7 @@
 
 namespace MultiNOA.Networking.Common.NetworkData.DataContainer
 {
-    public class NetworkLong : INetworkDataContainer<long>
+    public struct NetworkLong : INetworkDataContainer<long>
     {
         #region Operators
         public static NetworkLong operator +(NetworkLong nb, short n) => new NetworkLong((nb._v + n));
@@ -44,7 +44,7 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
 
         public int LoadFromBytes(byte[] bytes)
         {
-            _v = BitConverter.ToInt16(bytes, 0); // Read int from bytes.
+            _v = BitConverter.ToInt64(bytes, 0); // Read int from bytes.
             return LongByteLength;
         }
     }

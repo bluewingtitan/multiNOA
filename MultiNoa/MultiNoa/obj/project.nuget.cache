@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "p24NDgqfjfZTKJUKyc3DGsXmCaiSsZF+oAHyJ06tGTwyWW90BdcUcmmoT9MFmHkOJTOVeJAtW3QRxc+O1Jr+9g==",
+  "dgSpecHash": "Wbtu5VWu5BsP7MBKZCtjeHsmUhKNzffVhN7nANN0FLiemYlBiQ2pROC0c+vw5cnQEl0cd0kP2eQjwe8z7aOkZg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Dominik\\Documents\\DEV\\multiNOA\\MultiNoa\\MultiNoa\\MultiNoa.csproj",
+  "projectFilePath": "/home/dominik/dev/c#/multiNOA/MultiNoa/MultiNoa/MultiNoa.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

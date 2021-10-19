@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,7 +7,7 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
     /// <summary>
     /// Wraps an String to NetworkDataContainer
     /// </summary>
-    public class NetworkString: INetworkDataContainer<string>
+    public struct NetworkString: INetworkDataContainer<string>
     {
         #region Operators
         public static NetworkString operator +(NetworkString nb, string s) => new NetworkString(nb._v + s);
@@ -25,8 +26,9 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
 
         public byte[] TurnIntoBytes()
         {
-            var bytes = new List<byte>(Encoding.UTF8.GetBytes(_v));
-            bytes.AddRange(new NetworkInt(4).TurnIntoBytes());
+            var strBytes = Encoding.UTF8.GetBytes(_v);
+            var bytes = new List<byte>(new NetworkInt(strBytes.Length).TurnIntoBytes());
+            bytes.AddRange(strBytes);
             return bytes.ToArray();
         }
 

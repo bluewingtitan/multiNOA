@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MultiNoa.Extensions;
 using MultiNOA.Networking.Common.NetworkData;
 
 namespace MultiNoa.Networking.Transport
@@ -83,7 +84,7 @@ namespace MultiNoa.Networking.Transport
             {
                 var instance = (T1) Activator.CreateInstance(typeof(T1));
 
-                var workingCopy = GetSubarray(_readableBuffer,_readPos, _readableBuffer.Length - _readPos);
+                var workingCopy = _readableBuffer.GetSubarray(_readPos, _readableBuffer.Length - _readPos);
                 var length = instance.LoadFromBytes(workingCopy);
                 
                 if (moveReadPos && length > 0)
@@ -99,12 +100,8 @@ namespace MultiNoa.Networking.Transport
             }
         }
 
-        private static byte[] GetSubarray(byte[] array, int offset, int length)
-        {
-            byte[] result = new byte[length];
-            Array.Copy(array, offset, result, 0, length);
-            return result;
-        }
+        
+        
         
     }
 }

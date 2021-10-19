@@ -22,7 +22,7 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
         #endregion
         
         
-        private const int ShortByteLength = 2;
+        private const int ByteLength = 1;
         
         private byte _v;
 
@@ -33,7 +33,7 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
         
         public byte[] TurnIntoBytes()
         {
-            return BitConverter.GetBytes(_v);
+            return new []{_v};
         }
 
         public byte GetValue()
@@ -44,7 +44,12 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
         public int LoadFromBytes(byte[] bytes)
         {
             _v = bytes[0]; // Read int from bytes.
-            return 1;
+            return ByteLength;
+        }
+
+        public override string ToString()
+        {
+            return _v + "";
         }
     }
 }
