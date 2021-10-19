@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiNoa", "MultiNoa\MultiNoa.csproj", "{84256146-8089-4F68-9D3C-F408AB7C7D63}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiNoaTests", "MultiNoaTests\MultiNoaTests.csproj", "{95489B08-FBF8-409C-B2BF-D0A1B7899993}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{84256146-8089-4F68-9D3C-F408AB7C7D63}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84256146-8089-4F68-9D3C-F408AB7C7D63}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84256146-8089-4F68-9D3C-F408AB7C7D63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95489B08-FBF8-409C-B2BF-D0A1B7899993}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95489B08-FBF8-409C-B2BF-D0A1B7899993}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95489B08-FBF8-409C-B2BF-D0A1B7899993}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95489B08-FBF8-409C-B2BF-D0A1B7899993}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
