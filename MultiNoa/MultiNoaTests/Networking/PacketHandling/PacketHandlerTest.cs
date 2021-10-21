@@ -64,7 +64,7 @@ namespace MultiNoaTests.Networking.PacketHandling
         
     }
 
-    [PacketClass(0)]
+    [PacketStruct(0)]
     public struct DemoStruct1
     {
         [NetworkProperty(9)]
@@ -81,7 +81,7 @@ namespace MultiNoaTests.Networking.PacketHandling
         
     }
     
-    [PacketClass(1)]
+    [PacketStruct(1)]
     public struct DemoStruct2
     {
         [NetworkProperty] public NetworkString String1 { get; private set; }

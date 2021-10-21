@@ -1,0 +1,16 @@
+/home/dominik/dev/c#/multiNOA/MultiNoa/ExampleProject/bin/Debug/netcoreapp3.1/ExampleProject
+/home/dominik/dev/c#/multiNOA/MultiNoa/ExampleProject/bin/Debug/netcoreapp3.1/ExampleProject.deps.json
+/home/dominik/dev/c#/multiNOA/MultiNoa/ExampleProject/bin/Debug/netcoreapp3.1/ExampleProject.runtimeconfig.json
+/home/dominik/dev/c#/multiNOA/MultiNoa/ExampleProject/bin/Debug/netcoreapp3.1/ExampleProject.runtimeconfig.dev.json
+/home/dominik/dev/c#/multiNOA/MultiNoa/ExampleProject/bin/Debug/netcoreapp3.1/ExampleProject.dll
+/home/dominik/dev/c#/multiNOA/MultiNoa/ExampleProject/bin/Debug/netcoreapp3.1/ExampleProject.pdb
+/home/dominik/dev/c#/multiNOA/MultiNoa/ExampleProject/bin/Debug/netcoreapp3.1/MultiNoa.dll
+/home/dominik/dev/c#/multiNOA/MultiNoa/ExampleProject/bin/Debug/netcoreapp3.1/MultiNoa.pdb
+/home/dominik/dev/c#/multiNOA/MultiNoa/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.csprojAssemblyReference.cache
+/home/dominik/dev/c#/multiNOA/MultiNoa/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.AssemblyInfoInputs.cache
+/home/dominik/dev/c#/multiNOA/MultiNoa/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.AssemblyInfo.cs
+/home/dominik/dev/c#/multiNOA/MultiNoa/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.csproj.CoreCompileInputs.cache
+/home/dominik/dev/c#/multiNOA/MultiNoa/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.csproj.CopyComplete
+/home/dominik/dev/c#/multiNOA/MultiNoa/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.dll
+/home/dominik/dev/c#/multiNOA/MultiNoa/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.pdb
+/home/dominik/dev/c#/multiNOA/MultiNoa/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.genruntimeconfig.cache
