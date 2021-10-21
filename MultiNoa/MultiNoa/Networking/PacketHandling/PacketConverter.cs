@@ -243,11 +243,9 @@ namespace MultiNoa.Networking.PacketHandling
     public class PacketClass : Attribute
     {
         public readonly int PacketId;
-        public readonly Type Handler;
-        public PacketClass(int packetId, Type handler = null)
+        public PacketClass(int packetId)
         {
             PacketId = packetId;
-            Handler = handler;
         }
     }
     

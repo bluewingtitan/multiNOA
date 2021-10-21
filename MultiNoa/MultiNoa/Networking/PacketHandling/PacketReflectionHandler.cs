@@ -11,8 +11,6 @@ namespace MultiNoa.Networking.PacketHandling
     public class PacketReflectionHandler: IPacketHandler
     {
         // TODO: Cache PacketHandler-Classes
-
-
         private static readonly ConcurrentDictionary<int, PacketClassInfo> Infos = new ConcurrentDictionary<int, PacketClassInfo>();
 
         public bool HandlePacket(byte[] b, IConnection fromClient)
@@ -38,12 +36,23 @@ namespace MultiNoa.Networking.PacketHandling
     }
     
     
-    
-    [AttributeUsage(AttributeTargets.Method)]
+    [AttributeUsage(AttributeTargets.Class)]
     public class PacketHandler : Attribute
     {
         public readonly int PacketId;
         public PacketHandler(int packetId)
+        {
+            PacketId = packetId;
+        }
+    }
+    
+    
+    
+    [AttributeUsage(AttributeTargets.Method)]
+    public class HandlerMethod : Attribute
+    {
+        public readonly int PacketId;
+        public HandlerMethod(int packetId)
         {
             PacketId = packetId;
         }
