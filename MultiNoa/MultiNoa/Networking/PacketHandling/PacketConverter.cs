@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Reflection;
 using MultiNoa.Extensions;
 using MultiNoa.Logging;
 using MultiNOA.Networking.Common.NetworkData;
+using MultiNOA.Networking.Common.NetworkData.DataContainer;
 
 namespace MultiNoa.Networking.PacketHandling
 {
@@ -26,7 +25,7 @@ namespace MultiNoa.Networking.PacketHandling
             // Check if t is valid type.
             if (!(t.GetCustomAttribute(typeof(PacketClass)) is PacketClass attribute))
             {
-                throw new ArgumentException("Passed type does not contain PacketClass Attribute");
+                throw new ArgumentException($"Passed type {t.Name} does not contain PacketClass Attribute");
             }
             
             // sorry for the mess, but mum never told me to clean up my code...
@@ -56,7 +55,7 @@ namespace MultiNoa.Networking.PacketHandling
                 .ToList();
             
             if(props.Count <= 0)
-                throw new ArgumentException("Passed type has no network serializable props!");
+                throw new ArgumentException($"Passed type {t.Name} has no network serializable props!");
             
             
             // Sorting properties of class by index.
@@ -65,11 +64,11 @@ namespace MultiNoa.Networking.PacketHandling
                 (valuePair.Value.Index)
             );
             
-            Infos[attribute.PacketId] = new PacketClassInfo(new Dictionary<PropertyInfo, NetworkProperty>(props));
+            Infos[attribute.PacketId] = new PacketClassInfo(t, new Dictionary<PropertyInfo, NetworkProperty>(props), attribute);
         }
 
 
-        public static byte[] ObjectToByte(object o)
+        public static byte[] ObjectToByte(object o, bool skipTypeCheck = false)
         {
             var bytes = new List<byte>();
             
@@ -77,17 +76,25 @@ namespace MultiNoa.Networking.PacketHandling
 
             if (!(type.GetCustomAttribute(typeof(PacketClass)) is PacketClass attribute))
             {
-                throw new ArgumentException("Passed type does not contain PacketClass Attribute");
+                throw new PacketConversionException($"Passed type {type.Name} does not contain PacketClass Attribute");
             }
 
 
             if (!Infos.ContainsKey(attribute.PacketId))
             {
-                throw new Exception("Uncached packet!");
                 CachePacketStructure(type);
             }
-
+            
             var data = Infos[attribute.PacketId];
+
+            if (!skipTypeCheck && data.Type != type)
+                throw new PacketConversionException($"ID is not unique: {type.Name} tried to use #{attribute.PacketId} assigned to {data.Type.Name}");
+
+
+            // write packet id into byte-array
+            bytes.AddRange(new NetworkInt(attribute.PacketId).TurnIntoBytes());
+            
+
 
 
             foreach (var (prop, attributeData) in data.Props)
@@ -107,12 +114,52 @@ namespace MultiNoa.Networking.PacketHandling
             return bytes.ToArray();
         }
 
-        public static T BytesToObject<T>(byte[] b)
+        public static object BytesToObject(byte[] b)
+        {
+            var idContainer = new NetworkInt();
+            idContainer.LoadFromBytes(b);
+            b = b.GetSubarray(4, b.Length - 4);
+            var pId = idContainer.GetValue();
+
+            if (!Infos.ContainsKey(pId))
+            {
+                throw new PacketConversionException($"No Packet Type known with Id #{pId}");
+            }
+            
+            
+            var data = Infos[pId];
+
+            var type = data.Type;
+            
+            if (!(type.GetCustomAttribute(typeof(PacketClass)) is PacketClass attribute))
+            {
+                throw new PacketConversionException($"Type {type} does not contain PacketClass Attribute");
+            }
+            
+            var instance = Activator.CreateInstance(type);
+
+
+
+            foreach (var (prop, attributeData) in data.Props)
+            {
+                var container = Activator.CreateInstance(prop.PropertyType) as INetworkDataContainer;
+                
+                var l = container.LoadFromBytes(b);
+                b = b.GetSubarray(l, b.Length - l);
+                    
+                prop.SetValue(instance, container);
+            }
+
+            return instance;
+        }
+        
+        
+        public static T BytesToObject<T>(byte[] b, bool containsPacketId = true, bool skipTypeCheck = false)
         {
             var type = typeof(T);
             if (!(type.GetCustomAttribute(typeof(PacketClass)) is PacketClass attribute))
             {
-                throw new ArgumentException("Passed type does not contain PacketClass Attribute");
+                throw new PacketConversionException($"Passed type {type} does not contain PacketClass Attribute");
             }
             
             object instance = Activator.CreateInstance<T>();
@@ -124,6 +171,21 @@ namespace MultiNoa.Networking.PacketHandling
             }
 
             var data = Infos[attribute.PacketId];
+            
+            
+            if (containsPacketId)
+            {
+                var idContainer = new NetworkInt();
+                idContainer.LoadFromBytes(b);
+                b = b.GetSubarray(4, b.Length - 4);
+
+                var pId = idContainer.GetValue();
+
+                if (!skipTypeCheck && pId != attribute.PacketId)
+                    throw new PacketConversionException($"Tried to parse packet with type-id{pId} to {type.Name}, should be #{attribute.PacketId}");
+            }
+            
+
 
 
             foreach (var (prop, attributeData) in data.Props)
@@ -142,13 +204,23 @@ namespace MultiNoa.Networking.PacketHandling
         
     }
 
+
+    public class PacketConversionException : Exception
+    {
+        public PacketConversionException(string msg) : base(msg){}
+    }
+
     internal class PacketClassInfo
     {
+        internal readonly Type Type;
+        internal readonly PacketClass PacketClass;
         internal readonly Dictionary<PropertyInfo, NetworkProperty> Props;
 
-        public PacketClassInfo(Dictionary<PropertyInfo, NetworkProperty> props)
+        public PacketClassInfo(Type type, Dictionary<PropertyInfo, NetworkProperty> props, PacketClass packetClass)
         {
             Props = props;
+            PacketClass = packetClass;
+            Type = type;
         }
     }
 
@@ -171,9 +243,11 @@ namespace MultiNoa.Networking.PacketHandling
     public class PacketClass : Attribute
     {
         public readonly int PacketId;
-        public PacketClass(int packetId)
+        public readonly Type Handler;
+        public PacketClass(int packetId, Type handler = null)
         {
             PacketId = packetId;
+            Handler = handler;
         }
     }
     

@@ -4,7 +4,8 @@ namespace MultiNoa.Networking.PacketHandling
 {
     /// <summary>
     /// One of the most basic layers of multiNoa dynamic packet handling,
-    /// allowing for context-driven packet handling
+    /// allowing for context-driven packet handling with a lot of freedom and less overhead.
+    /// Most people might want to use PacketConverter with the dynamic handling instead.
     /// </summary>
     public interface IPacketHandler
     {
@@ -15,7 +16,7 @@ namespace MultiNoa.Networking.PacketHandling
         /// </summary>
         /// <param name="fromClient">The Client the packet came from</param>
         /// <param name="packet">A packet that has the packet_id already read out</param>
-        public delegate void PacketHandleFunction(ITcpConnetion fromClient, Packet packet);
+        public delegate void PacketHandleFunction(IConnection fromClient, Packet packet);
         
         
         /// <summary>
@@ -24,6 +25,6 @@ namespace MultiNoa.Networking.PacketHandling
         /// <param name="packetBytes">Unfiltered bytes the packet delivered</param>
         /// <param name="fromClient">The Client the packet came from</param>
         /// <returns>Was the handling successful or not?</returns>
-        public bool HandlePacket(byte[] packetBytes, ITcpConnetion fromClient);
+        public bool HandlePacket(byte[] packetBytes, IConnection fromClient);
     }
 }

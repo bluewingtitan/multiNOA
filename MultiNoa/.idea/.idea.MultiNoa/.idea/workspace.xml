@@ -20,33 +20,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="281f0264-c390-48a2-84b3-10762a1715c8" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/MultiNoa/Extensions/ByteExtensions.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MultiNoa/obj/rider.project.restore.info" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MultiNoaTests/MultiNoaTests.csproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MultiNoaTests/Networking/PacketHandling/PacketHandlerTest.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MultiNoaTests/UnitTest1.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MultiNoaTests/obj/Debug/netcoreapp3.1/MultiNoaTests.assets.cache" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MultiNoaTests/obj/Debug/netcoreapp3.1/MultiNoaTests.csprojAssemblyReference.cache" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MultiNoaTests/obj/MultiNoaTests.csproj.nuget.g.props" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MultiNoaTests/obj/MultiNoaTests.csproj.nuget.g.targets" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MultiNoaTests/obj/project.assets.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MultiNoaTests/obj/project.nuget.cache" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MultiNoaTests/obj/rider.project.restore.info" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultiNoa.sln" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultiNoa/Logging/MultiNoaLoggingManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/Logging/MultiNoaLoggingManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultiNoa/Networking/Data/DataContainer/NetworkByte.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/Networking/Data/DataContainer/NetworkByte.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultiNoa/Networking/Data/DataContainer/NetworkLong.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/Networking/Data/DataContainer/NetworkLong.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultiNoa/Networking/Data/DataContainer/NetworkString.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/Networking/Data/DataContainer/NetworkString.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultiNoa/Networking/Data/INetworkDeserializable.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/Networking/Data/INetworkDeserializable.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketReflectionHandler.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.MultiNoa/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MultiNoa/.idea/contentModel.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.MultiNoa/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MultiNoa/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.MultiNoa/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MultiNoa/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MultiNoa.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa.sln.DotSettings.user" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/IPacketHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/IPacketHandler.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultiNoa/Networking/Transport/Packet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/Networking/Transport/Packet.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultiNoa/obj/Debug/netcoreapp3.1/MultiNoa.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/obj/Debug/netcoreapp3.1/MultiNoa.assets.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultiNoa/obj/Debug/netcoreapp3.1/MultiNoa.csprojAssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/obj/Debug/netcoreapp3.1/MultiNoa.csprojAssemblyReference.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultiNoa/obj/MultiNoa.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/obj/MultiNoa.csproj.nuget.dgspec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultiNoa/obj/MultiNoa.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/obj/MultiNoa.csproj.nuget.g.props" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultiNoa/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/obj/project.assets.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultiNoa/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/obj/project.nuget.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultiNoa/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/obj/project.packagespec.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,19 +37,14 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="IdeDocumentHistory">
-    <option name="CHANGED_PATHS">
-      <list>
-        <option value="$PROJECT_DIR$/MultiNoa/Logging/MultiNoaLoggingManager.cs" />
-        <option value="$PROJECT_DIR$/MultiNoa/Extensions/ByteExtensions.cs" />
-        <option value="$PROJECT_DIR$/MultiNoa/Networking/Transport/Packet.cs" />
-        <option value="$PROJECT_DIR$/MultiNoa/Networking/Data/INetworkDeserializable.cs" />
-        <option value="$PROJECT_DIR$/MultiNoa/Networking/Data/DataContainer/NetworkByte.cs" />
-        <option value="$PROJECT_DIR$/MultiNoa/Networking/Data/DataContainer/NetworkString.cs" />
-        <option value="$PROJECT_DIR$/MultiNoa/Networking/Data/DataContainer/NetworkLong.cs" />
-        <option value="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketConverter.cs" />
-        <option value="$PROJECT_DIR$/MultiNoaTests/Networking/PacketHandling/PacketHandlerTest.cs" />
-      </list>
-    </option>
+    <changedPaths>
+      <option value="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/IPacketHandler.cs" />
+      <option value="$PROJECT_DIR$/MultiNoaTests/Networking/PacketHandling/PacketHandlerTest.cs" />
+      <option value="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketManager.cs" />
+      <option value="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketConverter.cs" />
+      <option value="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketDelegator.cs" />
+      <option value="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketReflectionHandler.cs" />
+    </changedPaths>
   </component>
   <component name="ProjectId" id="1ziWGECDjX5gKQYxwg5sZu6BO8U" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -82,6 +57,7 @@
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="settings.editor.selected.configurable" value="configurable.group.appearance" />
     <property name="vue.rearranger.settings.migration" value="true" />
@@ -95,13 +71,14 @@
       <option name="presentableId" value="Default" />
       <updated>1634631290302</updated>
       <workItem from="1634631292632" duration="13006000" />
+      <workItem from="1634772856168" duration="2924000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="UnityProjectConfiguration" hasMinimizedUI="null" />
+  <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -113,6 +90,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
