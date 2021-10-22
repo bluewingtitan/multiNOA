@@ -44,6 +44,7 @@
           <e p="Data" t="Include">
             <e p="DataContainer" t="Include">
               <e p="NetworkByte.cs" t="Include" />
+              <e p="NetworkFloat.cs" t="Include" />
               <e p="NetworkInt.cs" t="Include" />
               <e p="NetworkLong.cs" t="Include" />
               <e p="NetworkShort.cs" t="Include" />
@@ -62,8 +63,10 @@
             <e p="PacketReflectionHandler.cs" t="Include" />
           </e>
           <e p="Transport" t="Include">
+            <e p="Connection" t="Include">
+              <e p="TcpConnection.cs" t="Include" />
+            </e>
             <e p="IConnection.cs" t="Include" />
-            <e p="ITcpConnetion.cs" t="Include" />
             <e p="Packet.cs" t="Include" />
           </e>
         </e>

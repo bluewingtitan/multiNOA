@@ -23,17 +23,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="281f0264-c390-48a2-84b3-10762a1715c8" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/MultiNoa/MultiNoa.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MultiNoa/Networking/Transport/Connection/TcpConnection.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MultiNoa/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MultiNoa/.idea/contentModel.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.MultiNoa/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MultiNoa/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ExampleProject/Packets/PacketId.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/Packets/PacketId.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ExampleProject/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ExampleProject/bin/Debug/netcoreapp3.1/ExampleProject.dll" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/bin/Debug/netcoreapp3.1/ExampleProject.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ExampleProject/bin/Debug/netcoreapp3.1/ExampleProject.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/bin/Debug/netcoreapp3.1/ExampleProject.pdb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.csprojAssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.csprojAssemblyReference.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.dll" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketConverter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MultiNoa/Networking/Transport/ITcpConnetion.cs" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,6 +46,7 @@
         <option value="$PROJECT_DIR$/ExampleProject/Program.cs" />
         <option value="$PROJECT_DIR$/MultiNoa/MultiNoa.cs" />
         <option value="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketConverter.cs" />
+        <option value="$PROJECT_DIR$/MultiNoa/Networking/Transport/Connection/TcpConnection.cs" />
       </list>
     </option>
   </component>
@@ -104,6 +98,7 @@
       <workItem from="1634772856168" duration="3281000" />
       <workItem from="1634808588621" duration="4907000" />
       <workItem from="1634891678295" duration="1103000" />
+      <workItem from="1634913116908" duration="311000" />
     </task>
     <servers />
   </component>
@@ -153,6 +148,10 @@
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
     <state x="2475" y="288" width="800" height="526" key="Rider.ProjectTemplateDialog.Size/1920.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1634809721077" />
+    <state x="2660" y="248" width="429" height="607" key="RiderGenerateDialog" timestamp="1634913379477">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2660" y="248" width="429" height="607" key="RiderGenerateDialog/1920.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1634913379477" />
     <state x="2543" y="259" width="672" height="678" key="search.everywhere.popup" timestamp="1634812266811">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
