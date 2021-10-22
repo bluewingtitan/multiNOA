@@ -12,6 +12,7 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
         #region Operators
         public static NetworkString operator +(NetworkString nb, string s) => new NetworkString(nb._v + s);
         public static NetworkString operator +(string s, NetworkString nb) => new NetworkString(s + nb._v);
+        public static NetworkString operator +(NetworkString nb2, NetworkString nb) => new NetworkString(nb2._v + nb._v);
 
         #endregion
 
@@ -46,6 +47,11 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
             _v = value;
             
             return length.GetValue() + offset;
+        }
+
+        public override string ToString()
+        {
+            return _v;
         }
     }
 }

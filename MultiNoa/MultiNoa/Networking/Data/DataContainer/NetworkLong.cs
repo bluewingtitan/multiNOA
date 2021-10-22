@@ -5,10 +5,10 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
     public struct NetworkLong : INetworkDataContainer<long>
     {
         #region Operators
-        public static NetworkLong operator +(NetworkLong nb, short n) => new NetworkLong((nb._v + n));
-        public static NetworkLong operator +(short n, NetworkLong nb) => new NetworkLong((nb._v + n));
-        public static NetworkLong operator -(NetworkLong nb, short n) => new NetworkLong((nb._v - n));
-        public static NetworkLong operator -(short n, NetworkLong nb) => new NetworkLong((n - nb._v));
+        public static NetworkLong operator +(NetworkLong nb, long n) => new NetworkLong((nb._v + n));
+        public static NetworkLong operator +(long n, NetworkLong nb) => new NetworkLong((nb._v + n));
+        public static NetworkLong operator -(NetworkLong nb, long n) => new NetworkLong((nb._v - n));
+        public static NetworkLong operator -(long n, NetworkLong nb) => new NetworkLong((n - nb._v));
         public static NetworkLong operator + (NetworkLong nb) => new NetworkLong(nb._v);
         public static NetworkLong operator ++(NetworkLong nb)
         {
@@ -46,6 +46,11 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
         {
             _v = BitConverter.ToInt64(bytes, 0); // Read int from bytes.
             return LongByteLength;
+        }
+        
+        public override string ToString()
+        {
+            return _v.ToString();
         }
     }
 }

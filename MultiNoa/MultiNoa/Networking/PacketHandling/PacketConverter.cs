@@ -17,7 +17,10 @@ namespace MultiNoa.Networking.PacketHandling
     {
         private static readonly ConcurrentDictionary<int, PacketClassInfo> Infos = new ConcurrentDictionary<int, PacketClassInfo>();
         
-        
+        /// <summary>
+        /// Use to register all packet structures in an assembly at once.
+        /// </summary>
+        /// <param name="a"></param>
         public static void RegisterAssembly(Assembly a)
         {
             var types = from t in a.DefinedTypes
@@ -39,6 +42,12 @@ namespace MultiNoa.Networking.PacketHandling
             if (!(t.GetCustomAttribute(typeof(PacketStruct)) is PacketStruct attribute))
             {
                 throw new ArgumentException($"Passed type {t.FullName} does not contain PacketClass Attribute");
+            }
+
+            if (Infos.ContainsKey(attribute.PacketId))
+            {
+                MultiNoaLoggingManager.Logger.Warning($"Duplicate registration attempt of packet type with id #{attribute.PacketId}: {t.FullName}. Only keeping first scan");
+                return;
             }
             
             // sorry for the mess, but mum never told me to clean up my code...

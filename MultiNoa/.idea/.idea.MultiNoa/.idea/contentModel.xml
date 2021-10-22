@@ -39,6 +39,7 @@
           <e p="MultiNoaLoggingManager.cs" t="Include" />
         </e>
         <e p="MultiNoa.csproj" t="IncludeRecursive" />
+        <e p="MultiNoaSetup.cs" t="Include" />
         <e p="Networking" t="Include">
           <e p="Data" t="Include">
             <e p="DataContainer" t="Include">

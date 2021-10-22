@@ -50,5 +50,10 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
             _v = BitConverter.ToInt16(bytes, 0); // Read int from bytes.
             return ShortByteLength;
         }
+        
+        public override string ToString()
+        {
+            return _v.ToString();
+        }
     }
 }

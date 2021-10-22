@@ -49,7 +49,7 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
 
         public override string ToString()
         {
-            return _v + "";
+            return _v.ToString();
         }
     }
 }

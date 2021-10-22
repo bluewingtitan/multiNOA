@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using ExampleProject.Packets;
+using MultiNoa;
 using MultiNoa.Networking.PacketHandling;
 
 namespace ExampleProject
@@ -9,11 +10,10 @@ namespace ExampleProject
     {
         static void Main(string[] args)
         {
-            PacketReflectionHandler.RegisterAssembly(Assembly.GetEntryAssembly());
-            PacketConverter.RegisterAssembly(Assembly.GetEntryAssembly());
-            
-            var msg = new Message(69, "Cool Message!", "Hi Dude! Hope you are doing fine!");
-            var bytes = PacketConverter.ObjectToByte(msg);
+            MultiNoaSetup.DefaultSetup(typeof(Program).Assembly);
+
+            var msg = new Message(-42069, "——Cool Message——", "Hi Dude! Hope you are doing   𝖋𝖎𝖓𝖊!   😲");
+                                                          var bytes = PacketConverter.ObjectToByte(msg);
 
             PacketReflectionHandler.HandlePacketStatic(bytes, null);
         }
