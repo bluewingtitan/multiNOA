@@ -23,10 +23,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="281f0264-c390-48a2-84b3-10762a1715c8" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/MultiNoa/Networking/Transport/Connection/TcpConnection.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.exe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MultiNoa/GameSimulation/ExecutionScheduler.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MultiNoa/Networking/Client/IClient.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MultiNoa/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MultiNoa/.idea/contentModel.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.csprojAssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.csprojAssemblyReference.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultiNoa/Networking/Transport/ITcpConnetion.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.MultiNoa/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MultiNoa/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.MultiNoa/riderModule.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MultiNoa/riderModule.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.AssemblyInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.assets.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ExampleProject/obj/ExampleProject.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/obj/ExampleProject.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ExampleProject/obj/ExampleProject.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/obj/ExampleProject.csproj.nuget.g.props" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ExampleProject/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/obj/project.assets.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ExampleProject/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ExampleProject/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/obj/project.packagespec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MultiNoa.sln.DotSettings.user" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/MultiNoa/GameSimulation/DynamicThread.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/GameSimulation/DynamicThread.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/IPacketHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/IPacketHandler.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketConverter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketReflectionHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketReflectionHandler.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MultiNoa/Networking/Transport/Connection/TcpConnection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/Networking/Transport/Connection/TcpConnection.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MultiNoa/Networking/Transport/IConnection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/Networking/Transport/IConnection.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MultiNoa/Networking/Transport/Packet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/Networking/Transport/Packet.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,17 +53,36 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/MultiNoa/Networking/Transport/Packet.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MultiNoa/Networking/Transport/Connection/TcpConnection.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MultiNoa/GameSimulation/ExecutionScheduler.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketConverter.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MultiNoa/GameSimulation/DynamicThread.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/IPacketHandler.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketReflectionHandler.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MultiNoa/Networking/Transport/IConnection.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MultiNoa/Networking/Client/IClient.cs" root0="FORCE_HIGHLIGHTING" />
+  </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/ExampleProject/Handler.cs" />
         <option value="$PROJECT_DIR$/ExampleProject/Packets/Message.cs" />
-        <option value="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketReflectionHandler.cs" />
         <option value="$PROJECT_DIR$/ExampleProject/Packets/PacketId.cs" />
         <option value="$PROJECT_DIR$/ExampleProject/Program.cs" />
         <option value="$PROJECT_DIR$/MultiNoa/MultiNoa.cs" />
-        <option value="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketConverter.cs" />
+        <option value="$PROJECT_DIR$/MultiNoa/ThreadSafety.cs" />
+        <option value="$PROJECT_DIR$/MultiNoa/ThreadsaveTaskCollection.cs" />
+        <option value="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketReflectionHandler.cs" />
+        <option value="$PROJECT_DIR$/MultiNoa/Networking/Transport/Packet.cs" />
+        <option value="$PROJECT_DIR$/MultiNoa/GameSimulation/ExecutionScheduler.cs" />
+        <option value="$PROJECT_DIR$/MultiNoa/GameSimulation/DynamicThread.cs" />
+        <option value="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/IPacketHandler.cs" />
+        <option value="$PROJECT_DIR$/MultiNoa/Networking/Client/IClient.cs" />
+        <option value="$PROJECT_DIR$/MultiNoa/Networking/Transport/IConnection.cs" />
         <option value="$PROJECT_DIR$/MultiNoa/Networking/Transport/Connection/TcpConnection.cs" />
+        <option value="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketConverter.cs" />
       </list>
     </option>
   </component>
@@ -86,7 +122,10 @@
       </method>
     </configuration>
   </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SpellCheckerSettings" BundledDictionaries="0" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" Dictionaries="0" CorrectionsLimit="5" DefaultDictionary="application-level" UseSingleDictionary="true" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="281f0264-c390-48a2-84b3-10762a1715c8" name="Default Changelist" comment="" />
@@ -99,11 +138,12 @@
       <workItem from="1634808588621" duration="4907000" />
       <workItem from="1634891678295" duration="1103000" />
       <workItem from="1634913116908" duration="311000" />
+      <workItem from="1634966304874" duration="5494000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="3" />
+    <option name="version" value="2" />
   </component>
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />

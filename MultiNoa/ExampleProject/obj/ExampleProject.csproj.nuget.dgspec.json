@@ -1,32 +1,34 @@
 {
   "format": 1,
   "restore": {
-    "/home/dominik/dev/c#/multiNOA/MultiNoa/ExampleProject/ExampleProject.csproj": {}
+    "C:\\Users\\Dominik\\Documents\\DEV\\multiNOA\\MultiNoa\\ExampleProject\\ExampleProject.csproj": {}
   },
   "projects": {
-    "/home/dominik/dev/c#/multiNOA/MultiNoa/ExampleProject/ExampleProject.csproj": {
+    "C:\\Users\\Dominik\\Documents\\DEV\\multiNOA\\MultiNoa\\ExampleProject\\ExampleProject.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/dominik/dev/c#/multiNOA/MultiNoa/ExampleProject/ExampleProject.csproj",
+        "projectUniqueName": "C:\\Users\\Dominik\\Documents\\DEV\\multiNOA\\MultiNoa\\ExampleProject\\ExampleProject.csproj",
         "projectName": "ExampleProject",
-        "projectPath": "/home/dominik/dev/c#/multiNOA/MultiNoa/ExampleProject/ExampleProject.csproj",
-        "packagesPath": "/home/dominik/.nuget/packages/",
-        "outputPath": "/home/dominik/dev/c#/multiNOA/MultiNoa/ExampleProject/obj/",
+        "projectPath": "C:\\Users\\Dominik\\Documents\\DEV\\multiNOA\\MultiNoa\\ExampleProject\\ExampleProject.csproj",
+        "packagesPath": "C:\\Users\\Dominik\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Dominik\\Documents\\DEV\\multiNOA\\MultiNoa\\ExampleProject\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/dominik/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Dominik\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "netcoreapp3.1": {
             "projectReferences": {
-              "/home/dominik/dev/c#/multiNOA/MultiNoa/MultiNoa/MultiNoa.csproj": {
-                "projectPath": "/home/dominik/dev/c#/multiNOA/MultiNoa/MultiNoa/MultiNoa.csproj"
+              "C:\\Users\\Dominik\\Documents\\DEV\\multiNOA\\MultiNoa\\MultiNoa\\MultiNoa.csproj": {
+                "projectPath": "C:\\Users\\Dominik\\Documents\\DEV\\multiNOA\\MultiNoa\\MultiNoa\\MultiNoa.csproj"
               }
             }
           }
@@ -54,26 +56,28 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.404/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.401\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/dominik/dev/c#/multiNOA/MultiNoa/MultiNoa/MultiNoa.csproj": {
+    "C:\\Users\\Dominik\\Documents\\DEV\\multiNOA\\MultiNoa\\MultiNoa\\MultiNoa.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/dominik/dev/c#/multiNOA/MultiNoa/MultiNoa/MultiNoa.csproj",
+        "projectUniqueName": "C:\\Users\\Dominik\\Documents\\DEV\\multiNOA\\MultiNoa\\MultiNoa\\MultiNoa.csproj",
         "projectName": "MultiNoa",
-        "projectPath": "/home/dominik/dev/c#/multiNOA/MultiNoa/MultiNoa/MultiNoa.csproj",
-        "packagesPath": "/home/dominik/.nuget/packages/",
-        "outputPath": "/home/dominik/dev/c#/multiNOA/MultiNoa/MultiNoa/obj/",
+        "projectPath": "C:\\Users\\Dominik\\Documents\\DEV\\multiNOA\\MultiNoa\\MultiNoa\\MultiNoa.csproj",
+        "packagesPath": "C:\\Users\\Dominik\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Dominik\\Documents\\DEV\\multiNOA\\MultiNoa\\MultiNoa\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/dominik/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Dominik\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -104,7 +108,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.404/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.401\\RuntimeIdentifierGraph.json"
         }
       }
     }

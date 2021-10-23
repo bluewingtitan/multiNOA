@@ -57,6 +57,18 @@ namespace MultiNoa.Networking.Transport
             _buffer.InsertRange(0, BitConverter.GetBytes(_buffer.Count)); // Insert the byte length of the packet at the very beginning
         }
         
+        /// <summary>Gets the length of the packet's content.</summary>
+        public int Length()
+        {
+            return _buffer.Count; // Return the length of buffer
+        }
+
+        /// <summary>Gets the length of the unread data contained in the packet.</summary>
+        public int UnreadLength()
+        {
+            return Length() - _readPos; // Return the remaining length (unread)
+        }
+        
         /// <summary>
         /// Adds byte array to packet contents.
         /// For internal use only.
@@ -96,7 +108,27 @@ namespace MultiNoa.Networking.Transport
             }
             catch
             {
-                throw new Exception($"Could not read value of type '{typeof(T1).Name}'!");
+                throw new Exception($"Could not read value of type '{typeof(T1).FullName}'!");
+            }
+        }
+
+
+        public byte[] ReadBytes(int length, bool moveReadPos = true)
+        {
+            if (_buffer.Count > _readPos)
+            {
+                // If there are unread bytes
+                byte[] value = _buffer.GetRange(_readPos, length).ToArray(); // Get the bytes at readPos' position with a range of _length
+                if (moveReadPos)
+                {
+                    // If _moveReadPos is true
+                    _readPos += length; // Increase readPos by _length
+                }
+                return value; // Return the bytes
+            }
+            else
+            {
+                throw new Exception("Could not read value of type 'byte[]'!");
             }
         }
 

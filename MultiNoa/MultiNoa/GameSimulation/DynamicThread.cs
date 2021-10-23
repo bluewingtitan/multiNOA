@@ -10,7 +10,7 @@ namespace MultiNoa.GameSimulation
         public static bool AreRunning { get; private set; }
 
         /// <summary>
-        /// Stops all running dynamic threads => stops packet handling and handling of new connections.
+        /// Stops all running dynamic threads => not reversable, only use as part of a stop-routine!
         /// </summary>
         public static void StopAll() => AreRunning = false;
         
@@ -38,47 +38,7 @@ namespace MultiNoa.GameSimulation
 
 
 
-        private readonly List<Action> executeOnThread = new List<Action>();
-        private readonly List<Action> ExecuteCopiedOnThread = new List<Action>();
-        private bool _actionToExecuteOnMainThread = false;
-        
-        /**
-         * Schedule an execution of an action.
-         * This action will be executed on the next tick BEFORE doing the normal Updates.
-         */
-        public void ScheduleExecution(Action action)
-        {
-            if (action == null)
-            {
-                MultiNoaLoggingManager.Logger.Verbose("Tried to execute action on thread but there was none.");
-                return;
-            }
-    
-            lock (executeOnThread)
-            {
-                executeOnThread.Add(action);
-                _actionToExecuteOnMainThread = true;
-            }
-        }
-        
-        private void ExecuteAll()
-        {
-            if (!_actionToExecuteOnMainThread) return;
-            ExecuteCopiedOnThread.Clear();
-            
-            lock (executeOnThread)
-            {
-                ExecuteCopiedOnThread.AddRange(executeOnThread);
-                executeOnThread.Clear();
-                _actionToExecuteOnMainThread = false;
-            }
-    
-            foreach (var action in ExecuteCopiedOnThread)
-            {
-                action();
-            }
-        }
-
+        private readonly ExecutionScheduler _scheduler = new ExecutionScheduler();
 
         /**
          * Creates and Starts a Dynamic Thread, used to execute tasks in a controlled manner.
@@ -116,7 +76,7 @@ namespace MultiNoa.GameSimulation
                 while (nextLoop < DateTime.Now)
                 {
                     tickStart = DateTime.Now;
-                    ExecuteAll();
+                    _scheduler.ExecuteAll();
                     Update();
                     
                     #region Tick management
@@ -170,7 +130,7 @@ namespace MultiNoa.GameSimulation
         /// <param name="updatable">Updatable to add</param>
         public void AddUpdatable(IUpdatable updatable)
         {
-            ScheduleExecution((() =>
+            _scheduler.ScheduleExecution((() =>
             {
                 if(Updatables.Contains(updatable)) return;
                 Updatables.Add(updatable);
@@ -179,12 +139,12 @@ namespace MultiNoa.GameSimulation
 
         public void RemoveUpdatable(IUpdatable updatable)
         {
-            ScheduleExecution((() => Updatables.Remove(updatable)));
+            _scheduler.ScheduleExecution((() => Updatables.Remove(updatable)));
         }
 
         public void ClearUpdatables()
         {
-            ScheduleExecution((() => Updatables.Clear()));
+            _scheduler.ScheduleExecution((() => Updatables.Clear()));
         }
 
         public bool ContainsUpdatable(IUpdatable updatable)
@@ -197,7 +157,7 @@ namespace MultiNoa.GameSimulation
 
         public void AddOffsetTask(IOffsetTask task)
         {
-            ScheduleExecution(() => OffsetTasks.Add(task));
+            _scheduler.ScheduleExecution(() => OffsetTasks.Add(task));
         }
         
         
@@ -214,7 +174,7 @@ namespace MultiNoa.GameSimulation
                 if (task.Tick() <= 0)
                 {
                     task.Execute();
-                    ScheduleExecution(() => OffsetTasks.Remove(task));
+                    _scheduler.ScheduleExecution(() => OffsetTasks.Remove(task));
                 }
             }
         }

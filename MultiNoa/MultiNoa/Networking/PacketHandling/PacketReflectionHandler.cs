@@ -110,7 +110,19 @@ namespace MultiNoa.Networking.PacketHandling
             return HandlePacketStatic(packetBytes, fromClient);
         }
 
+        public Action PrepareHandling(byte[] packetBytes, IConnection fromClient)
+        {
+            return PrepareHandlingStatic(packetBytes, fromClient);
+        }
+
         public static bool HandlePacketStatic(byte[] b, IConnection fromClient)
+        {
+            PrepareHandlingStatic(b, fromClient).Invoke();
+
+            return true;
+        }
+
+        public static Action PrepareHandlingStatic(byte[] b, IConnection fromClient)
         {
             var o = PacketConverter.BytesToObject(b);
             
@@ -147,11 +159,8 @@ namespace MultiNoa.Networking.PacketHandling
                         break;
                 }
             }
-
-            i.MethodInfo.Invoke(null, pars);
             
-
-            return true;
+            return () => i.MethodInfo.Invoke(null, pars);
         }
     }
 

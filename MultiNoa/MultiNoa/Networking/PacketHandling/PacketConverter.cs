@@ -135,6 +135,8 @@ namespace MultiNoa.Networking.PacketHandling
                 }
             }
 
+            bytes.InsertRange(0, new NetworkInt(bytes.Count).TurnIntoBytes());
+            
             return bytes.ToArray();
         }
 

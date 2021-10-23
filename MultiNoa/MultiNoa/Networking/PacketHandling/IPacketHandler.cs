@@ -1,4 +1,5 @@
-﻿using MultiNoa.Networking.Transport;
+﻿using System;
+using MultiNoa.Networking.Transport;
 
 namespace MultiNoa.Networking.PacketHandling
 {
@@ -26,5 +27,15 @@ namespace MultiNoa.Networking.PacketHandling
         /// <param name="fromClient">The Client the packet came from</param>
         /// <returns>Was the handling successful or not?</returns>
         public bool HandlePacket(byte[] packetBytes, IConnection fromClient);
+        
+        /// <summary>
+        /// Main Functionality, used for any packet arriving, seperate by packets.
+        /// Returns the action to execute to start the actual handling (relevant, thread dependent effects).
+        /// All thread indipendent analysis happens before returning the action, not in it.
+        /// </summary>
+        /// <param name="packetBytes">raw bytes of the received packet</param>
+        /// <param name="fromClient">IConnection the bytes came from for context-aware handling</param>
+        /// <returns>Action to be executed to start handling</returns>
+        public Action PrepareHandling(byte[] packetBytes, IConnection fromClient);
     }
 }
