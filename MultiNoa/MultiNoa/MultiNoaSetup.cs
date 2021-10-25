@@ -11,6 +11,7 @@ namespace MultiNoa
     /// </summary>
     public static class MultiNoaSetup
     {
+        public const string VersionCode = "alpha-0.1";
         internal static bool _setupDone = false;
         
         /// <summary>

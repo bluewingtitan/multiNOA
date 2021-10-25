@@ -7,6 +7,7 @@ namespace MultiNoa.Networking.Transport
 {
     public interface IConnection: IUpdatable
     {
+        public const int DataBufferSize = 4096;
         /// <summary>
         /// Sets the packet handler used for incoming traffic
         /// </summary>

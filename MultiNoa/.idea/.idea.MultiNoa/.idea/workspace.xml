@@ -23,27 +23,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="281f0264-c390-48a2-84b3-10762a1715c8" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.exe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MultiNoa/GameSimulation/ExecutionScheduler.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MultiNoa/Networking/Client/IClient.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ExampleProject/bin/Debug/netcoreapp3.1/ExampleProject.exe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MultiNoa/Networking/Data/DataContainer/NetworkBool.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MultiNoa/Networking/Transport/Connection/TcpDistantConnection.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MultiNoa/Networking/Transport/Connection/TcpListener.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MultiNoa/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MultiNoa/.idea/contentModel.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.MultiNoa/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MultiNoa/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.MultiNoa/riderModule.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.MultiNoa/riderModule.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.AssemblyInfo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.assets.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ExampleProject/obj/ExampleProject.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/obj/ExampleProject.csproj.nuget.dgspec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ExampleProject/obj/ExampleProject.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/obj/ExampleProject.csproj.nuget.g.props" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ExampleProject/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/obj/project.assets.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ExampleProject/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/obj/project.nuget.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ExampleProject/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/obj/project.packagespec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultiNoa.sln.DotSettings.user" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultiNoa/GameSimulation/DynamicThread.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/GameSimulation/DynamicThread.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/IPacketHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/IPacketHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketConverter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketReflectionHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketReflectionHandler.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ExampleProject/bin/Debug/netcoreapp3.1/ExampleProject.dll" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/bin/Debug/netcoreapp3.1/ExampleProject.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ExampleProject/bin/Debug/netcoreapp3.1/ExampleProject.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/bin/Debug/netcoreapp3.1/ExampleProject.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ExampleProject/bin/Debug/netcoreapp3.1/ExampleProject.runtimeconfig.dev.json" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/bin/Debug/netcoreapp3.1/ExampleProject.runtimeconfig.dev.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ExampleProject/bin/Debug/netcoreapp3.1/MultiNoa.dll" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/bin/Debug/netcoreapp3.1/MultiNoa.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ExampleProject/bin/Debug/netcoreapp3.1/MultiNoa.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/bin/Debug/netcoreapp3.1/MultiNoa.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.csproj.CoreCompileInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.csproj.CoreCompileInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.csproj.FileListAbsolute.txt" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.csproj.FileListAbsolute.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.csprojAssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.csprojAssemblyReference.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.dll" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/ExampleProject/obj/Debug/netcoreapp3.1/ExampleProject.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MultiNoa/MultiNoaSetup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/MultiNoaSetup.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MultiNoa/Networking/Transport/Connection/TcpConnection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/Networking/Transport/Connection/TcpConnection.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MultiNoa/Networking/Transport/IConnection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/Networking/Transport/IConnection.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MultiNoa/Networking/Transport/Packet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MultiNoa/Networking/Transport/Packet.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,15 +52,20 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/MultiNoa/Networking/Transport/Packet.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MultiNoa/Networking/Transport/Connection/TcpConnection.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/MultiNoa/GameSimulation/ExecutionScheduler.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MultiNoa/MultiNoaSetup.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketConverter.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MultiNoa/GameSimulation/DynamicThread.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MultiNoa/Networking/Client/IClient.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MultiNoa/Networking/Transport/Connection/TcpListener.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MultiNoa/Networking/Transport/Packet.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MultiNoa/GameSimulation/ExecutionScheduler.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MultiNoa/Networking/Data/DataContainer/NetworkBool.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MultiNoa/Networking/Transport/Connection/TcpDistantConnection.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/IPacketHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketReflectionHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/MultiNoa/Networking/Transport/IConnection.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/MultiNoa/Networking/Client/IClient.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/MultiNoa/Networking/Data/DataContainer/NetworkByte.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -75,14 +78,19 @@
         <option value="$PROJECT_DIR$/MultiNoa/ThreadSafety.cs" />
         <option value="$PROJECT_DIR$/MultiNoa/ThreadsaveTaskCollection.cs" />
         <option value="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketReflectionHandler.cs" />
-        <option value="$PROJECT_DIR$/MultiNoa/Networking/Transport/Packet.cs" />
         <option value="$PROJECT_DIR$/MultiNoa/GameSimulation/ExecutionScheduler.cs" />
         <option value="$PROJECT_DIR$/MultiNoa/GameSimulation/DynamicThread.cs" />
         <option value="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/IPacketHandler.cs" />
         <option value="$PROJECT_DIR$/MultiNoa/Networking/Client/IClient.cs" />
-        <option value="$PROJECT_DIR$/MultiNoa/Networking/Transport/IConnection.cs" />
-        <option value="$PROJECT_DIR$/MultiNoa/Networking/Transport/Connection/TcpConnection.cs" />
         <option value="$PROJECT_DIR$/MultiNoa/Networking/PacketHandling/PacketConverter.cs" />
+        <option value="$PROJECT_DIR$/MultiNoa/Networking/Transport/Packet.cs" />
+        <option value="$PROJECT_DIR$/MultiNoa/Networking/Transport/IConnection.cs" />
+        <option value="$PROJECT_DIR$/MultiNoa/Networking/Transport/Connection/NoaTcpListener.cs" />
+        <option value="$PROJECT_DIR$/MultiNoa/Networking/Transport/Connection/TcpListener.cs" />
+        <option value="$PROJECT_DIR$/MultiNoa/MultiNoaSetup.cs" />
+        <option value="$PROJECT_DIR$/MultiNoa/Networking/Transport/Connection/TcpConnection.cs" />
+        <option value="$PROJECT_DIR$/MultiNoa/Networking/Transport/Connection/TcpDistantConnection.cs" />
+        <option value="$PROJECT_DIR$/MultiNoa/Networking/Data/DataContainer/NetworkBool.cs" />
       </list>
     </option>
   </component>
@@ -138,7 +146,8 @@
       <workItem from="1634808588621" duration="4907000" />
       <workItem from="1634891678295" duration="1103000" />
       <workItem from="1634913116908" duration="311000" />
-      <workItem from="1634966304874" duration="5494000" />
+      <workItem from="1634966304874" duration="5923000" />
+      <workItem from="1635161781765" duration="3346000" />
     </task>
     <servers />
   </component>
@@ -164,6 +173,10 @@
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="414" y="210" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1635163327500">
+      <screen x="0" y="30" width="1920" height="1050" />
+    </state>
+    <state x="414" y="210" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.30.1920.1050@0.30.1920.1050" timestamp="1635163327500" />
     <state x="2663" y="311" width="424" height="480" key="FileChooserDialogImpl" timestamp="1634809750072">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
@@ -188,9 +201,10 @@
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
     <state x="2475" y="288" width="800" height="526" key="Rider.ProjectTemplateDialog.Size/1920.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1634809721077" />
-    <state x="2660" y="248" width="429" height="607" key="RiderGenerateDialog" timestamp="1634913379477">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state x="740" y="271" width="429" height="607" key="RiderGenerateDialog" timestamp="1635162003546">
+      <screen x="0" y="30" width="1920" height="1050" />
     </state>
+    <state x="740" y="271" key="RiderGenerateDialog/0.30.1920.1050@0.30.1920.1050" timestamp="1635162003546" />
     <state x="2660" y="248" width="429" height="607" key="RiderGenerateDialog/1920.0.1920.1080/0.27.1920.1053@1920.0.1920.1080" timestamp="1634913379477" />
     <state x="2543" y="259" width="672" height="678" key="search.everywhere.popup" timestamp="1634812266811">
       <screen x="1920" y="0" width="1920" height="1080" />
