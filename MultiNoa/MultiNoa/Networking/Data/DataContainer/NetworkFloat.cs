@@ -3,7 +3,8 @@ using System.Globalization;
 
 namespace MultiNOA.Networking.Common.NetworkData.DataContainer
 {
-    public struct NetworkFloat
+    [MultiNoa.Networking.PacketHandling.DataContainer(typeof(float))]
+    public struct NetworkFloat: INetworkDataContainer<float>
     {
         
         #region Operators
@@ -38,6 +39,17 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
         {
             return BitConverter.GetBytes(_v);
         }
+        
+        public bool SetValue(object o)
+        {
+            if (o is float v)
+            {
+                _v = v;
+                return true;
+            }
+
+            return false;
+        }
 
         public float GetValue()
         {
@@ -49,7 +61,12 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
             _v = BitConverter.ToSingle(bytes, 0); // Read int from bytes.
             return FloatByteLength;
         }
-        
+
+        object INetworkDeserializable.GetValue()
+        {
+            return GetValue();
+        }
+
         public override string ToString()
         {
             return _v.ToString(CultureInfo.CurrentCulture);

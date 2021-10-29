@@ -5,6 +5,7 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
     /// <summary>
     /// Wraps an Integer to NetworkDataContainer
     /// </summary>
+    [MultiNoa.Networking.PacketHandling.DataContainer(typeof(int))]
     public struct NetworkInt: INetworkDataContainer<int>
     {
         #region Operators
@@ -43,6 +44,22 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
         public int GetValue()
         {
             return _v;
+        }
+        
+        public bool SetValue(object o)
+        {
+            if (o is int v)
+            {
+                _v = v;
+                return true;
+            }
+
+            return false;
+        }
+        
+        object INetworkDeserializable.GetValue()
+        {
+            return GetValue();
         }
 
         public int LoadFromBytes(byte[] bytes)

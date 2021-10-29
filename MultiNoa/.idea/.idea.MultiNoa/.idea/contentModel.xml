@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="C:\Users\Dominik\.nuget\packages\microsoft.net.test.sdk\16.5.0\build\netcoreapp2.1" t="Include">
+    <e p="$USER_HOME$/.cache/JetBrains/Rider2020.2/extResources" t="IncludeRecursive" />
+    <e p="$USER_HOME$/.cache/JetBrains/Rider2020.2/resharper-host/local/Transient/Rider/v202/SolutionCaches/_MultiNoa.516098313.00" t="ExcludeRecursive" />
+    <e p="$USER_HOME$/.nuget/packages/microsoft.net.test.sdk/16.5.0/build/netcoreapp2.1" t="Include">
       <e p="Microsoft.NET.Test.Sdk.Program.cs" t="Include" />
     </e>
-    <e p="C:\Users\Dominik\.nuget\packages\microsoft.testplatform.testhost\16.5.0\build\netcoreapp2.1\x64\testhost.dll" t="Include" />
-    <e p="C:\Users\Dominik\.nuget\packages\microsoft.testplatform.testhost\16.5.0\build\netcoreapp2.1\x64\testhost.exe" t="Include" />
-    <e p="C:\Users\Dominik\.nuget\packages\nunit3testadapter\3.16.1\build\netcoreapp2.1\nunit.engine.api.dll" t="Include" />
-    <e p="C:\Users\Dominik\.nuget\packages\nunit3testadapter\3.16.1\build\netcoreapp2.1\nunit.engine.dll" t="Include" />
-    <e p="C:\Users\Dominik\.nuget\packages\nunit3testadapter\3.16.1\build\netcoreapp2.1\NUnit3.TestAdapter.dll" t="Include" />
-    <e p="C:\Users\Dominik\.nuget\packages\nunit3testadapter\3.16.1\build\netcoreapp2.1\NUnit3.TestAdapter.pdb" t="Include" />
-    <e p="C:\Users\Dominik\AppData\local\JetBrains\Rider2020.1\extResources" t="IncludeRecursive" />
-    <e p="C:\Users\Dominik\AppData\local\JetBrains\Rider2020.1\resharper-host\local\Transient\ReSharperHost\v201\SolutionCaches\_MultiNoa.-253375950.00" t="ExcludeRecursive" />
-    <e p="C:\Users\Dominik\Documents\DEV\multiNOA\multiNOA" t="IncludeFlat">
+    <e p="$USER_HOME$/.nuget/packages/nunit3testadapter/3.16.1/build/netcoreapp2.1/NUnit3.TestAdapter.dll" t="Include" />
+    <e p="$USER_HOME$/.nuget/packages/nunit3testadapter/3.16.1/build/netcoreapp2.1/NUnit3.TestAdapter.pdb" t="Include" />
+    <e p="$USER_HOME$/.nuget/packages/nunit3testadapter/3.16.1/build/netcoreapp2.1/nunit.engine.api.dll" t="Include" />
+    <e p="$USER_HOME$/.nuget/packages/nunit3testadapter/3.16.1/build/netcoreapp2.1/nunit.engine.dll" t="Include" />
+    <e p="$PROJECT_DIR$" t="IncludeFlat">
       <e p="ExampleProject" t="IncludeRecursive">
-        <e p="bin" t="ExcludeRecursive" />
         <e p="ExampleProject.csproj" t="IncludeRecursive" />
         <e p="Handler.cs" t="Include" />
+        <e p="Packets" t="Include">
+          <e p="Message.cs" t="Include" />
+          <e p="PacketId.cs" t="Include" />
+        </e>
+        <e p="Program.cs" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
             <e p="netcoreapp3.1" t="Include">
@@ -24,14 +27,8 @@
             </e>
           </e>
         </e>
-        <e p="Packets" t="Include">
-          <e p="Message.cs" t="Include" />
-          <e p="PacketId.cs" t="Include" />
-        </e>
-        <e p="Program.cs" t="Include" />
       </e>
-      <e p="multiNOA" t="IncludeRecursive">
-        <e p="bin" t="ExcludeRecursive" />
+      <e p="MultiNoa" t="IncludeRecursive">
         <e p="Extensions" t="Include">
           <e p="ByteExtensions.cs" t="Include" />
         </e>
@@ -66,6 +63,7 @@
             </e>
           </e>
           <e p="PacketHandling" t="Include">
+            <e p="DataContainerManager.cs" t="Include" />
             <e p="IPacketHandler.cs" t="Include" />
             <e p="PacketConverter.cs" t="Include" />
             <e p="PacketReflectionHandler.cs" t="Include" />
@@ -80,6 +78,7 @@
             <e p="Packet.cs" t="Include" />
           </e>
         </e>
+        <e p="bin" t="ExcludeRecursive" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
             <e p="netcoreapp3.1" t="Include">
@@ -90,13 +89,14 @@
       </e>
       <e p="MultiNoa.sln" t="IncludeFlat" />
       <e p="MultiNoaTests" t="IncludeRecursive">
-        <e p="bin" t="ExcludeRecursive" />
         <e p="MultiNoaTests.csproj" t="IncludeRecursive" />
         <e p="Networking" t="Include">
           <e p="PacketHandling" t="Include">
             <e p="PacketHandlerTest.cs" t="Include" />
           </e>
         </e>
+        <e p="UnitTest1.cs" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
             <e p="netcoreapp3.1" t="Include">
@@ -104,7 +104,6 @@
             </e>
           </e>
         </e>
-        <e p="UnitTest1.cs" t="Include" />
       </e>
       <e p="packages" t="ExcludeRecursive" />
     </e>

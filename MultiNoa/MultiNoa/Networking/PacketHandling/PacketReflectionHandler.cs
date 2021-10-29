@@ -117,8 +117,7 @@ namespace MultiNoa.Networking.PacketHandling
 
         public static bool HandlePacketStatic(byte[] b, IConnection fromClient)
         {
-            PrepareHandlingStatic(b, fromClient).Invoke();
-
+            PrepareHandlingStatic(b, fromClient)();
             return true;
         }
 

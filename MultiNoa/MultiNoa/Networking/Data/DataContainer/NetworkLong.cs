@@ -2,6 +2,7 @@
 
 namespace MultiNOA.Networking.Common.NetworkData.DataContainer
 {
+    [MultiNoa.Networking.PacketHandling.DataContainer(typeof(long))]
     public struct NetworkLong : INetworkDataContainer<long>
     {
         #region Operators
@@ -36,10 +37,26 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
         {
             return BitConverter.GetBytes(_v);
         }
+        
+        public bool SetValue(object o)
+        {
+            if (o is long v)
+            {
+                _v = v;
+                return true;
+            }
+
+            return false;
+        }
+
 
         public long GetValue()
         {
             return _v;
+        }
+        object INetworkDeserializable.GetValue()
+        {
+            return GetValue();
         }
 
         public int LoadFromBytes(byte[] bytes)

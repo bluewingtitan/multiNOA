@@ -24,9 +24,19 @@ namespace MultiNoa
                 new MultiNoaConfig
                 {
                     MainAssembly = mainAssembly,
+                    ExtraAssemblies = new Assembly[0],
                     ConversionMode = PacketConversionMode.Reflective,
                     HandlingMode = PacketHandlingMode.Reflective
                 });
+        }
+
+        /// <summary>
+        /// Only use if you need a setup that definitely differs from the default setup!
+        /// </summary>
+        /// <param name="config">Configuration Class Instance</param>
+        public static void CustomSetup(MultiNoaConfig config)
+        {
+            
         }
 
 
@@ -42,6 +52,8 @@ namespace MultiNoa
             {
                 case PacketHandlingMode.Reflective:
                     PacketReflectionHandler.RegisterAssembly(config.MainAssembly);
+                    foreach (var configExtraAssembly in config.ExtraAssemblies)
+                        PacketReflectionHandler.RegisterAssembly(configExtraAssembly);
                     break;
                 
                 case PacketHandlingMode.Custom:
@@ -52,7 +64,14 @@ namespace MultiNoa
             switch (config.ConversionMode)
             {
                 case PacketConversionMode.Reflective:
+                    DataContainerManager.RegisterAssembly(typeof(MultiNoaConfig).Assembly);
                     PacketConverter.RegisterAssembly(config.MainAssembly);
+                    DataContainerManager.RegisterAssembly(config.MainAssembly);
+                    foreach (var configExtraAssembly in config.ExtraAssemblies)
+                    {
+                        PacketConverter.RegisterAssembly(configExtraAssembly);
+                        DataContainerManager.RegisterAssembly(configExtraAssembly);
+                    }
                     break;
                 
                 case PacketConversionMode.Custom:
@@ -88,12 +107,12 @@ namespace MultiNoa
     public enum PacketConversionMode
     {
         /// <summary>
-        /// Set this if you intend to use the PacketConverter as Packet Converter
+        /// Set this if you intend to use the PacketConverter and/or DataContainerManager for packet (de-)serialization
         /// </summary>
         Reflective,
         
         /// <summary>
-        /// Set this if you intend to use your custom procedures for converting byte-arrays to data and vice-versa.
+        /// Set this if you intend to use your custom implementations for converting byte-arrays to data and vice-versa.
         /// </summary>
         Custom,
     }

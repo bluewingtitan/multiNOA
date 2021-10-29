@@ -56,19 +56,23 @@ namespace MultiNoa.Networking.PacketHandling
                 .Where(e => e.GetCustomAttributes(typeof(NetworkProperty), true).Length > 0)
                 .Select(e =>
                 {
+                    var useDataContainerManager = false;
                     // Check for valid property!
                     if (!e.PropertyType.GetInterfaces().Contains(typeof(INetworkDataContainer)))
                     {
-                        MultiNoaLoggingManager.Logger.Warning($"Class {t.FullName} contains non-serializable property: {e.Name} does not implement {nameof(INetworkDataContainer)}");
-                        return new KeyValuePair<PropertyInfo, NetworkProperty>(null, null);
+                        MultiNoaLoggingManager.Logger.Debug($"Class {t.FullName} contains custom property: {e.Name} does not implement {nameof(INetworkDataContainer)}. Will try using known DataContainers to convert");
+                        useDataContainerManager = true;
                     }
                     
                     // Not getting single specific attribute, as other attributes will be implemented at this point later on too!
                     var data = e.GetCustomAttributes().ToArray();
 
-                    for (int i = 0; i < data.Length; i++)
-                        if (data[i].GetType() == typeof(NetworkProperty))
-                            return new KeyValuePair<PropertyInfo, NetworkProperty>(e, data[i] as NetworkProperty);
+                    foreach (var attr in data)
+                        if (attr is NetworkProperty prop)
+                        {
+                            prop.useDataContainerManager = useDataContainerManager;
+                            return new KeyValuePair<PropertyInfo, NetworkProperty>(e, prop);
+                        }
 
                     return new KeyValuePair<PropertyInfo, NetworkProperty>(null, null);
 
@@ -92,7 +96,7 @@ namespace MultiNoa.Networking.PacketHandling
         }
 
 
-        public static byte[] ObjectToByte(object o, bool skipTypeCheck = false)
+        public static byte[] ObjectToByte(object o, bool skipTypeCheck = false, bool writeLength = true)
         {
             var bytes = new List<byte>();
             
@@ -117,31 +121,49 @@ namespace MultiNoa.Networking.PacketHandling
 
             // write packet id into byte-array
             bytes.AddRange(new NetworkInt(attribute.PacketId).TurnIntoBytes());
-            
 
 
 
             foreach (var (prop, attributeData) in data.Props)
             {
-                // Already checked that prop implements INetworkDataContainer!
-                if (prop.GetValue(o) is INetworkDataContainer c)
-                {
-                    bytes.AddRange(c.TurnIntoBytes());
-                }
-                else
+                var value = prop.GetValue(o);
+
+                if (value == null)
                 {
                     MultiNoaLoggingManager.Logger.Warning(
                         $"Failed to convert property {prop.Name} to bytes: Prop was null");
+                    continue;
+                }
+                
+                if (attributeData.useDataContainerManager)
+                {
+                    bytes.AddRange(DataContainerManager.ToBytes(value));
+                    continue;
+                }
+
+                // Already checked that prop implements INetworkDataContainer!
+                if (value is INetworkDataContainer c)
+                {
+                    bytes.AddRange(c.TurnIntoBytes());
+                    continue;
                 }
             }
 
-            bytes.InsertRange(0, new NetworkInt(bytes.Count).TurnIntoBytes());
+            if(writeLength) 
+                // Write length!
+                bytes.InsertRange(0, new NetworkInt(bytes.Count).TurnIntoBytes());
             
             return bytes.ToArray();
         }
 
-        public static object BytesToObject(byte[] b)
+        public static object BytesToObject(byte[] b, bool containsLength = false)
         {
+            if (containsLength)
+            {
+                // Strip length
+                b = b.GetSubarray(4, b.Length - 4);
+            }
+            
             var idContainer = new NetworkInt();
             idContainer.LoadFromBytes(b);
             b = b.GetSubarray(4, b.Length - 4);
@@ -168,20 +190,37 @@ namespace MultiNoa.Networking.PacketHandling
 
             foreach (var (prop, attributeData) in data.Props)
             {
-                var container = Activator.CreateInstance(prop.PropertyType) as INetworkDataContainer;
+                var l = 0;
                 
-                var l = container.LoadFromBytes(b);
-                b = b.GetSubarray(l, b.Length - l);
+                if (attributeData.useDataContainerManager)
+                {
+                    var value = DataContainerManager.ToValueType(b, prop.PropertyType, out l);
+                    b = b.GetSubarray(l, b.Length - l);
+                    prop.SetValue(instance, value);
+                }
+                else
+                {
+                    var container = Activator.CreateInstance(prop.PropertyType) as INetworkDataContainer;
+                
+                    l = container.LoadFromBytes(b);
+                    b = b.GetSubarray(l, b.Length - l);
                     
-                prop.SetValue(instance, container);
+                    prop.SetValue(instance, container);
+                }
             }
 
             return instance;
         }
         
         
-        public static T BytesToObject<T>(byte[] b, bool containsPacketId = true, bool skipTypeCheck = false)
+        public static T BytesToObject<T>(byte[] b, bool containsPacketId = true, bool skipTypeCheck = false, bool containsLength = false)
         {
+            if (containsLength)
+            {
+                // Strip length
+                b = b.GetSubarray(4, b.Length - 4);
+            }
+            
             var type = typeof(T);
             if (!(type.GetCustomAttribute(typeof(PacketStruct)) is PacketStruct attribute))
             {
@@ -208,20 +247,28 @@ namespace MultiNoa.Networking.PacketHandling
                 var pId = idContainer.GetValue();
 
                 if (!skipTypeCheck && pId != attribute.PacketId)
-                    throw new PacketConversionException($"Tried to parse packet with type-id{pId} to {type.FullName}, should be #{attribute.PacketId}");
+                    throw new PacketConversionException($"Tried to parse packet with type-id #{pId} to {type.FullName}, should be #{attribute.PacketId}");
             }
-            
-
 
 
             foreach (var (prop, attributeData) in data.Props)
             {
-                var container = Activator.CreateInstance(prop.PropertyType) as INetworkDataContainer;
+                var l = 0;
+                if (attributeData.useDataContainerManager)
+                {
+                    var value = DataContainerManager.ToValueType(b, prop.PropertyType, out l);
+                    b = b.GetSubarray(l, b.Length - l);
+                    prop.SetValue(instance, value);
+                }
+                else
+                {
+                    var container = Activator.CreateInstance(prop.PropertyType) as INetworkDataContainer;
                 
-                var l = container.LoadFromBytes(b);
-                b = b.GetSubarray(l, b.Length - l);
+                    l = container.LoadFromBytes(b);
+                    b = b.GetSubarray(l, b.Length - l);
                     
-                prop.SetValue(instance, container);
+                    prop.SetValue(instance, container);
+                }
             }
 
             return (T) instance;
@@ -253,6 +300,7 @@ namespace MultiNoa.Networking.PacketHandling
     [AttributeUsage(AttributeTargets.Property)]
     public class NetworkProperty : Attribute
     {
+        internal bool useDataContainerManager = false;
         public readonly int Index;
         
         /// <summary>
@@ -274,5 +322,8 @@ namespace MultiNoa.Networking.PacketHandling
             PacketId = packetId;
         }
     }
+    
+    
+    
     
 }

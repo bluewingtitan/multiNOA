@@ -5,6 +5,7 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
     /// <summary>
     /// Wraps an Byte to NetworkDataContainer
     /// </summary>
+    [MultiNoa.Networking.PacketHandling.DataContainer(typeof(byte))]
     public struct NetworkByte: INetworkDataContainer<byte>
     {
         #region Operators
@@ -35,6 +36,17 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
         {
             return new []{_v};
         }
+        
+        public bool SetValue(object o)
+        {
+            if (o is byte v)
+            {
+                _v = v;
+                return true;
+            }
+
+            return false;
+        }
 
         public byte GetValue()
         {
@@ -45,6 +57,11 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
         {
             _v = bytes[0]; // Read int from bytes.
             return ByteLength;
+        }
+
+        object INetworkDeserializable.GetValue()
+        {
+            return GetValue();
         }
 
         public override string ToString()

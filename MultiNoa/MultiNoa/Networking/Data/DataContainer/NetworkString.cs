@@ -7,6 +7,7 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
     /// <summary>
     /// Wraps an String to NetworkDataContainer
     /// </summary>
+    [MultiNoa.Networking.PacketHandling.DataContainer(typeof(string))]
     public struct NetworkString: INetworkDataContainer<string>
     {
         #region Operators
@@ -32,10 +33,26 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
             bytes.AddRange(strBytes);
             return bytes.ToArray();
         }
+        
+        public bool SetValue(object o)
+        {
+            if (o is string v)
+            {
+                _v = v;
+                return true;
+            }
+
+            return false;
+        }
+
 
         public string GetValue()
         {
             return _v;
+        }
+        object INetworkDeserializable.GetValue()
+        {
+            return GetValue();
         }
 
         public int LoadFromBytes(byte[] bytes)

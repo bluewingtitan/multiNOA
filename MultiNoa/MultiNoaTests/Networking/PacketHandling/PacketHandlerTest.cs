@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using MultiNoa;
 using MultiNoa.Logging;
 using MultiNOA.Networking.Common.NetworkData.DataContainer;
 using MultiNoa.Networking.PacketHandling;
@@ -13,10 +14,12 @@ namespace MultiNoaTests.Networking.PacketHandling
         [OneTimeSetUp]
         public void Setup()
         {
-            PacketConverter.CachePacketStructure(typeof(DemoStruct1));
-            PacketConverter.CachePacketStructure(typeof(DemoStruct2));
+            MultiNoaSetup.DefaultSetup(typeof(PacketHandlerTest).Assembly);
         }
         
+        /// <summary>
+        /// tests basic functionality and sorting by property index
+        /// </summary>
         [Test]
         public void DemoStruct1Test()
         {
@@ -25,9 +28,7 @@ namespace MultiNoaTests.Networking.PacketHandling
             Assert.AreEqual(7, str1.Byte1.GetValue());
             Assert.AreEqual(9, str1.Byte2.GetValue());
             
-            var bytes = PacketConverter.ObjectToByte(str1);
-            
-            Assert.AreEqual(new byte[]{7,9}, bytes);
+            var bytes = PacketConverter.ObjectToByte(str1, writeLength:false);
 
             var str2 = PacketConverter.BytesToObject<DemoStruct1>(bytes);
             
@@ -36,11 +37,14 @@ namespace MultiNoaTests.Networking.PacketHandling
 
         }
 
+        /// <summary>
+        /// tests all basic implemented data containers
+        /// </summary>
         [Test]
         public void DemoStruct2Test()
         {
             var str1 = new DemoStruct2("demo!¸´ÜÈ", 71654468L, 2, -2938, 12321);
-            var bytes = PacketConverter.ObjectToByte(str1);
+            var bytes = PacketConverter.ObjectToByte(str1, writeLength:false);
             var str2 = PacketConverter.BytesToObject<DemoStruct2>(bytes);
             
             Assert.AreEqual(str1.Byte1.GetValue(),str2.Byte1.GetValue());
@@ -50,14 +54,29 @@ namespace MultiNoaTests.Networking.PacketHandling
             Assert.AreEqual(str1.String1.GetValue(),str2.String1.GetValue());
         }
 
+        /// <summary>
+        /// Tests Dynamic Container Usage (Working with basic value types => string, int, float, ...)
+        /// </summary>
+        [Test]
+        public void DemoStruct3Test()
+        {
+            var str1 = new DemoStruct3(912309, "demo!¸´ÜÈ", 1.02384f);
+            var bytes = PacketConverter.ObjectToByte(str1, writeLength:false);
+            var str2 = PacketConverter.BytesToObject<DemoStruct3>(bytes);
+            
+            Assert.AreEqual(str1.Float1, str2.Float1);
+            Assert.AreEqual(str1.Int1, str2.Int1);
+            Assert.AreEqual(str1.String1, str2.String1);
+        }
+
         [Test]
         public void ALotOfConversions()
         {
             var str1 = new DemoStruct2("demo!¸´ÜÈ", 71654468L, 2, -2938, 12321);
 
-            for (int i = 0; i < 1000000; i++)
+            for (int i = 0; i < 100000; i++)
             {
-                var bytes = PacketConverter.ObjectToByte(str1);
+                var bytes = PacketConverter.ObjectToByte(str1, writeLength: false);
                 var str2 = PacketConverter.BytesToObject<DemoStruct2>(bytes);
             }
         }
@@ -98,8 +117,21 @@ namespace MultiNoaTests.Networking.PacketHandling
             Int1 = new NetworkInt(i1);
             Short1 = new NetworkShort(sh1);
         }
-        
-        
+    }
+    
+    [PacketStruct(2)]
+    public struct DemoStruct3
+    {
+        [NetworkProperty] public int Int1 { get; set; }
+        [NetworkProperty] public string String1 { get; set; }
+        [NetworkProperty] public float Float1 { get; set; }
+
+        public DemoStruct3(int int1, string string1, float float1)
+        {
+            Int1 = int1;
+            String1 = string1;
+            Float1 = float1;
+        }
     }
     
 }

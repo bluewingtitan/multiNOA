@@ -19,5 +19,10 @@ namespace MultiNOA.Networking.Common.NetworkData
         /// <param name="startPosition">Position where data starts inside array</param>
         /// <returns>Length of bytes read out</returns>
         int LoadFromBytes(byte[] bytes);
+
+        object GetValue();
+
+        bool SetValue(object o);
+
     }
 }

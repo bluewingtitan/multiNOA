@@ -5,6 +5,7 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
     /// <summary>
     /// Wraps an Short to NetworkDataContainer
     /// </summary>
+    [MultiNoa.Networking.PacketHandling.DataContainer(typeof(short))]
     public struct NetworkShort: INetworkDataContainer<short>
     {
         #region Operators
@@ -39,10 +40,26 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
         {
             return BitConverter.GetBytes(_v);
         }
+        
+        public bool SetValue(object o)
+        {
+            if (o is short v)
+            {
+                _v = v;
+                return true;
+            }
+
+            return false;
+        }
+
 
         public short GetValue()
         {
             return _v;
+        }
+        object INetworkDeserializable.GetValue()
+        {
+            return GetValue();
         }
 
         public int LoadFromBytes(byte[] bytes)
