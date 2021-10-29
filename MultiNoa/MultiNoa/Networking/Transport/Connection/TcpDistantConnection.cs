@@ -96,7 +96,7 @@ namespace MultiNoa.Networking.Transport.Connection
 
             if (packet.UnreadLength() >= 4)
             {
-                packetLenght = packet.Read<NetworkInt>().GetValue();
+                packetLenght = packet.Read<NetworkInt>().GetTypedValue();
                 if (packetLenght <= 0)
                 {
                     return;
@@ -114,7 +114,7 @@ namespace MultiNoa.Networking.Transport.Connection
                 packetLenght = 0;
                 if (packet.UnreadLength() >= 4)
                 {
-                    packetLenght = packet.Read<NetworkInt>().GetValue();
+                    packetLenght = packet.Read<NetworkInt>().GetTypedValue();
                     if (packetLenght <= 0)
                     {
                         return;

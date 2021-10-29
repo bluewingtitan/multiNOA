@@ -41,7 +41,7 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
             return BitConverter.GetBytes(_v);
         }
 
-        public int GetValue()
+        public int GetTypedValue()
         {
             return _v;
         }
@@ -59,7 +59,7 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
         
         object INetworkDeserializable.GetValue()
         {
-            return GetValue();
+            return GetTypedValue();
         }
 
         public int LoadFromBytes(byte[] bytes)

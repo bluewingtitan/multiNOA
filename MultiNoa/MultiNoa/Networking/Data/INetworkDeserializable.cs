@@ -7,7 +7,7 @@ namespace MultiNOA.Networking.Common.NetworkData
     /// </summary>
     public interface INetworkDeserializable<T1>: INetworkDeserializable
     {
-        T1 GetValue();
+        T1 GetTypedValue();
     }
 
     public interface INetworkDeserializable

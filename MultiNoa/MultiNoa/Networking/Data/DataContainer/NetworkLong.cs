@@ -50,13 +50,13 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
         }
 
 
-        public long GetValue()
+        public long GetTypedValue()
         {
             return _v;
         }
         object INetworkDeserializable.GetValue()
         {
-            return GetValue();
+            return GetTypedValue();
         }
 
         public int LoadFromBytes(byte[] bytes)

@@ -80,8 +80,6 @@ namespace MultiNoa.Networking.PacketHandling
                 .Where(e => e.Key != null && e.Value != null)
                 .ToList();
             
-            if(props.Count <= 0)
-                throw new ArgumentException($"Passed type {t.FullName} has no network serializable props!");
             
             
             // Sorting properties of class by index.
@@ -167,7 +165,7 @@ namespace MultiNoa.Networking.PacketHandling
             var idContainer = new NetworkInt();
             idContainer.LoadFromBytes(b);
             b = b.GetSubarray(4, b.Length - 4);
-            var pId = idContainer.GetValue();
+            var pId = idContainer.GetTypedValue();
 
             if (!Infos.ContainsKey(pId))
             {
@@ -244,7 +242,7 @@ namespace MultiNoa.Networking.PacketHandling
                 idContainer.LoadFromBytes(b);
                 b = b.GetSubarray(4, b.Length - 4);
 
-                var pId = idContainer.GetValue();
+                var pId = idContainer.GetTypedValue();
 
                 if (!skipTypeCheck && pId != attribute.PacketId)
                     throw new PacketConversionException($"Tried to parse packet with type-id #{pId} to {type.FullName}, should be #{attribute.PacketId}");

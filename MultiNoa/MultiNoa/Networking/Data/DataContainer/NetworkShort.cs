@@ -53,13 +53,13 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
         }
 
 
-        public short GetValue()
+        public short GetTypedValue()
         {
             return _v;
         }
         object INetworkDeserializable.GetValue()
         {
-            return GetValue();
+            return GetTypedValue();
         }
 
         public int LoadFromBytes(byte[] bytes)

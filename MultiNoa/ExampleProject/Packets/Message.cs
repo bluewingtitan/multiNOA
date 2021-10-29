@@ -19,9 +19,9 @@ namespace ExampleProject.Packets
 
         public override string ToString()
         {
-            return "Sent by: " + SenderId.GetValue() + "\n"
-                + "Title: " + Title.GetValue() + "\n" +
-                "Message: " + MainText.GetValue();
+            return "Sent by: " + SenderId.GetTypedValue() + "\n"
+                + "Title: " + Title.GetTypedValue() + "\n" +
+                "Message: " + MainText.GetTypedValue();
         }
     }
 }

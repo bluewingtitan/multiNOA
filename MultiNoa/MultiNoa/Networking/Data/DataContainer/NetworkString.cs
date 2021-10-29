@@ -46,24 +46,24 @@ namespace MultiNOA.Networking.Common.NetworkData.DataContainer
         }
 
 
-        public string GetValue()
+        public string GetTypedValue()
         {
             return _v;
         }
         object INetworkDeserializable.GetValue()
         {
-            return GetValue();
+            return GetTypedValue();
         }
 
         public int LoadFromBytes(byte[] bytes)
         {
             var length = new NetworkInt(0);
             var offset = length.LoadFromBytes(bytes);
-            var value = Encoding.UTF8.GetString(bytes, offset, length.GetValue());
+            var value = Encoding.UTF8.GetString(bytes, offset, length.GetTypedValue());
 
             _v = value;
             
-            return length.GetValue() + offset;
+            return length.GetTypedValue() + offset;
         }
 
         public override string ToString()

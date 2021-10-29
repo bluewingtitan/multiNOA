@@ -25,15 +25,15 @@ namespace MultiNoaTests.Networking.PacketHandling
         {
             var str1 = new DemoStruct1(7,9);
             
-            Assert.AreEqual(7, str1.Byte1.GetValue());
-            Assert.AreEqual(9, str1.Byte2.GetValue());
+            Assert.AreEqual(7, str1.Byte1.GetTypedValue());
+            Assert.AreEqual(9, str1.Byte2.GetTypedValue());
             
             var bytes = PacketConverter.ObjectToByte(str1, writeLength:false);
 
             var str2 = PacketConverter.BytesToObject<DemoStruct1>(bytes);
             
-            Assert.AreEqual(str1.Byte1.GetValue(), str2.Byte1.GetValue());
-            Assert.AreEqual(str1.Byte2.GetValue(), str2.Byte2.GetValue());
+            Assert.AreEqual(str1.Byte1.GetTypedValue(), str2.Byte1.GetTypedValue());
+            Assert.AreEqual(str1.Byte2.GetTypedValue(), str2.Byte2.GetTypedValue());
 
         }
 
@@ -47,11 +47,11 @@ namespace MultiNoaTests.Networking.PacketHandling
             var bytes = PacketConverter.ObjectToByte(str1, writeLength:false);
             var str2 = PacketConverter.BytesToObject<DemoStruct2>(bytes);
             
-            Assert.AreEqual(str1.Byte1.GetValue(),str2.Byte1.GetValue());
-            Assert.AreEqual(str1.Int1.GetValue(),str2.Int1.GetValue());
-            Assert.AreEqual(str1.Long1.GetValue(),str2.Long1.GetValue());
-            Assert.AreEqual(str1.Short1.GetValue(),str2.Short1.GetValue());
-            Assert.AreEqual(str1.String1.GetValue(),str2.String1.GetValue());
+            Assert.AreEqual(str1.Byte1.GetTypedValue(),str2.Byte1.GetTypedValue());
+            Assert.AreEqual(str1.Int1.GetTypedValue(),str2.Int1.GetTypedValue());
+            Assert.AreEqual(str1.Long1.GetTypedValue(),str2.Long1.GetTypedValue());
+            Assert.AreEqual(str1.Short1.GetTypedValue(),str2.Short1.GetTypedValue());
+            Assert.AreEqual(str1.String1.GetTypedValue(),str2.String1.GetTypedValue());
         }
 
         /// <summary>

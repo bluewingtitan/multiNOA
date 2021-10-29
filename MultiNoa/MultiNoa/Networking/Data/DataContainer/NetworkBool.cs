@@ -20,7 +20,7 @@
             return new []{(byte) (_v?1:0)};
         }
 
-        public bool GetValue()
+        public bool GetTypedValue()
         {
             return _v;
         }
@@ -44,7 +44,7 @@
 
         object INetworkDeserializable.GetValue()
         {
-            return GetValue();
+            return GetTypedValue();
         }
 
         public override string ToString()
