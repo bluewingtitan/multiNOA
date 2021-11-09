@@ -5,8 +5,8 @@ using System.Linq;
 using System.Reflection;
 using MultiNoa.Extensions;
 using MultiNoa.Logging;
-using MultiNOA.Networking.Common.NetworkData;
-using MultiNOA.Networking.Common.NetworkData.DataContainer;
+using MultiNoa.Networking.Data;
+using MultiNoa.Networking.Data.DataContainer;
 
 namespace MultiNoa.Networking.PacketHandling
 {

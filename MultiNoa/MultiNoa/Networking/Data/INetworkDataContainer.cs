@@ -1,4 +1,4 @@
-namespace MultiNOA.Networking.Common.NetworkData
+namespace MultiNoa.Networking.Data
 {
     /// <summary>
     /// Wraps a generic Datatype to be used in a Networking Context, where it needs to be (de-)serialized from/to bytes.

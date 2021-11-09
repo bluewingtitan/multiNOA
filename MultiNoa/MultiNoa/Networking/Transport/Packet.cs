@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using MultiNoa.Extensions;
-using MultiNOA.Networking.Common.NetworkData;
+using MultiNoa.Networking.Data;
+using MultiNoa.Networking.Data.Serializable;
 
 namespace MultiNoa.Networking.Transport
 {

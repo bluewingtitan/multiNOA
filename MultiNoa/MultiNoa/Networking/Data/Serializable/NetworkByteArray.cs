@@ -1,4 +1,4 @@
-namespace MultiNOA.Networking.Common.NetworkData
+namespace MultiNoa.Networking.Data.Serializable
 {
     /// <summary>
     /// Represents a byte array of a fixed length

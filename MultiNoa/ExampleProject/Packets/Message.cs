@@ -1,4 +1,4 @@
-using MultiNOA.Networking.Common.NetworkData.DataContainer;
+using MultiNoa.Networking.Data.DataContainer;
 using MultiNoa.Networking.PacketHandling;
 
 namespace ExampleProject.Packets
