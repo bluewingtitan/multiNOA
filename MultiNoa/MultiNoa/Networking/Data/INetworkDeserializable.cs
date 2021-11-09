@@ -13,7 +13,7 @@ namespace MultiNoa.Networking.Data
     public interface INetworkDeserializable
     {
         /// <summary>
-        /// Loads data from bytes, returns length of the bytes read out
+        /// Loads data from bytes, returns length of the bytes read out data occupied
         /// </summary>
         /// <param name="bytes">Bytearray to read from</param>
         /// <returns>Length of bytes read out</returns>
