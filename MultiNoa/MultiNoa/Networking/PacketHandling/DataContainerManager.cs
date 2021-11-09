@@ -4,8 +4,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
 using MultiNoa.Logging;
-using MultiNOA.Networking.Common.NetworkData;
-using MultiNOA.Networking.Common.NetworkData.DataContainer;
+using MultiNoa.Networking.Data;
 
 namespace MultiNoa.Networking.PacketHandling
 {

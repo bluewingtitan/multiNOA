@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MultiNOA.Networking.Common.NetworkData.DataContainer
+namespace MultiNoa.Networking.Data.DataContainer
 {
     [MultiNoa.Networking.PacketHandling.DataContainer(typeof(long))]
     public struct NetworkLong : INetworkDataContainer<long>

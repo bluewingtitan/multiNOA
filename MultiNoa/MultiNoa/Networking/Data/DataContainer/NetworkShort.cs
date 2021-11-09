@@ -1,6 +1,6 @@
 using System;
 
-namespace MultiNOA.Networking.Common.NetworkData.DataContainer
+namespace MultiNoa.Networking.Data.DataContainer
 {
     /// <summary>
     /// Wraps an Short to NetworkDataContainer

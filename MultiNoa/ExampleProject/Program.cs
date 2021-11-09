@@ -13,9 +13,12 @@ namespace ExampleProject
             MultiNoaSetup.DefaultSetup(typeof(Program).Assembly);
 
             var msg = new Message(-42069, "——Cool Message——", "Hi Dude! Hope you are doing   𝖋𝖎𝖓𝖊!   😲");
-                                                          var bytes = PacketConverter.ObjectToByte(msg);
+            var bytes = PacketConverter.ObjectToByte(msg, writeLength: false);
 
             PacketReflectionHandler.HandlePacketStatic(bytes, null);
+            
+            
+            CallstackProfiling.StartCallstackProfiler();
         }
     }
 }

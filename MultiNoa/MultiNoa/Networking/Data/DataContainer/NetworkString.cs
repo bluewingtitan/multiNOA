@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MultiNOA.Networking.Common.NetworkData.DataContainer
+namespace MultiNoa.Networking.Data.DataContainer
 {
     /// <summary>
     /// Wraps an String to NetworkDataContainer

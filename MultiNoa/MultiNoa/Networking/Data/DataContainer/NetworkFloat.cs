@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace MultiNOA.Networking.Common.NetworkData.DataContainer
+namespace MultiNoa.Networking.Data.DataContainer
 {
     [MultiNoa.Networking.PacketHandling.DataContainer(typeof(float))]
     public struct NetworkFloat: INetworkDataContainer<float>

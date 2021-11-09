@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using MultiNoa;
 using MultiNoa.Logging;
-using MultiNOA.Networking.Common.NetworkData.DataContainer;
+using MultiNoa.Networking.Data.DataContainer;
 using MultiNoa.Networking.PacketHandling;
 using NUnit.Framework;
 
