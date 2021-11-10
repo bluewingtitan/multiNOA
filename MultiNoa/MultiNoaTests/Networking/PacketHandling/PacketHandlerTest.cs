@@ -2,7 +2,9 @@ using System;
 using System.Text;
 using MultiNoa;
 using MultiNoa.Logging;
+using MultiNoa.Networking.Data;
 using MultiNoa.Networking.Data.DataContainer;
+using MultiNoa.Networking.Data.DataContainer.Generic;
 using MultiNoa.Networking.PacketHandling;
 using NUnit.Framework;
 
@@ -21,7 +23,7 @@ namespace MultiNoaTests.Networking.PacketHandling
         /// tests basic functionality and sorting by property index
         /// </summary>
         [Test]
-        public void DemoStruct1Test()
+        public void TestBaseFunctionality()
         {
             var str1 = new DemoStruct1(7,9);
             
@@ -41,7 +43,7 @@ namespace MultiNoaTests.Networking.PacketHandling
         /// tests all basic implemented data containers
         /// </summary>
         [Test]
-        public void DemoStruct2Test()
+        public void TestBasicDataContainers()
         {
             var str1 = new DemoStruct2("demo!¸´ÜÈ", 71654468L, 2, -2938, 12321);
             var bytes = PacketConverter.ObjectToByte(str1, writeLength:false);
@@ -58,7 +60,7 @@ namespace MultiNoaTests.Networking.PacketHandling
         /// Tests Dynamic Container Usage (Working with basic value types => string, int, float, ...)
         /// </summary>
         [Test]
-        public void DemoStruct3Test()
+        public void TestDynamicContainerUsage()
         {
             var str1 = new DemoStruct3(912309, "demo!¸´ÜÈ", 1.02384f);
             var bytes = PacketConverter.ObjectToByte(str1, writeLength:false);
@@ -80,7 +82,36 @@ namespace MultiNoaTests.Networking.PacketHandling
                 var str2 = PacketConverter.BytesToObject<DemoStruct2>(bytes);
             }
         }
-        
+
+        [Test]
+        public void TestGenerics()
+        {
+            Assert.IsTrue(typeof(INetworkDataContainer).IsAssignableFrom(typeof(NetworkInt)));
+            
+            var str1 = new TestGenericsStruct()
+            {
+                StringNetworkArray = new NetworkArray<string>(new[] {"Test", "demo! ´ÜÈ","!!!"}),
+                
+                NetworkIntNetworkArray = new NetworkArray<NetworkInt>(new[]
+                    {new NetworkInt(177), new NetworkInt(375), new NetworkInt(-500)})
+                    
+            };
+
+            var bytes = PacketConverter.ObjectToByte(str1, writeLength:false);
+            
+            var str2 = PacketConverter.BytesToObject<TestGenericsStruct>(bytes);
+            
+            
+            Assert.AreEqual(str1.StringNetworkArray.GetTypedValue()[0], str2.StringNetworkArray.GetTypedValue()[0]);
+            Assert.AreEqual(str1.StringNetworkArray.GetTypedValue()[1], str2.StringNetworkArray.GetTypedValue()[1]);
+            Assert.AreEqual(str1.StringNetworkArray.GetTypedValue().Length, str2.StringNetworkArray.GetTypedValue().Length);
+            
+            Assert.AreEqual(str1.NetworkIntNetworkArray.GetTypedValue()[0], str2.NetworkIntNetworkArray.GetTypedValue()[0]);
+            Assert.AreEqual(str1.NetworkIntNetworkArray.GetTypedValue()[1], str2.NetworkIntNetworkArray.GetTypedValue()[1]);
+            Assert.AreEqual(str1.NetworkIntNetworkArray.GetTypedValue()[2], str2.NetworkIntNetworkArray.GetTypedValue()[2]);
+            Assert.AreEqual(str1.NetworkIntNetworkArray.GetTypedValue().Length, str2.NetworkIntNetworkArray.GetTypedValue().Length);
+            
+        }
     }
 
     [PacketStruct(0)]
@@ -132,6 +163,19 @@ namespace MultiNoaTests.Networking.PacketHandling
             String1 = string1;
             Float1 = float1;
         }
+    }
+
+
+    [PacketStruct(3)]
+    public struct TestGenericsStruct
+    {
+        [NetworkProperty]
+        public NetworkArray<string> StringNetworkArray { get; set; }
+        
+        
+        [NetworkProperty]
+        public NetworkArray<NetworkInt> NetworkIntNetworkArray { get; set; }
+        
     }
     
 }

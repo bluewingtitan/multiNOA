@@ -245,7 +245,8 @@ namespace MultiNoa.Networking.PacketHandling
                 var pId = idContainer.GetTypedValue();
 
                 if (!skipTypeCheck && pId != attribute.PacketId)
-                    throw new PacketConversionException($"Tried to parse packet with type-id #{pId} to {type.FullName}, should be #{attribute.PacketId}");
+                    throw new PacketConversionException($"Tried to parse packet with type-id #{pId} to {type.FullName}, should be #{attribute.PacketId}\n" +
+                                                        $"Is parameter \"containsLength\" set right?");
             }
 
 
