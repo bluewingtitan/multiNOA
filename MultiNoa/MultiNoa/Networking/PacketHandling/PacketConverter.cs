@@ -211,12 +211,14 @@ namespace MultiNoa.Networking.PacketHandling
         }
         
         
-        public static T BytesToObject<T>(byte[] b, bool containsPacketId = true, bool skipTypeCheck = false, bool containsLength = false)
+        public static T BytesToObject<T>(byte[] b, out int readBytes, bool containsPacketId = true, bool skipTypeCheck = false, bool containsLength = false)
         {
+            readBytes = 0;
             if (containsLength)
             {
                 // Strip length
                 b = b.GetSubarray(4, b.Length - 4);
+                readBytes += 4;
             }
             
             var type = typeof(T);
@@ -239,7 +241,7 @@ namespace MultiNoa.Networking.PacketHandling
             if (containsPacketId)
             {
                 var idContainer = new NetworkInt();
-                idContainer.LoadFromBytes(b);
+                readBytes += idContainer.LoadFromBytes(b);
                 b = b.GetSubarray(4, b.Length - 4);
 
                 var pId = idContainer.GetTypedValue();
@@ -256,6 +258,7 @@ namespace MultiNoa.Networking.PacketHandling
                 if (attributeData.useDataContainerManager)
                 {
                     var value = DataContainerManager.ToValueType(b, prop.PropertyType, out l);
+                    readBytes += l;
                     b = b.GetSubarray(l, b.Length - l);
                     prop.SetValue(instance, value);
                 }
@@ -264,6 +267,7 @@ namespace MultiNoa.Networking.PacketHandling
                     var container = Activator.CreateInstance(prop.PropertyType) as INetworkDataContainer;
                 
                     l = container.LoadFromBytes(b);
+                    readBytes += l;
                     b = b.GetSubarray(l, b.Length - l);
                     
                     prop.SetValue(instance, container);
