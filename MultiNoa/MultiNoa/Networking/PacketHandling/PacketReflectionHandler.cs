@@ -42,6 +42,10 @@ namespace MultiNoa.Networking.PacketHandling
                 throw new ArgumentException($"Passed type {t.FullName} is not a static class");
             }
 
+
+            var isInternal = (t.GetCustomAttribute(typeof(MultiNoaInternal)) is MultiNoaInternal);
+            
+            
             var props = t.GetMethods()
                 .Where(e => e.GetCustomAttributes(typeof(HandlerMethod), true).Length > 0)
                 .Select(e =>
@@ -50,8 +54,17 @@ namespace MultiNoa.Networking.PacketHandling
                     var data = e.GetCustomAttributes().ToArray();
 
                     for (int i = 0; i < data.Length; i++)
-                        if (data[i].GetType() == typeof(HandlerMethod))
-                            return new KeyValuePair<MethodInfo, HandlerMethod>(e, data[i] as HandlerMethod);
+                        if (data[i] is HandlerMethod attr)
+                        {
+
+                            if (attr.PacketId < 0 && !isInternal)
+                            {
+                                throw new CustomAttributeFormatException($"Attribute {typeof(HandlerMethod).FullName} should not use packet ids under 0, as those are reserved for multiNoa internal usage!\n" +
+                                                                         $"Problematic Attribute: {e.Name} at {t.FullName}");
+                            }
+                            
+                            return new KeyValuePair<MethodInfo, HandlerMethod>(e, attr);
+                        }
 
                     return new KeyValuePair<MethodInfo, HandlerMethod>(null, null);
 
@@ -210,7 +223,13 @@ namespace MultiNoa.Networking.PacketHandling
             
         }
     }
-    
+
+
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+    internal class MultiNoaInternal : Attribute
+    {
+        // Empty Attribute that enables usage of packet-ids under 0 (multiNoa-management packages) for structs and handlers
+    }
     
     
     [AttributeUsage(AttributeTargets.Method)]

@@ -16,16 +16,16 @@ namespace MultiNoa.Networking.Transport.Connection
 
         public delegate void TcpConnectCallbackDelegate(TcpClient client);
 
-        private readonly TcpConnectCallbackDelegate _fallback;
+        private readonly TcpConnectCallbackDelegate _callback;
 
 
-        public NoaTcpListener(int port, TcpConnectCallbackDelegate fallback)
+        public NoaTcpListener(ushort port, TcpConnectCallbackDelegate callback)
         {
             _tcpListener = new TcpListener(IPAddress.Any, port);
             _tcpListener.Start();
             _tcpListener.BeginAcceptTcpClient(TcpConnectCallback, null);
 
-            _fallback = fallback;
+            _callback = callback;
         }
 
 
@@ -36,7 +36,7 @@ namespace MultiNoa.Networking.Transport.Connection
             _tcpListener.BeginAcceptTcpClient(TcpConnectCallback, null);
             MultiNoaLoggingManager.Logger.Verbose($"Incoming connection from {client.Client.RemoteEndPoint}...");
             
-            _fallback.Invoke(client);
+            _callback.Invoke(client);
         }
 
 

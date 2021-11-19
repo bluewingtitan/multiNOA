@@ -14,14 +14,11 @@ namespace MultiNoa.Networking.Transport
         /// <param name="newHandler">New Handler to use</param>
         void SetPacketHandler(IPacketHandler newHandler);
 
-        IPAddress GetEndpointIp();
+        string GetEndpointIp();
         
         void SendData(byte[] data);
 
-        /// <summary>
-        /// Returns the client associated with this connection
-        /// </summary>
-        /// <returns></returns>
+        /// <returns>client associated with this connection</returns>
         IClient GetClient();
     }
 }

@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Reflection;
 using MultiNoa.Logging;
 using MultiNoa.Networking.PacketHandling;
@@ -36,7 +35,7 @@ namespace MultiNoa
         /// <param name="config">Configuration Class Instance</param>
         public static void CustomSetup(MultiNoaConfig config)
         {
-            
+            Setup(config);
         }
 
 

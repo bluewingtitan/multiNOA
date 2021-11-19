@@ -49,6 +49,17 @@ namespace MultiNoa.Networking.PacketHandling
                 MultiNoaLoggingManager.Logger.Warning($"Duplicate registration attempt of packet type with id #{attribute.PacketId}: {t.FullName}. Only keeping first scan");
                 return;
             }
+
+            if (attribute.PacketId < 0)
+            {
+                var isInternal = (t.GetCustomAttribute(typeof(MultiNoaInternal)) is MultiNoaInternal);
+
+                if (!isInternal)
+                {
+                    throw new CustomAttributeFormatException($"Attribute {typeof(HandlerMethod).FullName} should not use packet ids under 0, as those are reserved for multiNoa internal usage!\n" +
+                                                             $"Problematic Attribute: {attribute.GetType().Name} at {t.FullName}");
+                }
+            }
             
             // sorry for the mess, but mum never told me to clean up my code...
             

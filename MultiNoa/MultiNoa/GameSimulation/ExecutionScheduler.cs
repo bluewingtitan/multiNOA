@@ -5,7 +5,7 @@ using MultiNoa.Logging;
 namespace MultiNoa.GameSimulation
 {
     /// <summary>
-    /// A simple interface to save Actions for execution at another time
+    /// Utility to save actions in a thread save way for execution at another time
     /// </summary>
     public class ExecutionScheduler
     {

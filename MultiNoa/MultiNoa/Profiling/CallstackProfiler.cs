@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using MultiNoa.Logging;
 using MultiNoa.Profiling.Timing;

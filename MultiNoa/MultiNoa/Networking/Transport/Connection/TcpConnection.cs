@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using MultiNoa.GameSimulation;
@@ -11,57 +10,70 @@ namespace MultiNoa.Networking.Transport.Connection
 {
     public class TcpConnection: IConnection
     {
-        private IPAddress _address = null;
-        private TcpClient Socket;
-        private readonly IClient client;
+        private static readonly IPacketHandler DefaultHandler = new PacketReflectionHandler();
         
-        private NetworkStream stream;
-        private byte[] receiveBuffer;
-        private Action _onDisconnect;
+        private string _address = null;
+        private TcpClient _socket;
+        private readonly IClient _client;
+        
+        private NetworkStream _stream;
+        private byte[] _receiveBuffer;
+        private readonly Action _onDisconnect;
 
         private IPacketHandler _handler;
 
-        private ExecutionScheduler _handlers = new ExecutionScheduler();
+        private readonly ExecutionScheduler _handlers = new ExecutionScheduler();
         
-        public TcpConnection(Action onDisconnect, IPacketHandler handler, IClient client)
+        /// <summary>
+        /// Constructs a new TcpConnection. Will use a PacketReflectionHandler if handler-parameter is not populated or null.
+        /// </summary>
+        /// <param name="onDisconnect">Callback handling a disconnect</param>
+        /// <param name="client">client managing this connection</param>
+        /// <param name="handler">Packet handler to use</param>
+        public TcpConnection(Action onDisconnect, IClient client, IPacketHandler handler = null)
         {
+            if (handler == null)
+                handler = DefaultHandler;
+            
             _onDisconnect = onDisconnect;
             _handler = handler;
-            this.client = client;
+            this._client = client;
+            
+            client.GetServer().GetServerThread().AddUpdatable(this);
         }
         
         public void Connect(IPAddress serverIp, int port)
         {
-            _address = serverIp;
+            _address = serverIp.ToString();
             
-            Socket = new TcpClient
+            _socket = new TcpClient
             {
                 ReceiveBufferSize = IConnection.DataBufferSize,
                 SendBufferSize = IConnection.DataBufferSize
             };
 
-            receiveBuffer = new byte[IConnection.DataBufferSize];
-            Socket.BeginConnect(serverIp, port, ConnectCallback, Socket);
+            _receiveBuffer = new byte[IConnection.DataBufferSize];
+            _socket.BeginConnect(serverIp, port, ConnectCallback, _socket);
         }
         
         private void ConnectCallback(IAsyncResult result)
         {
-            Socket.EndConnect(result);
+            _socket.EndConnect(result);
 
-            if (!Socket.Connected)
+            if (!_socket.Connected)
             {
                 return;
             }
 
-            stream = Socket.GetStream();
+            _stream = _socket.GetStream();
             
 
-            stream.BeginRead(receiveBuffer, 0, IConnection.DataBufferSize, ReceiveCallback, null);
+            _stream.BeginRead(_receiveBuffer, 0, IConnection.DataBufferSize, ReceiveCallback, null);
         }
 
         public void Disconnect()
         {
-            Socket.Dispose();
+            _socket.Dispose();
             _onDisconnect?.Invoke();
         }
         
@@ -70,22 +82,22 @@ namespace MultiNoa.Networking.Transport.Connection
             _handler = newHandler;
         }
 
-        public IPAddress GetEndpointIp()
+        public string GetEndpointIp()
         {
             return _address;
         }
 
         public void SendData(byte[] data)
         {
-            if (Socket != null)
+            if (_socket != null)
             {
-                stream.BeginWrite(data, 0, data.Length, null, null);
+                _stream.BeginWrite(data, 0, data.Length, null, null);
             }
         }
 
         public IClient GetClient()
         {
-            return client;
+            return _client;
         }
 
 
@@ -93,7 +105,7 @@ namespace MultiNoa.Networking.Transport.Connection
         {
             try
             {
-                int byteLegth = stream.EndRead(result);
+                int byteLegth = _stream.EndRead(result);
                 if (byteLegth <= 0)
                 {
                     Disconnect();
@@ -101,14 +113,14 @@ namespace MultiNoa.Networking.Transport.Connection
                 }
                 
                 byte[] data = new byte[byteLegth];
-                Array.Copy(receiveBuffer, data, byteLegth);
+                Array.Copy(_receiveBuffer, data, byteLegth);
 
                 HandleData(data);
                 
 
 
                 // Start listening again
-                stream.BeginRead(receiveBuffer, 0, IConnection.DataBufferSize, ReceiveCallback, null);
+                _stream.BeginRead(_receiveBuffer, 0, IConnection.DataBufferSize, ReceiveCallback, null);
             }
             catch (Exception)
             {

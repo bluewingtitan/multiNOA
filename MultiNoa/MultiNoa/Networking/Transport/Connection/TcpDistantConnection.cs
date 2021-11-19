@@ -12,22 +12,24 @@ namespace MultiNoa.Networking.Transport.Connection
     {
         public TcpClient Socket;
 
-        private readonly int _id;
         private NetworkStream _stream;
         private Packet _receivedData;
-        private readonly IClient client;
+        private readonly IClient _client;
         private IPacketHandler _handler;
         private byte[] _receiveBuffer;
-        private IPAddress _address;
+        private string _address;
+        private readonly Action _onDisconnect;
         
         
-        private ExecutionScheduler _handlers = new ExecutionScheduler();
+        private readonly ExecutionScheduler _handlers = new ExecutionScheduler();
 
-        public TcpDistantConnection(int id, IClient client, IPacketHandler handler)
+        public TcpDistantConnection(IClient client, IPacketHandler handler, Action onDisconnect)
         {
-            _id = id;
-            this.client = client;
+            this._client = client;
             _handler = handler;
+            _onDisconnect = onDisconnect;
+            
+            client.GetServer().GetServerThread().AddUpdatable(this);
         }
         
         public void Connect(TcpClient socket)
@@ -43,7 +45,7 @@ namespace MultiNoa.Networking.Transport.Connection
 
             _stream.BeginRead(_receiveBuffer, 0, IConnection.DataBufferSize, ReceiveCallback, null);
 
-            _address = null;
+            _address = socket.Client.RemoteEndPoint.ToString();
 
         }
         
@@ -53,6 +55,7 @@ namespace MultiNoa.Networking.Transport.Connection
             _stream = null;
             _receivedData = null;
             Socket = null;
+            _onDisconnect?.Invoke();
         }
         
 
@@ -140,7 +143,7 @@ namespace MultiNoa.Networking.Transport.Connection
             _handler = newHandler;
         }
 
-        public IPAddress GetEndpointIp()
+        public string GetEndpointIp()
         {
             return _address;
         }
@@ -152,7 +155,7 @@ namespace MultiNoa.Networking.Transport.Connection
 
         public IClient GetClient()
         {
-            return client;
+            return _client;
         }
     }
 }
