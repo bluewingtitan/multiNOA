@@ -58,6 +58,7 @@ namespace MultiNoa.GameSimulation
 
             var nextLoop = DateTime.Now;
             var ticksBehind = 0;
+            var ticksUntilSecondTick = GoalTPS;
             
             while (IDynamicThread.AreRunning && IsRunning)
             {
@@ -66,6 +67,15 @@ namespace MultiNoa.GameSimulation
                     var tickStart = DateTime.Now;
                     _scheduler.ExecuteAll();
                     Update();
+                    
+                    ticksUntilSecondTick--;
+
+                    if (ticksUntilSecondTick <= 0)
+                    {
+                        ticksUntilSecondTick = GoalTPS;
+                        PerSecondUpdates();
+                    }
+                    
                     
                     #region Tick management
 
@@ -148,7 +158,13 @@ namespace MultiNoa.GameSimulation
             _scheduler.ScheduleExecution(() => OffsetTasks.Add(task));
         }
         
-        
+        private void PerSecondUpdates()
+        {
+            foreach (var updatable in Updatables)
+            {
+                updatable.PerSecondUpdate();
+            }
+        }
         
         private void Update()
         {
@@ -170,7 +186,15 @@ namespace MultiNoa.GameSimulation
     
     public interface IUpdatable
     {
+        /// <summary>
+        /// Called with each tick
+        /// </summary>
         public void Update();
+        
+        /// <summary>
+        /// Called once a second
+        /// </summary>
+        public void PerSecondUpdate();
     }
     
     /// <summary>

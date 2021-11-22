@@ -2,8 +2,4 @@
 	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;
   &lt;Assembly Path="/usr/share/dotnet/packs/Microsoft.NETCore.App.Ref/3.1.0/ref/netcoreapp3.1/System.Runtime.dll" /&gt;
 &lt;/AssemblyExplorer&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=d17c2490_002D28bd_002D4240_002Dacdb_002D117c24c8f780/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="PacketHandlerTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
-  &lt;TestAncestor&gt;
-    &lt;TestId&gt;NUnit3x::95489B08-FBF8-409C-B2BF-D0A1B7899993::.NETCoreApp,Version=v3.1::MultiNoaTests.Networking.PacketHandling.PacketHandlerTest&lt;/TestId&gt;
-  &lt;/TestAncestor&gt;
-&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
+	</wpf:ResourceDictionary>

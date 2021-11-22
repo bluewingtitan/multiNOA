@@ -1,4 +1,5 @@
-﻿using MultiNoa.Networking.Server;
+﻿using MultiNoa.Networking.Rooms;
+using MultiNoa.Networking.Server;
 using MultiNoa.Networking.Transport;
 
 namespace MultiNoa.Networking.Client
@@ -9,5 +10,8 @@ namespace MultiNoa.Networking.Client
         IConnection GetConnection();
         ulong GetId();
         void Disconnect();
+
+        IRoom GetRoom();
+        void MoveToRoom(IRoom room);
     }
 }

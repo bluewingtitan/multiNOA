@@ -1,6 +1,7 @@
-using System.Collections.Generic;
 using MultiNoa.GameSimulation;
 using MultiNoa.Networking.Client;
+using MultiNoa.Networking.Rooms;
+// ReSharper disable VirtualMemberCallInConstructor
 
 namespace MultiNoa.Networking.Server
 {
@@ -11,18 +12,18 @@ namespace MultiNoa.Networking.Server
     /// </summary>
     public abstract class Server: IServer, IUpdatable
     {
-        private IDictionary<ulong, IClient> Clients { get; } = new Dictionary<ulong, IClient>();
+        private readonly IRoom baseRoom;
         
         protected IDynamicThread Thread { get; }
         
         protected Server(ushort port, string protocolVersion, int tps = 60, string name = "New Server")
         {
-            Thread = GetDynamicThread(tps, name);
+            Thread = ConstructDynamicThread(tps, name);
         }
         
-        protected virtual IDynamicThread GetDynamicThread(int tps, string name) => new DynamicThread(tps, name);
-        
-        public bool TryGetClient(ulong id, out IClient client) => Clients.TryGetValue(id, out client);
+        protected virtual IDynamicThread ConstructDynamicThread(int tps, string name) => new DynamicThread(tps, name);
+
+        public bool TryGetClient(ulong id, out IClient client) => baseRoom.TryGetClient(id, out client);
         
         
         public void Stop()
@@ -39,6 +40,11 @@ namespace MultiNoa.Networking.Server
         public void Update()
         {
             OnUpdate();
+        }
+
+        public void PerSecondUpdate()
+        {
+            
         }
 
         protected abstract void OnUpdate();

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using System.Net.Sockets;
 using MultiNoa.GameSimulation;
 using MultiNoa.Networking.Client;
@@ -136,6 +135,11 @@ namespace MultiNoa.Networking.Transport.Connection
         public void Update()
         {
             _handlers.ExecuteAll();
+        }
+
+        public void PerSecondUpdate()
+        {
+            
         }
 
         public void SetPacketHandler(IPacketHandler newHandler)

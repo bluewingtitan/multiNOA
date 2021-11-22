@@ -1,5 +1,4 @@
-﻿using System.Net;
-using MultiNoa.GameSimulation;
+﻿using MultiNoa.GameSimulation;
 using MultiNoa.Networking.Client;
 using MultiNoa.Networking.PacketHandling;
 

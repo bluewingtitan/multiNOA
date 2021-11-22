@@ -175,5 +175,10 @@ namespace MultiNoa.Networking.Transport.Connection
         {
             _handlers.ExecuteAll();
         }
+
+        public void PerSecondUpdate()
+        {
+            
+        }
     }
 }
