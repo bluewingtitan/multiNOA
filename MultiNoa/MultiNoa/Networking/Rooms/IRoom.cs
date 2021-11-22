@@ -6,6 +6,23 @@ namespace MultiNoa.Networking.Rooms
 {
     public interface IRoom
     {
+        private static ulong _currentRoomId = 0;
+        private static object _lock = 42;
+
+        /// <summary>
+        /// Returns a room id unique to this app instance.
+        /// </summary>
+        /// <returns></returns>
+        protected static ulong GetNewRoomId()
+        {
+            lock (_lock)
+            {
+                _currentRoomId++;
+                return _currentRoomId - 1;
+            }
+        }
+        
+        
         /// <summary>
         /// Returns the server containing this room.
         /// </summary>
