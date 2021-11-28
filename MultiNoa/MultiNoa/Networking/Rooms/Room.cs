@@ -20,6 +20,14 @@ namespace MultiNoa.Networking.Rooms
         protected readonly IServer Server;
         protected readonly ulong RoomId;
 
+        /// <summary>
+        /// MultiNoa default IRoom implementation
+        /// </summary>
+        /// <param name="server">The overlaying server managing this room</param>
+        /// <param name="thread">The internal thread</param>
+        /// <param name="roomName">Name of the room, purely representative</param>
+        /// <param name="threadSaveMode">Should this room use a threadsave Dictionary-Implementation?</param>
+        /// <param name="password">Password for a client to join</param>
         public Room(IServer server, IDynamicThread thread, string roomName = "Room",bool threadSaveMode = false, string password = null)
         {
             if(threadSaveMode)
