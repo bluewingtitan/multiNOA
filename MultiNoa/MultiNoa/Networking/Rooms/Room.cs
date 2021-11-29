@@ -10,14 +10,17 @@ namespace MultiNoa.Networking.Rooms
     /// Room implementation used in aton too.
     /// Supports a thread-save mode.
     /// </summary>
-    public class Room: IRoom
+    public class Room
     {
-        protected readonly IDictionary<ulong, IClient> Clients;
+        private static ulong _roomId = 0;
+        
+        private readonly IDictionary<ulong, ClientBase> _clients;
+        
         protected readonly string Password;
         protected readonly string Roomname;
 
         protected readonly IDynamicThread Thread;
-        protected readonly IServer Server;
+        protected readonly ServerBase Server;
         protected readonly ulong RoomId;
 
         /// <summary>
@@ -28,14 +31,16 @@ namespace MultiNoa.Networking.Rooms
         /// <param name="roomName">Name of the room, purely representative</param>
         /// <param name="threadSaveMode">Should this room use a threadsave Dictionary-Implementation?</param>
         /// <param name="password">Password for a client to join</param>
-        public Room(IServer server, IDynamicThread thread, string roomName = "Room",bool threadSaveMode = false, string password = null)
+        public Room(ServerBase server, IDynamicThread thread, string roomName = "Room",bool threadSaveMode = false, string password = null)
         {
             if(threadSaveMode)
-                Clients = new ConcurrentDictionary<ulong, IClient>();
+                _clients = new ConcurrentDictionary<ulong, ClientBase>();
             else
-                Clients = new Dictionary<ulong, IClient>();
+                _clients = new Dictionary<ulong, ClientBase>();
 
-            RoomId = IRoom.GetNewRoomId();
+            RoomId = _roomId;
+            _roomId++;
+            
             Password = password;
             Server = server;
             Thread = thread;
@@ -43,35 +48,41 @@ namespace MultiNoa.Networking.Rooms
         }
         
         
-        public IServer GetServer()
+        public ServerBase GetServer()
         {
             return Server;
         }
 
-        public string GetRoomName()
+        public virtual string GetRoomName()
         {
             return Roomname;
         }
 
-        public ulong GetRoomId()
+        public virtual ulong GetRoomId()
         {
             return RoomId;
         }
 
-        public bool TryAddClient(IClient client, string password = null)
+        public bool TryAddClient(ClientBase client, string password = null)
         {
             if (!string.IsNullOrEmpty(Password) && !string.Equals(password, Password))
             {
                 return false;
             }
             
-            return Clients.TryAdd(client.GetId(), client);
+            
+            client.MoveToRoom(this);
+            
+            
+            return _clients.TryAdd(client.GetId(), client);
         }
 
-        public bool TryGetClient(ulong id, out IClient client)
+        public virtual bool TryGetClient(ulong id, out ClientBase client)
         {
-            return Clients.TryGetValue(id, out client);
+            return _clients.TryGetValue(id, out client);
         }
+        
+        
 
         public IDynamicThread GetRoomThread()
         {

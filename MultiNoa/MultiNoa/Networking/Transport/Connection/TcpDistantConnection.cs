@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
 using MultiNoa.GameSimulation;
+using MultiNoa.Logging;
 using MultiNoa.Networking.Client;
 using MultiNoa.Networking.Data.DataContainer;
 using MultiNoa.Networking.PacketHandling;
@@ -9,28 +10,29 @@ namespace MultiNoa.Networking.Transport.Connection
 {
     public class TcpDistantConnection: IConnection
     {
+        private static readonly IPacketHandler DefaultHandler = new PacketReflectionHandler();
         public TcpClient Socket;
 
         private NetworkStream _stream;
         private Packet _receivedData;
-        private readonly IClient _client;
+        private ClientBase _client;
         private IPacketHandler _handler;
         private byte[] _receiveBuffer;
         private string _address;
         private readonly Action _onDisconnect;
+
+        private IDynamicThread currentThread;
         
         
         private readonly ExecutionScheduler _handlers = new ExecutionScheduler();
 
-        public TcpDistantConnection(IClient client, IPacketHandler handler, Action onDisconnect)
+        public TcpDistantConnection(Action onDisconnect)
         {
-            this._client = client;
-            _handler = handler;
+            _client = null;
+            _handler = DefaultHandler;
             _onDisconnect = onDisconnect;
-            
-            client.GetServer().GetServerThread().AddUpdatable(this);
         }
-        
+
         public void Connect(TcpClient socket)
         {
             Socket = socket;
@@ -57,6 +59,16 @@ namespace MultiNoa.Networking.Transport.Connection
             _onDisconnect?.Invoke();
         }
         
+        public void ChangeThread(IDynamicThread newThread)
+        {
+            if (currentThread != null)
+            {
+                currentThread.RemoveUpdatable(this); 
+                currentThread = newThread;
+            }
+            newThread.AddUpdatable(this);
+        }
+        
 
 
         private void ReceiveCallback(IAsyncResult result)
@@ -64,6 +76,7 @@ namespace MultiNoa.Networking.Transport.Connection
             try
             {
                 int byteLegth = _stream.EndRead(result);
+                MultiNoaLoggingManager.Logger.Debug($"Received {byteLegth} bytes from {GetEndpointIp()}");
                 if (byteLegth <= 0)
                 {
                     Disconnect();
@@ -80,8 +93,9 @@ namespace MultiNoa.Networking.Transport.Connection
                 // Start listening again
                 _stream.BeginRead(_receiveBuffer, 0, IConnection.DataBufferSize, ReceiveCallback, null);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                MultiNoaLoggingManager.Logger.Error("Error receiving tcp: \n" + e.ToString());
                 Disconnect();
             }
         }
@@ -154,12 +168,20 @@ namespace MultiNoa.Networking.Transport.Connection
 
         public void SendData(byte[] data)
         {
-            _stream.BeginWrite(data, 0, data.Length, null, null);
+            var bytes = data.Length;
+            MultiNoaLoggingManager.Logger.Debug($"Sending {bytes} bytes to {GetEndpointIp()}");
+            _stream.BeginWrite(data, 0, bytes, null, null);
         }
 
-        public IClient GetClient()
+        public ClientBase GetClient()
         {
             return _client;
+        }
+
+        public void SetClient(ClientBase client)
+        {
+            _client = client;
+            ChangeThread(client.GetRoom().GetRoomThread());
         }
     }
 }

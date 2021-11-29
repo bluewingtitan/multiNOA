@@ -12,6 +12,7 @@ namespace MultiNoa.Profiling
     public class CallstackProfiler: IProfiler
     {
         private const string IndentationString = "\t";
+        private List<string> indentations = new List<string>();
         
         public static ITimer.TimerCreationDelegate TimerCreator = ctxName => new DateTimeTimer(ctxName, false);
 
@@ -50,6 +51,7 @@ namespace MultiNoa.Profiling
             _indentation--;
         }
 
+        
         public void StopAllAndPrint()
         {
             stopped = true;
@@ -67,14 +69,25 @@ namespace MultiNoa.Profiling
                 {
                     if (timer.Indentation == 0)
                     {
-                        s += "-"; // High Class Function Call.
+                        s += "-"; // First Layer Function Call.
                     }
                     else
                     {
-                        for (int i = 0; i < timer.Indentation; i++)
+                        var indentation = indentations[timer.Indentation];
+                        if (indentation != null)
                         {
-                            s += IndentationString;
+                            s += indentation;
                         }
+                        else
+                        {
+                            var newIndentation = "";
+                            for (int i = 0; i < timer.Indentation; i++)
+                                newIndentation += IndentationString;
+
+                            indentations[timer.Indentation] = newIndentation;
+                            s += newIndentation;
+                        }
+                        
 
                         s += "L";
                     }
@@ -105,6 +118,7 @@ namespace MultiNoa.Profiling
         /// Constructs the timer data around the timer.
         /// </summary>
         /// <param name="contextName">Context Name to use</param>
+        /// <param name="indentation">Amount of indentation needed later</param>
         public TimerData(string contextName, int indentation)
         {
             _timer = CallstackProfiler.TimerCreator(contextName);

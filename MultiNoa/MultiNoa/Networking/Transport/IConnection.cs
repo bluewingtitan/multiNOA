@@ -18,6 +18,11 @@ namespace MultiNoa.Networking.Transport
         void SendData(byte[] data);
 
         /// <returns>client associated with this connection</returns>
-        IClient GetClient();
+        ClientBase GetClient();
+
+        void SetClient(ClientBase client);
+        void Disconnect();
+
+        void ChangeThread(IDynamicThread newThread);
     }
 }

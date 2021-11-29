@@ -1,50 +1,40 @@
-﻿using System;
+using System;
 using System.Net;
-using System.Net.Sockets;
 using MultiNoa.Logging;
 
 namespace MultiNoa.Networking.Transport.Connection
 {
-    /// <summary>
-    /// Utility Class simplifying working with Tcp by creating a basic layer between
-    /// handling Tcp-Listening and the data-handling itself.
-    /// </summary>
-    public class NoaTcpListener
+    public class NoaTcpListener: ConnectionListener
     {
-        private readonly TcpListener _tcpListener;
+        private readonly System.Net.Sockets.TcpListener _tcpListener;
         private bool _running = true;
-
-        public delegate void TcpConnectCallbackDelegate(TcpClient client);
-
-        private readonly TcpConnectCallbackDelegate _callback;
-
-
-        public NoaTcpListener(ushort port, TcpConnectCallbackDelegate callback)
+        
+        public NoaTcpListener(ushort port) : base(port)
         {
-            _tcpListener = new TcpListener(IPAddress.Any, port);
+            _tcpListener = new System.Net.Sockets.TcpListener(IPAddress.Any, Port);
             _tcpListener.Start();
             _tcpListener.BeginAcceptTcpClient(TcpConnectCallback, null);
-
-            _callback = callback;
         }
-
 
         private void TcpConnectCallback(IAsyncResult result)
         {
             if(!_running) return;
+            
             var client = _tcpListener.EndAcceptTcpClient(result);
             _tcpListener.BeginAcceptTcpClient(TcpConnectCallback, null);
             MultiNoaLoggingManager.Logger.Verbose($"Incoming connection from {client.Client.RemoteEndPoint}...");
             
-            _callback.Invoke(client);
+            var c = new TcpDistantConnection(() => { return;});
+            c.Connect(client);
+
+            OnConnection?.Invoke(c);
         }
 
-
-        public void StopListening()
+        public override event OnConnectionDelegate OnConnection;
+        public override void StopListening()
         {
             _running = false;
             _tcpListener.Stop();
         }
-        
     }
 }
