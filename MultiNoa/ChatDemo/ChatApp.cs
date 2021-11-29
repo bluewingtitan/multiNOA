@@ -5,6 +5,7 @@ using MultiNoa;
 using MultiNoa.GameSimulation;
 using MultiNoa.Logging;
 using MultiNoa.Networking.PacketHandling;
+using MultiNoa.Networking.Server;
 using MultiNoa.Networking.Transport;
 using MultiNoa.Networking.Transport.Connection;
 
@@ -19,7 +20,7 @@ namespace ChatDemo
     internal static class ChatApp
     {
         private const ushort ServerPort = 25511;
-        private static ChatServer _server;
+        private static NoaTcpServer _server;
         private static TcpConnection connection;
         private static DynamicThread _thread = new DynamicThread(5, "Client");
         
@@ -28,36 +29,24 @@ namespace ChatDemo
             MultiNoaSetup.DefaultSetup(typeof(ChatApp).Assembly);
             
             // => Start Server
-            MultiNoaLoggingManager.Logger.Information("Starting Server.");
-            _server = new ChatServer(ServerPort);
+            MultiNoaLoggingManager.Logger.Information("Starting Server...");
+            _server = new NoaTcpServer(ServerPort, "demo", 5, "Chat Server");
             
-            Thread.Sleep(2000);
+            // Make sure the server is fully up before trying to connect.
+            Thread.Sleep(500);
             
             // => Start Client
-            MultiNoaLoggingManager.Logger.Information("Starting Client.");
-            connection = new TcpConnection(OnDisconnect);
+            MultiNoaLoggingManager.Logger.Information("Starting Client...");
+            connection = new TcpConnection(() => MultiNoaLoggingManager.Logger.Error("Connection to server was closed."));
             connection.Connect("127.0.0.1", ServerPort);
             connection.ChangeThread(_thread);
 
-            Thread.Sleep(2000);
+            Thread.Sleep(500);
             var message = new ChatPackets.FromClient.MessageFromClient
             {
                 Message = "Hello Server!"
             };
             connection.SendData(PacketConverter.ObjectToByte(message));
-            
-            if (args.Length == 0)
-            {
-            }
-            else
-            {
-                
-            }
-        }
-
-        private static void OnDisconnect()
-        {
-            MultiNoaLoggingManager.Logger.Information("Disconnected client.");
         }
     }
 }
