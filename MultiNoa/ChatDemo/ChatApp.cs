@@ -44,7 +44,7 @@ namespace ChatDemo
             Thread.Sleep(500);
             var message = new ChatPackets.FromClient.MessageFromClient
             {
-                Message = "Hello Server!"
+                Message = "Hi Server!"
             };
             connection.SendData(PacketConverter.ObjectToByte(message));
         }
