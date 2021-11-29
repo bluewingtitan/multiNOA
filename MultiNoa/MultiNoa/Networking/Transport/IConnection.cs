@@ -24,5 +24,7 @@ namespace MultiNoa.Networking.Transport
         void Disconnect();
 
         void ChangeThread(IDynamicThread newThread);
+
+        string GetProtocolVersion();
     }
 }

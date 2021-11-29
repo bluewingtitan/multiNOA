@@ -20,14 +20,16 @@ namespace MultiNoa.Networking.Transport.Connection
         private byte[] _receiveBuffer;
         private string _address;
         private readonly Action _onDisconnect;
+        private readonly string _protocolVersion;
 
         private IDynamicThread currentThread;
         
         
         private readonly ExecutionScheduler _handlers = new ExecutionScheduler();
 
-        public TcpDistantConnection(Action onDisconnect)
+        public TcpDistantConnection(Action onDisconnect, string protocolVersion)
         {
+            _protocolVersion = protocolVersion;
             _client = null;
             _handler = DefaultHandler;
             _onDisconnect = onDisconnect;
@@ -68,7 +70,11 @@ namespace MultiNoa.Networking.Transport.Connection
             }
             newThread.AddUpdatable(this);
         }
-        
+
+        public string GetProtocolVersion()
+        {
+            return _protocolVersion;
+        }
 
 
         private void ReceiveCallback(IAsyncResult result)
@@ -183,5 +189,7 @@ namespace MultiNoa.Networking.Transport.Connection
             _client = client;
             ChangeThread(client.GetRoom().GetRoomThread());
         }
+        
+        
     }
 }

@@ -20,12 +20,15 @@ namespace MultiNoa.Networking.Server
         private readonly Room baseRoom;
         private readonly ConnectionListener _listener;
 
+        public readonly string ProtocolVersion;
+        
         public ushort Port { get; }
 
         protected IDynamicThread Thread { get; }
         
         protected ServerBase(ushort port, string protocolVersion, ConnectionListener listener, int tps = 5, string name = "New Server")
         {
+            ProtocolVersion = protocolVersion;
             Port = port;
             Thread = ConstructDynamicThread(tps, name);
             Thread.AddUpdatable(this);

@@ -8,9 +8,11 @@ namespace MultiNoa.Networking.Transport.Connection
     {
         private readonly System.Net.Sockets.TcpListener _tcpListener;
         private bool _running = true;
+        private readonly string _protocolVersion;
         
-        public NoaTcpListener(ushort port) : base(port)
+        public NoaTcpListener(ushort port, string protocolVersion) : base(port)
         {
+            _protocolVersion = protocolVersion;
             _tcpListener = new System.Net.Sockets.TcpListener(IPAddress.Any, Port);
             _tcpListener.Start();
             _tcpListener.BeginAcceptTcpClient(TcpConnectCallback, null);
@@ -24,7 +26,7 @@ namespace MultiNoa.Networking.Transport.Connection
             _tcpListener.BeginAcceptTcpClient(TcpConnectCallback, null);
             MultiNoaLoggingManager.Logger.Verbose($"Incoming connection from {client.Client.RemoteEndPoint}...");
             
-            var c = new TcpDistantConnection(() => { return;});
+            var c = new TcpDistantConnection(() => { return;}, _protocolVersion);
             c.Connect(client);
 
             OnConnection?.Invoke(c);

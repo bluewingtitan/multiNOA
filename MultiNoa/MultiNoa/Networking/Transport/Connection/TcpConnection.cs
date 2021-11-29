@@ -22,6 +22,7 @@ namespace MultiNoa.Networking.Transport.Connection
         private readonly Action _onDisconnect;
 
         private IDynamicThread currentThread;
+        private readonly string _protocolVersion;
 
         private IPacketHandler _handler;
 
@@ -33,14 +34,14 @@ namespace MultiNoa.Networking.Transport.Connection
         /// <param name="onDisconnect">Callback handling a disconnect</param>
         /// <param name="client">client managing this connection</param>
         /// <param name="handler">Packet handler to use</param>
-        public TcpConnection(Action onDisconnect)
+        public TcpConnection(Action onDisconnect, string protocolVersion)
         {
-
+            _protocolVersion = protocolVersion;
             _onDisconnect = onDisconnect;
             _handler = DefaultHandler;
             this._client = null;
         }
-        
+
         public void Connect(string serverIp, int port)
         {
             _address = serverIp;
@@ -86,6 +87,11 @@ namespace MultiNoa.Networking.Transport.Connection
             newThread.AddUpdatable(this);
         }
         
+
+        public string GetProtocolVersion()
+        {
+            return _protocolVersion;
+        }
         
         public void SetPacketHandler(IPacketHandler newHandler)
         {
