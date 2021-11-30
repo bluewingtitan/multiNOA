@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using MultiNoa.Logging;
+using MultiNoa.Networking.Server;
 
 namespace MultiNoa.Networking.Transport.Connection
 {

@@ -47,35 +47,20 @@ namespace MultiNoa
             }
             _setupDone = true;
 
-            switch (config.HandlingMode)
-            {
-                case PacketHandlingMode.Reflective:
-                    PacketReflectionHandler.RegisterAssembly(config.MainAssembly);
-                    foreach (var configExtraAssembly in config.ExtraAssemblies)
-                        PacketReflectionHandler.RegisterAssembly(configExtraAssembly);
-                    break;
-                
-                case PacketHandlingMode.Custom:
-                default:
-                    break;
-            }
+            PacketReflectionHandler.RegisterAssembly(typeof(MultiNoaConfig).Assembly);
+            PacketReflectionHandler.RegisterAssembly(config.MainAssembly);
+            foreach (var configExtraAssembly in config.ExtraAssemblies)
+                PacketReflectionHandler.RegisterAssembly(configExtraAssembly);
             
-            switch (config.ConversionMode)
+            
+            PacketConverter.RegisterAssembly(typeof(MultiNoaConfig).Assembly);
+            PacketConverter.RegisterAssembly(config.MainAssembly);
+            DataContainerManager.RegisterAssembly(config.MainAssembly);
+            DataContainerManager.RegisterAssembly(typeof(MultiNoaConfig).Assembly);
+            foreach (var configExtraAssembly in config.ExtraAssemblies)
             {
-                case PacketConversionMode.Reflective:
-                    DataContainerManager.RegisterAssembly(typeof(MultiNoaConfig).Assembly);
-                    PacketConverter.RegisterAssembly(config.MainAssembly);
-                    DataContainerManager.RegisterAssembly(config.MainAssembly);
-                    foreach (var configExtraAssembly in config.ExtraAssemblies)
-                    {
-                        PacketConverter.RegisterAssembly(configExtraAssembly);
-                        DataContainerManager.RegisterAssembly(configExtraAssembly);
-                    }
-                    break;
-                
-                case PacketConversionMode.Custom:
-                default:
-                    break;
+                PacketConverter.RegisterAssembly(configExtraAssembly);
+                DataContainerManager.RegisterAssembly(configExtraAssembly);
             }
             
 

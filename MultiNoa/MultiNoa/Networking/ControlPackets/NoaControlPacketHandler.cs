@@ -14,17 +14,19 @@ namespace MultiNoa.Networking.ControlPackets
             [HandlerMethod(NoaControlPacketIds.FromServer.WelcomePacket)]
             public static void WelcomePacket(NoaControlPackets.FromServer.WelcomePacket welcomePacket, IConnection c)
             {
-                if (welcomePacket.RunningNoaVersion.Equals(MultiNoaSetup.VersionCode))
+                if (!welcomePacket.RunningNoaVersion.Equals(MultiNoaSetup.VersionCode))
                 {
                     MultiNoaLoggingManager.Logger.Warning($"Different multiNoa-Versions used: server uses '{welcomePacket.RunningNoaVersion}', this client uses '{MultiNoaSetup.VersionCode}'");
                 }
                 
                 if (!c.GetProtocolVersion().Equals(welcomePacket.ProtocolVersion))
                 {
-                    MultiNoaLoggingManager.Logger.Error($"Distant server and this client are running two different protocol-versions! ({welcomePacket.ProtocolVersion} vs {c.GetProtocolVersion()} -> Disconnecting");
+                    MultiNoaLoggingManager.Logger.Error($"Distant server and this client are running two different protocol-versions! ({welcomePacket.ProtocolVersion} vs {c.GetProtocolVersion()} -> Disconnecting)");
                     c.Disconnect();
                     return;
                 }
+                
+                MultiNoaLoggingManager.Logger.Verbose($"Server sent Welcome Packet with fitting protocol version");
                 
                 var wReceived = new NoaControlPackets.FromClient.WelcomeReceived()
                 {
@@ -32,6 +34,8 @@ namespace MultiNoa.Networking.ControlPackets
                     Username = "Dummy" // TODO: Implement support layer for user-names (including name change events)
                 };
                 c.SendData(PacketConverter.ObjectToByte(wReceived)); // TODO: Shorthand/Abstraction for sending objects instead of bytes.
+                
+                c.GetClient()?.InvokeOnClientReady();
             }
         }
         
@@ -43,11 +47,12 @@ namespace MultiNoa.Networking.ControlPackets
             [HandlerMethod(NoaControlPacketIds.FromClient.WelcomeReceived)]
             public static void WelcomeReceivedPacket(NoaControlPackets.FromClient.WelcomeReceived welcomeReceived, IConnection c)
             {
-                if (welcomeReceived.RunningNoaVersion.Equals(MultiNoaSetup.VersionCode))
+                if (!welcomeReceived.RunningNoaVersion.Equals(MultiNoaSetup.VersionCode))
                 {
                     MultiNoaLoggingManager.Logger.Warning($"Different multiNoa-Versions used: client uses '{welcomeReceived.RunningNoaVersion}', this server uses '{MultiNoaSetup.VersionCode}'");
                 }
-                // TODO: Upgrade client to being ready + invoke ready event
+                
+                c.GetClient()?.InvokeOnClientConnected();
             }
         }
     }
