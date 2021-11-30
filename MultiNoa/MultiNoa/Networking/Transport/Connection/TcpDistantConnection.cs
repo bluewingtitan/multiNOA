@@ -187,7 +187,8 @@ namespace MultiNoa.Networking.Transport.Connection
         public void SetClient(ClientBase client)
         {
             _client = client;
-            ChangeThread(client.GetRoom().GetRoomThread());
+            
+            ChangeThread(client.GetRoom()?.GetRoomThread() ?? client.GetServer().GetServerThread());
         }
         
         

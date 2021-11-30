@@ -1,5 +1,8 @@
 using MultiNoa.GameSimulation;
+using MultiNoa.Logging;
 using MultiNoa.Networking.Client;
+using MultiNoa.Networking.ControlPackets;
+using MultiNoa.Networking.PacketHandling;
 using MultiNoa.Networking.Rooms;
 using MultiNoa.Networking.Transport;
 
@@ -17,7 +20,8 @@ namespace MultiNoa.Networking.Server
         private ulong _currentClientId = 0;
         private ulong GetNewClientId() => _currentClientId++;
 
-        private readonly Room baseRoom;
+        private readonly Room _pendingRoom;
+        private readonly Room _baseRoom;
         private readonly ConnectionListener _listener;
 
         public readonly string ProtocolVersion;
@@ -35,22 +39,35 @@ namespace MultiNoa.Networking.Server
             _listener = listener;
             _listener.OnConnection += OnConnected;
             
-            baseRoom = new Room(this, Thread, "Base Room", false);
+            _baseRoom = new Room(this, Thread, "Base Room", false);
+            _pendingRoom = new Room(this, Thread, "Base Room", false);
         }
         
         protected virtual IDynamicThread ConstructDynamicThread(int tps, string name) => new DynamicThread(tps, name);
 
         protected virtual ClientBase ConstructClient(IConnection connection, ulong clientId) => new NoaClient(this, connection, clientId);
 
-        public bool TryGetClient(ulong id, out ClientBase client) => baseRoom.TryGetClient(id, out client);
+        public bool TryGetClient(ulong id, out ClientBase client) => _baseRoom.TryGetClient(id, out client);
 
         private void OnConnected(IConnection connection)
         {
             Thread.AddOffsetTask(new OffsetAction(() =>
             {
                 var client = ConstructClient(connection, GetNewClientId());
-                if (baseRoom.TryAddClient(client))
+                connection.SetClient(client);
+                if (_pendingRoom.TryAddClient(client))
                 {
+                    // Send Welcome Packet
+                    var packet = new NoaControlPackets.FromServer.WelcomePacket
+                    {
+                        ProtocolVersion = ProtocolVersion,
+                        RunningNoaVersion = MultiNoaSetup.VersionCode
+                    };
+
+                    client.OnClientConnected += OnClientWelcomed;
+                    
+                    connection.SendData(PacketConverter.ObjectToByte(packet));
+
                     return;
                 }
             
@@ -59,10 +76,25 @@ namespace MultiNoa.Networking.Server
                 client.Disconnect();
             }, 0));
         }
-        
+
+        /// <summary>
+        /// Event invoked once client sends "WelcomeReceived"-Packet, stating the wish of being fully connected.
+        /// </summary>
+        /// <param name="client"></param>
+        private void OnClientWelcomed(ClientBase client)
+        {
+            Thread.AddOffsetTask(new OffsetAction(() => 
+                {
+                    MultiNoaLoggingManager.Logger.Verbose($"Client {client.GetConnection().GetEndpointIp()} was fully connected");
+                    client.OnClientConnected -= OnClientWelcomed;
+                    client.MoveToRoom(_baseRoom);
+                    client.InvokeOnClientReady();
+                }, 0));
+        }
         
         public void Stop()
         {
+            _listener.StopListening();
             Thread.Stop();
             OnStop();
         }

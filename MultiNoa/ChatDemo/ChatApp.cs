@@ -20,28 +20,27 @@ namespace ChatDemo
     internal static class ChatApp
     {
         private const ushort ServerPort = 25511;
+        private const string ProtocolVersion = "demoV1";
+        
         private static NoaTcpServer _server;
         private static TcpConnection connection;
         private static DynamicThread _thread = new DynamicThread(5, "Client");
-        
+
         private static void Main(string[] args)
         {
             MultiNoaSetup.DefaultSetup(typeof(ChatApp).Assembly);
             
             // => Start Server
             MultiNoaLoggingManager.Logger.Information("Starting Server...");
-            _server = new NoaTcpServer(ServerPort, "demo", 5, "Chat Server");
-            
-            // Make sure the server is fully up before trying to connect.
-            Thread.Sleep(500);
-            
+            _server = new NoaTcpServer(ServerPort, ProtocolVersion, 5, "Chat Server");
+
             // => Start Client
             MultiNoaLoggingManager.Logger.Information("Starting Client...");
-            connection = new TcpConnection(() => MultiNoaLoggingManager.Logger.Error("Connection to server was closed."));
+            connection = new TcpConnection(() => MultiNoaLoggingManager.Logger.Error("Connection to server was closed."), ProtocolVersion);
             connection.Connect("127.0.0.1", ServerPort);
             connection.ChangeThread(_thread);
 
-            Thread.Sleep(500);
+            Thread.Sleep(1000); // Make sure client is fully connected.
             var message = new ChatPackets.FromClient.MessageFromClient
             {
                 Message = "Hi Server!"

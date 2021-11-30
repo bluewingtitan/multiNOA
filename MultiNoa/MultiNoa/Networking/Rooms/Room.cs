@@ -70,16 +70,22 @@ namespace MultiNoa.Networking.Rooms
                 return false;
             }
             
+            var success = _clients.TryAdd(client.GetId(), client);
             
-            client.MoveToRoom(this);
-            
-            
-            return _clients.TryAdd(client.GetId(), client);
+            if(success) client.MoveToRoom(this);
+
+
+            return success;
         }
 
-        public virtual bool TryGetClient(ulong id, out ClientBase client)
+        public bool TryGetClient(ulong id, out ClientBase client)
         {
             return _clients.TryGetValue(id, out client);
+        }
+
+        internal void RemoveClient(ClientBase client)
+        {
+            _clients.Remove(client.GetId());
         }
         
         

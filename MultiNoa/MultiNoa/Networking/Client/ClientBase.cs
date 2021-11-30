@@ -7,7 +7,9 @@ namespace MultiNoa.Networking.Client
 {
     public abstract class ClientBase
     {
-        public event EventHandler OnClientReady;
+        public delegate void ClientReadyDelegate(ClientBase client);
+        internal event ClientReadyDelegate OnClientConnected;
+        public event ClientReadyDelegate OnClientReady;
         public abstract void SendData(byte[] data);
         public abstract ServerBase GetServer();
         public abstract IConnection GetConnection();
@@ -17,10 +19,14 @@ namespace MultiNoa.Networking.Client
         
         public void MoveToRoom(Room room)
         {
+            room?.RemoveClient(this);
             GetConnection().ChangeThread(room.GetRoomThread());
             
             OnMovedToRoom(room);
         }
+        
+        internal void InvokeOnClientConnected() => OnClientConnected?.Invoke(this);
+        internal void InvokeOnClientReady() => OnClientReady?.Invoke(this);
 
         protected abstract void OnMovedToRoom(Room room);
     }

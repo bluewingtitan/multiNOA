@@ -1,3 +1,5 @@
+using MultiNoa.Networking.Server;
+
 namespace MultiNoa.Networking.Transport
 {
     /// <summary>
@@ -5,7 +7,6 @@ namespace MultiNoa.Networking.Transport
     /// </summary>
     public abstract class ConnectionListener
     {
-        
         public delegate void OnConnectionDelegate(IConnection connection);
 
         protected ushort Port { get; }
