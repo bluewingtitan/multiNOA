@@ -45,11 +45,11 @@ namespace MultiNoa.Networking.Server
         
         protected virtual IDynamicThread ConstructDynamicThread(int tps, string name) => new DynamicThread(tps, name);
 
-        protected virtual ClientBase ConstructClient(IConnection connection, ulong clientId) => new NoaClient(this, connection, clientId);
+        protected virtual ClientBase ConstructClient(ConnectionBase connection, ulong clientId) => new NoaClient(this, connection, clientId);
 
         public bool TryGetClient(ulong id, out ClientBase client) => _baseRoom.TryGetClient(id, out client);
 
-        private void OnConnected(IConnection connection)
+        private void OnConnected(ConnectionBase connection)
         {
             Thread.AddOffsetTask(new OffsetAction(() =>
             {

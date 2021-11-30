@@ -7,11 +7,11 @@ namespace MultiNoa.Networking.Client
     public class NoaClient: ClientBase
     {
         protected readonly ServerBase _server;
-        protected readonly IConnection _connection;
+        protected readonly ConnectionBase _connection;
         protected readonly ulong _clientId;
         protected Room CurrentRoom { get; private set; }
         
-        public NoaClient(ServerBase server, IConnection connection, ulong id)
+        public NoaClient(ServerBase server, ConnectionBase connection, ulong id)
         {
             _server = server;
             _connection = connection;
@@ -28,7 +28,7 @@ namespace MultiNoa.Networking.Client
             return _server;
         }
 
-        public override IConnection GetConnection()
+        public override ConnectionBase GetConnection()
         {
             return _connection;
         }

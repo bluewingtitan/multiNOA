@@ -8,7 +8,7 @@ using MultiNoa.Networking.PacketHandling;
 
 namespace MultiNoa.Networking.Transport.Connection
 {
-    public class TcpDistantConnection: IConnection
+    public class TcpDistantConnection: ConnectionBase
     {
         private static readonly IPacketHandler DefaultHandler = new PacketReflectionHandler();
         public TcpClient Socket;
@@ -19,7 +19,6 @@ namespace MultiNoa.Networking.Transport.Connection
         private IPacketHandler _handler;
         private byte[] _receiveBuffer;
         private string _address;
-        private readonly Action _onDisconnect;
         private readonly string _protocolVersion;
 
         private IDynamicThread currentThread;
@@ -27,41 +26,38 @@ namespace MultiNoa.Networking.Transport.Connection
         
         private readonly ExecutionScheduler _handlers = new ExecutionScheduler();
 
-        public TcpDistantConnection(Action onDisconnect, string protocolVersion)
+        public TcpDistantConnection(string protocolVersion)
         {
             _protocolVersion = protocolVersion;
             _client = null;
             _handler = DefaultHandler;
-            _onDisconnect = onDisconnect;
         }
 
         public void Connect(TcpClient socket)
         {
             Socket = socket;
-            Socket.ReceiveBufferSize = IConnection.DataBufferSize;
-            Socket.SendBufferSize = IConnection.DataBufferSize;
+            Socket.ReceiveBufferSize = ConnectionBase.DataBufferSize;
+            Socket.SendBufferSize = ConnectionBase.DataBufferSize;
 
             _stream = Socket.GetStream();
 
             _receivedData = new Packet();
-            _receiveBuffer = new byte[IConnection.DataBufferSize];
+            _receiveBuffer = new byte[ConnectionBase.DataBufferSize];
 
-            _stream.BeginRead(_receiveBuffer, 0, IConnection.DataBufferSize, ReceiveCallback, null);
+            _stream.BeginRead(_receiveBuffer, 0, ConnectionBase.DataBufferSize, ReceiveCallback, null);
 
             _address = socket.Client.RemoteEndPoint.ToString();
-
         }
         
-        public void Disconnect()
+        protected override void OnDisconnect()
         {
             Socket?.Close();
             _stream = null;
             _receivedData = null;
             Socket = null;
-            _onDisconnect?.Invoke();
         }
         
-        public void ChangeThread(IDynamicThread newThread)
+        public override void ChangeThread(IDynamicThread newThread)
         {
             if (currentThread != null)
             {
@@ -71,7 +67,7 @@ namespace MultiNoa.Networking.Transport.Connection
             newThread.AddUpdatable(this);
         }
 
-        public string GetProtocolVersion()
+        public override string GetProtocolVersion()
         {
             return _protocolVersion;
         }
@@ -97,7 +93,7 @@ namespace MultiNoa.Networking.Transport.Connection
 
 
                 // Start listening again
-                _stream.BeginRead(_receiveBuffer, 0, IConnection.DataBufferSize, ReceiveCallback, null);
+                _stream.BeginRead(_receiveBuffer, 0, ConnectionBase.DataBufferSize, ReceiveCallback, null);
             }
             catch (Exception e)
             {
@@ -152,39 +148,39 @@ namespace MultiNoa.Networking.Transport.Connection
         
         
         
-        public void Update()
+        public override void Update()
         {
             _handlers.ExecuteAll();
         }
 
-        public void PerSecondUpdate()
+        public override void PerSecondUpdate()
         {
             
         }
 
-        public void SetPacketHandler(IPacketHandler newHandler)
+        public override void SetPacketHandler(IPacketHandler newHandler)
         {
             _handler = newHandler;
         }
 
-        public string GetEndpointIp()
+        public override string GetEndpointIp()
         {
             return _address;
         }
 
-        public void SendData(byte[] data)
+        public override void SendData(byte[] data)
         {
             var bytes = data.Length;
             MultiNoaLoggingManager.Logger.Debug($"Sending {bytes} bytes to {GetEndpointIp()}");
             _stream.BeginWrite(data, 0, bytes, null, null);
         }
 
-        public ClientBase GetClient()
+        public override ClientBase GetClient()
         {
             return _client;
         }
 
-        public void SetClient(ClientBase client)
+        public override void SetClient(ClientBase client)
         {
             _client = client;
             

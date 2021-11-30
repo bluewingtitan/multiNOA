@@ -12,7 +12,7 @@ namespace MultiNoa.Networking.ControlPackets
         public static class FromServer
         {
             [HandlerMethod(NoaControlPacketIds.FromServer.WelcomePacket)]
-            public static void WelcomePacket(NoaControlPackets.FromServer.WelcomePacket welcomePacket, IConnection c)
+            public static void WelcomePacket(NoaControlPackets.FromServer.WelcomePacket welcomePacket, ConnectionBase c)
             {
                 if (!welcomePacket.RunningNoaVersion.Equals(MultiNoaSetup.VersionCode))
                 {
@@ -36,6 +36,7 @@ namespace MultiNoa.Networking.ControlPackets
                 c.SendData(PacketConverter.ObjectToByte(wReceived)); // TODO: Shorthand/Abstraction for sending objects instead of bytes.
                 
                 c.GetClient()?.InvokeOnClientReady();
+                c.InvokeOnConnected();
             }
         }
         
@@ -45,7 +46,7 @@ namespace MultiNoa.Networking.ControlPackets
         public static class FromClient
         {
             [HandlerMethod(NoaControlPacketIds.FromClient.WelcomeReceived)]
-            public static void WelcomeReceivedPacket(NoaControlPackets.FromClient.WelcomeReceived welcomeReceived, IConnection c)
+            public static void WelcomeReceivedPacket(NoaControlPackets.FromClient.WelcomeReceived welcomeReceived, ConnectionBase c)
             {
                 if (!welcomeReceived.RunningNoaVersion.Equals(MultiNoaSetup.VersionCode))
                 {
@@ -53,6 +54,7 @@ namespace MultiNoa.Networking.ControlPackets
                 }
                 
                 c.GetClient()?.InvokeOnClientConnected();
+                c.InvokeOnConnected();
             }
         }
     }

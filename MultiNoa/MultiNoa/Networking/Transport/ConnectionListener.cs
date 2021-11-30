@@ -7,7 +7,7 @@ namespace MultiNoa.Networking.Transport
     /// </summary>
     public abstract class ConnectionListener
     {
-        public delegate void OnConnectionDelegate(IConnection connection);
+        public delegate void OnConnectionDelegate(ConnectionBase connection);
 
         protected ushort Port { get; }
 

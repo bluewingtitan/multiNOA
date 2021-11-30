@@ -93,7 +93,7 @@ namespace MultiNoa.Networking.PacketHandling
                         continue;
                     }
                     
-                    if (typeof(IConnection).IsAssignableFrom(parameterInfo.ParameterType))
+                    if (typeof(ConnectionBase).IsAssignableFrom(parameterInfo.ParameterType))
                     {
                         pi.Add(new ParameterCache(ParamterMode.Connection, parameterInfo));
                         continue;
@@ -114,27 +114,27 @@ namespace MultiNoa.Networking.PacketHandling
                 
                 Infos[method.PacketId] = new HandlerInfo(method.PacketId, info, method, pi);
             }
-            
-            MultiNoaLoggingManager.Logger.Debug($"Registered Handlers for type '{t.FullName}'");
+            if(!isInternal)
+                MultiNoaLoggingManager.Logger.Debug($"Registered Handlers for type '{t.FullName}'");
         }
 
-        public bool HandlePacket(byte[] packetBytes, IConnection fromClient)
+        public bool HandlePacket(byte[] packetBytes, ConnectionBase fromClient)
         {
             return HandlePacketStatic(packetBytes, fromClient);
         }
 
-        public Action PrepareHandling(byte[] packetBytes, IConnection fromClient)
+        public Action PrepareHandling(byte[] packetBytes, ConnectionBase fromClient)
         {
             return PrepareHandlingStatic(packetBytes, fromClient);
         }
 
-        public static bool HandlePacketStatic(byte[] b, IConnection fromClient)
+        public static bool HandlePacketStatic(byte[] b, ConnectionBase fromClient)
         {
             PrepareHandlingStatic(b, fromClient)();
             return true;
         }
 
-        public static Action PrepareHandlingStatic(byte[] b, IConnection fromClient)
+        public static Action PrepareHandlingStatic(byte[] b, ConnectionBase fromClient)
         {
             var o = PacketConverter.BytesToObject(b);
             

@@ -23,7 +23,7 @@ namespace ChatDemo
         private const string ProtocolVersion = "demoV1";
         
         private static NoaTcpServer _server;
-        private static TcpConnection connection;
+        private static TcpConnection _connection;
         private static DynamicThread _thread = new DynamicThread(5, "Client");
 
         private static void Main(string[] args)
@@ -36,16 +36,16 @@ namespace ChatDemo
 
             // => Start Client
             MultiNoaLoggingManager.Logger.Information("Starting Client...");
-            connection = new TcpConnection(() => MultiNoaLoggingManager.Logger.Error("Connection to server was closed."), ProtocolVersion);
-            connection.Connect("127.0.0.1", ServerPort);
-            connection.ChangeThread(_thread);
+            _connection = new TcpConnection(ProtocolVersion);
+            _connection.Connect("127.0.0.1", ServerPort);
+            _connection.ChangeThread(_thread);
 
             Thread.Sleep(1000); // Make sure client is fully connected.
             var message = new ChatPackets.FromClient.MessageFromClient
             {
                 Message = "Hi Server!"
             };
-            connection.SendData(PacketConverter.ObjectToByte(message));
+            _connection.SendData(PacketConverter.ObjectToByte(message));
         }
     }
 }

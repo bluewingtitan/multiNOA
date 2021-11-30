@@ -27,7 +27,7 @@ namespace MultiNoa.Networking.Transport.Connection
             _tcpListener.BeginAcceptTcpClient(TcpConnectCallback, null);
             MultiNoaLoggingManager.Logger.Verbose($"Incoming connection from {client.Client.RemoteEndPoint}...");
             
-            var c = new TcpDistantConnection(() => { return;}, _protocolVersion);
+            var c = new TcpDistantConnection(_protocolVersion);
             c.Connect(client);
 
             OnConnection?.Invoke(c);

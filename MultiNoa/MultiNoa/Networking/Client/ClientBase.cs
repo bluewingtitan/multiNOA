@@ -12,7 +12,7 @@ namespace MultiNoa.Networking.Client
         public event ClientReadyDelegate OnClientReady;
         public abstract void SendData(byte[] data);
         public abstract ServerBase GetServer();
-        public abstract IConnection GetConnection();
+        public abstract ConnectionBase GetConnection();
         public abstract ulong GetId();
         public abstract void Disconnect();
         public abstract Room GetRoom();

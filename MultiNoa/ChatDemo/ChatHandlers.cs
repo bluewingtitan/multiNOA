@@ -10,7 +10,7 @@ namespace ChatDemo
 
         // Runs Server Side
         [HandlerMethod(0)]
-        public static void HandleMessageSend(ChatPackets.FromClient.MessageFromClient m, IConnection c)
+        public static void HandleMessageSend(ChatPackets.FromClient.MessageFromClient m, ConnectionBase c)
         {
             MultiNoaLoggingManager.Logger.Information("Received Message:\n" + m.Message);
             

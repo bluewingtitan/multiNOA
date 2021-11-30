@@ -9,7 +9,7 @@ using MultiNoa.Networking.PacketHandling;
 
 namespace MultiNoa.Networking.Transport.Connection
 {
-    public class TcpConnection: IConnection
+    public class TcpConnection: ConnectionBase
     {
         private static readonly IPacketHandler DefaultHandler = new PacketReflectionHandler();
         
@@ -19,7 +19,6 @@ namespace MultiNoa.Networking.Transport.Connection
         
         private NetworkStream _stream;
         private byte[] _receiveBuffer;
-        private readonly Action _onDisconnect;
 
         private IDynamicThread currentThread;
         private readonly string _protocolVersion;
@@ -31,13 +30,9 @@ namespace MultiNoa.Networking.Transport.Connection
         /// <summary>
         /// Constructs a new TcpConnection. Will use a PacketReflectionHandler if handler-parameter is not populated or null.
         /// </summary>
-        /// <param name="onDisconnect">Callback handling a disconnect</param>
-        /// <param name="client">client managing this connection</param>
-        /// <param name="handler">Packet handler to use</param>
-        public TcpConnection(Action onDisconnect, string protocolVersion)
+        public TcpConnection(string protocolVersion)
         {
             _protocolVersion = protocolVersion;
-            _onDisconnect = onDisconnect;
             _handler = DefaultHandler;
             this._client = null;
         }
@@ -48,11 +43,11 @@ namespace MultiNoa.Networking.Transport.Connection
             
             _socket = new TcpClient
             {
-                ReceiveBufferSize = IConnection.DataBufferSize,
-                SendBufferSize = IConnection.DataBufferSize
+                ReceiveBufferSize = ConnectionBase.DataBufferSize,
+                SendBufferSize = ConnectionBase.DataBufferSize
             };
 
-            _receiveBuffer = new byte[IConnection.DataBufferSize];
+            _receiveBuffer = new byte[ConnectionBase.DataBufferSize];
             _socket.BeginConnect(serverIp, port, ConnectCallback, _socket);
         }
         
@@ -68,16 +63,15 @@ namespace MultiNoa.Networking.Transport.Connection
             _stream = _socket.GetStream();
             
 
-            _stream.BeginRead(_receiveBuffer, 0, IConnection.DataBufferSize, ReceiveCallback, null);
+            _stream.BeginRead(_receiveBuffer, 0, ConnectionBase.DataBufferSize, ReceiveCallback, null);
         }
 
-        public void Disconnect()
+        protected override void OnDisconnect()
         {
             _socket.Dispose();
-            _onDisconnect?.Invoke();
         }
         
-        public void ChangeThread(IDynamicThread newThread)
+        public override void ChangeThread(IDynamicThread newThread)
         {
             if (currentThread != null)
             {
@@ -88,22 +82,22 @@ namespace MultiNoa.Networking.Transport.Connection
         }
         
 
-        public string GetProtocolVersion()
+        public override string GetProtocolVersion()
         {
             return _protocolVersion;
         }
         
-        public void SetPacketHandler(IPacketHandler newHandler)
+        public override void SetPacketHandler(IPacketHandler newHandler)
         {
             _handler = newHandler;
         }
 
-        public string GetEndpointIp()
+        public override string GetEndpointIp()
         {
             return _address;
         }
 
-        public void SendData(byte[] data)
+        public override void SendData(byte[] data)
         {
             if (_socket != null)
             {
@@ -113,12 +107,12 @@ namespace MultiNoa.Networking.Transport.Connection
             }
         }
 
-        public ClientBase GetClient()
+        public override ClientBase GetClient()
         {
             return _client;
         }
 
-        public void SetClient(ClientBase client)
+        public override void SetClient(ClientBase client)
         {
             _client = client;
             ChangeThread(client.GetRoom().GetRoomThread());
@@ -145,7 +139,7 @@ namespace MultiNoa.Networking.Transport.Connection
 
 
                 // Start listening again
-                _stream.BeginRead(_receiveBuffer, 0, IConnection.DataBufferSize, ReceiveCallback, null);
+                _stream.BeginRead(_receiveBuffer, 0, ConnectionBase.DataBufferSize, ReceiveCallback, null);
             }
             catch (Exception e)
             {
@@ -197,12 +191,12 @@ namespace MultiNoa.Networking.Transport.Connection
             }
         }
 
-        public void Update()
+        public override void Update()
         {
             _handlers.ExecuteAll();
         }
 
-        public void PerSecondUpdate()
+        public override void PerSecondUpdate()
         {
             
         }

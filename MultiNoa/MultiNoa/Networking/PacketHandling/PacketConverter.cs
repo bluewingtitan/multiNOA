@@ -50,9 +50,10 @@ namespace MultiNoa.Networking.PacketHandling
                 return;
             }
 
+            var isInternal = false;
             if (attribute.PacketId < 0)
             {
-                var isInternal = (t.GetCustomAttribute(typeof(MultiNoaInternal)) is MultiNoaInternal);
+                isInternal = (t.GetCustomAttribute(typeof(MultiNoaInternal)) is MultiNoaInternal);
 
                 if (!isInternal)
                 {
@@ -67,14 +68,9 @@ namespace MultiNoa.Networking.PacketHandling
                 .Where(e => e.GetCustomAttributes(typeof(NetworkProperty), true).Length > 0)
                 .Select(e =>
                 {
-                    var useDataContainerManager = false;
+                    bool useDataContainerManager = !e.PropertyType.GetInterfaces().Contains(typeof(INetworkDataContainer));
                     // Check for valid property!
-                    if (!e.PropertyType.GetInterfaces().Contains(typeof(INetworkDataContainer)))
-                    {
-                        MultiNoaLoggingManager.Logger.Debug($"Class {t.FullName} contains custom property: {e.Name} does not implement {nameof(INetworkDataContainer)}. Will try using known DataContainers to convert");
-                        useDataContainerManager = true;
-                    }
-                    
+
                     // Not getting single specific attribute, as other attributes will be implemented at this point later on too!
                     var data = e.GetCustomAttributes().ToArray();
 
@@ -100,8 +96,8 @@ namespace MultiNoa.Networking.PacketHandling
             );
             
             Infos[attribute.PacketId] = new PacketClassInfo(t, new Dictionary<PropertyInfo, NetworkProperty>(props), attribute);
-            
-            MultiNoaLoggingManager.Logger.Debug($"Cached PacketConversion for type '{t.FullName}'");
+            if(!isInternal)
+                MultiNoaLoggingManager.Logger.Debug($"Cached PacketConversion for type '{t.FullName}'");
         }
 
 
