@@ -9,6 +9,8 @@ namespace MultiNoa.Networking.Transport
 
         protected ConnectionBase()
         {
+            ChangeThread(MultiNoaSetup.DefaultThread);
+            
             // Prepare for horror.
             OnDisconnected += c => c.GetClient()?.GetRoom().RemoveClient(c.GetClient());
             // Recover from horror.

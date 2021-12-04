@@ -67,6 +67,15 @@ namespace MultiNoa.Networking.ControlPackets
                 
                 [NetworkProperty(0)] public string Username { get; set; }
             }
+
+            [MultiNoaInternal]
+            [PacketStruct(NoaControlPacketIds.FromClient.SyncUsername)]
+            public struct SyncUsername
+            {
+                [NetworkProperty(0)]
+                public string NewUsername { get; set; }
+            }
+            
         }
     }
 }

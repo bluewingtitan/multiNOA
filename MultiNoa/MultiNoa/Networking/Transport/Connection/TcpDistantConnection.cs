@@ -26,7 +26,7 @@ namespace MultiNoa.Networking.Transport.Connection
         
         private readonly ExecutionScheduler _handlers = new ExecutionScheduler();
 
-        public TcpDistantConnection(string protocolVersion)
+        public TcpDistantConnection(string protocolVersion): base()
         {
             _protocolVersion = protocolVersion;
             _client = null;
@@ -123,6 +123,7 @@ namespace MultiNoa.Networking.Transport.Connection
             
             while (packetLenght > 0 && packetLenght <= packet.UnreadLength())
             {
+                MultiNoaLoggingManager.Logger.Debug($"Parsing packet of size {packetLenght}");
                 
                 // Do packet analysis now and prepare/schedule handling for next tick
                 byte[] packetBytes = packet.ReadBytes(packetLenght);
@@ -183,8 +184,6 @@ namespace MultiNoa.Networking.Transport.Connection
         public override void SetClient(ClientBase client)
         {
             _client = client;
-            
-            ChangeThread(client.GetRoom()?.GetRoomThread() ?? client.GetServer().GetServerThread());
         }
         
         

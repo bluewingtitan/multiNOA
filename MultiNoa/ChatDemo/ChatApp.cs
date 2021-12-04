@@ -19,33 +19,32 @@ namespace ChatDemo
     /// </summary>
     internal static class ChatApp
     {
-        private const ushort ServerPort = 25511;
-        private const string ProtocolVersion = "demoV1";
+        public const ushort ServerPort = 25511;
+        public const string ProtocolVersion = "demoV1";
         
         private static NoaTcpServer _server;
-        private static TcpConnection _connection;
-        private static DynamicThread _thread = new DynamicThread(5, "Client");
 
         private static void Main(string[] args)
         {
             MultiNoaSetup.DefaultSetup(typeof(ChatApp).Assembly);
-            
-            // => Start Server
-            MultiNoaLoggingManager.Logger.Information("Starting Server...");
-            _server = new NoaTcpServer(ServerPort, ProtocolVersion, 5, "Chat Server");
 
-            // => Start Client
-            MultiNoaLoggingManager.Logger.Information("Starting Client...");
-            _connection = new TcpConnection(ProtocolVersion);
-            _connection.Connect("127.0.0.1", ServerPort);
-            _connection.ChangeThread(_thread);
-
-            Thread.Sleep(1000); // Make sure client is fully connected.
-            var message = new ChatPackets.FromClient.MessageFromClient
+            if (args.Length > 0)
             {
-                Message = "Hi Server!"
-            };
-            _connection.SendData(PacketConverter.ObjectToByte(message));
+                // => Start Server
+                MultiNoaLoggingManager.Logger.Information("Starting Server...");
+                _server = new NoaTcpServer(ServerPort, ProtocolVersion, 5, "Chat Server");
+            }
+            else
+            {
+                // No debug messages!
+                MultiNoaLoggingManager.Logger = new MultiNoaLoggingManager.NoaNoLogger();
+
+                Console.Write("Username: ");
+                var username = Console.ReadLine();
+                var client = new ChatClient(username, "127.0.0.1");
+            }
         }
     }
+
+
 }

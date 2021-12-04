@@ -40,12 +40,12 @@ namespace MultiNoa.Networking.Server
             _listener.OnConnection += OnConnected;
             
             _baseRoom = new Room(this, Thread, "Base Room", false);
-            _pendingRoom = new Room(this, Thread, "Base Room", false);
+            _pendingRoom = new Room(this, Thread, "Pending Room", false);
         }
         
         protected virtual IDynamicThread ConstructDynamicThread(int tps, string name) => new DynamicThread(tps, name);
 
-        protected virtual ClientBase ConstructClient(ConnectionBase connection, ulong clientId) => new NoaClient(this, connection, clientId);
+        protected virtual ClientBase ConstructClient(ConnectionBase connection, ulong clientId) => new NoaServersideClient(this, connection, clientId);
 
         public bool TryGetClient(ulong id, out ClientBase client) => _baseRoom.TryGetClient(id, out client);
 
@@ -87,7 +87,7 @@ namespace MultiNoa.Networking.Server
                 {
                     MultiNoaLoggingManager.Logger.Verbose($"Client {client.GetConnection().GetEndpointIp()} was fully connected");
                     client.OnClientConnected -= OnClientWelcomed;
-                    client.MoveToRoom(_baseRoom);
+                    _baseRoom.TryAddClient(client);
                     client.InvokeOnClientReady();
                 }, 0));
         }

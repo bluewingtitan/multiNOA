@@ -31,7 +31,7 @@ namespace MultiNoa.Networking.ControlPackets
                 var wReceived = new NoaControlPackets.FromClient.WelcomeReceived()
                 {
                     RunningNoaVersion = MultiNoaSetup.VersionCode,
-                    Username = "Dummy" // TODO: Implement support layer for user-names (including name change events)
+                    Username = c.GetClient().Username
                 };
                 c.SendData(PacketConverter.ObjectToByte(wReceived)); // TODO: Shorthand/Abstraction for sending objects instead of bytes.
                 
@@ -55,6 +55,18 @@ namespace MultiNoa.Networking.ControlPackets
                 
                 c.GetClient()?.InvokeOnClientConnected();
                 c.InvokeOnConnected();
+                c.GetClient()?.SetUsernameUnsynced(welcomeReceived.Username);
+            }
+
+            [HandlerMethod(NoaControlPacketIds.FromClient.SyncUsername)]
+            public static void NameSynced(NoaControlPackets.FromClient.SyncUsername username, ConnectionBase c)
+            {
+                var client = c.GetClient();
+                if (client != null)
+                {
+                    MultiNoaLoggingManager.Logger.Verbose($"Changed Username of {c.GetEndpointIp()} from '{client.Username}' to '{username.NewUsername}'");
+                    c.GetClient()?.SetUsernameUnsynced(username.NewUsername);
+                }
             }
         }
     }

@@ -30,7 +30,7 @@ namespace MultiNoa.Networking.Transport.Connection
         /// <summary>
         /// Constructs a new TcpConnection. Will use a PacketReflectionHandler if handler-parameter is not populated or null.
         /// </summary>
-        public TcpConnection(string protocolVersion)
+        public TcpConnection(string protocolVersion): base()
         {
             _protocolVersion = protocolVersion;
             _handler = DefaultHandler;
@@ -115,7 +115,6 @@ namespace MultiNoa.Networking.Transport.Connection
         public override void SetClient(ClientBase client)
         {
             _client = client;
-            ChangeThread(client.GetRoom().GetRoomThread());
         }
 
 
@@ -168,6 +167,7 @@ namespace MultiNoa.Networking.Transport.Connection
             
             while (packetLenght > 0 && packetLenght <= packet.UnreadLength())
             {
+                MultiNoaLoggingManager.Logger.Debug($"Parsing packet of size {packetLenght}");
                 
                 // Do packet analysis now and prepare/schedule handling for next tick
                 byte[] packetBytes = packet.ReadBytes(packetLenght);

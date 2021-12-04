@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using MultiNoa.GameSimulation;
+using MultiNoa.Logging;
 using MultiNoa.Networking.Client;
 using MultiNoa.Networking.Server;
 
@@ -70,6 +71,9 @@ namespace MultiNoa.Networking.Rooms
                 return false;
             }
             
+            MultiNoaLoggingManager.Logger.Debug($"Moving client {client.GetConnection().GetEndpointIp()} to room '{Roomname}'");
+            
+            
             var success = _clients.TryAdd(client.GetId(), client);
             
             if(success) client.MoveToRoom(this);
@@ -86,6 +90,18 @@ namespace MultiNoa.Networking.Rooms
         internal void RemoveClient(ClientBase client)
         {
             _clients.Remove(client.GetId());
+        }
+
+
+        public void Broadcast(byte[] message, ClientBase exclude = null)
+        {
+            MultiNoaLoggingManager.Logger.Debug($"Broadcasting to {_clients.Count} clients");
+            foreach (var (_, client) in _clients)
+            {
+                if (exclude == client)
+                    continue;
+                client.SendData(message);
+            }
         }
         
         

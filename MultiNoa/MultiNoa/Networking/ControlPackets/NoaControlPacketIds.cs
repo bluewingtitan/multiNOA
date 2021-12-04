@@ -16,6 +16,7 @@ namespace MultiNoa.Networking.ControlPackets
         {
             private const int Offset = -2048;
             public const int WelcomeReceived = Offset + 0;
+            public const int SyncUsername = Offset + 1;
         }
     }
 }

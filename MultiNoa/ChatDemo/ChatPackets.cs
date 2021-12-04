@@ -21,6 +21,9 @@ namespace ChatDemo
             {
                 [NetworkProperty(0)]
                 public string Message { get; set; }
+                
+                [NetworkProperty(1)]
+                public string Username { get; set; }
             }
         }
     }

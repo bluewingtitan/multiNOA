@@ -1,3 +1,4 @@
+using System;
 using MultiNoa.Logging;
 using MultiNoa.Networking.PacketHandling;
 using MultiNoa.Networking.Transport;
@@ -12,13 +13,18 @@ namespace ChatDemo
         [HandlerMethod(0)]
         public static void HandleMessageSend(ChatPackets.FromClient.MessageFromClient m, ConnectionBase c)
         {
-            MultiNoaLoggingManager.Logger.Information("Received Message:\n" + m.Message);
+            var client = c.GetClient();
             
             var answer = new ChatPackets.FromServer.MessageFromServer
             {
-                Message = "Hello Client,\nhow are you doing?\nIs the weather as sunny as it is here?\nAre those weird symbols transfered correctly?\n¸´ÜÈ^°\\\"@\n´o`"
+                Message = m.Message,
+                Username = client.Username
             };
-            c.SendData(PacketConverter.ObjectToByte(answer));
+            
+            MultiNoaLoggingManager.Logger.Information($"[{client.GetRoom().GetRoomName()}] <{client.Username}> {m.Message}");
+            
+                
+            client.GetRoom().Broadcast(PacketConverter.ObjectToByte(answer), client);
         }
         
         
@@ -26,7 +32,8 @@ namespace ChatDemo
         [HandlerMethod(1)]
         public static void HandleMessageReceived(ChatPackets.FromServer.MessageFromServer m)
         {
-            MultiNoaLoggingManager.Logger.Information("Received Message:\n" + m.Message);
+            Console.WriteLine($"<{m.Username}> {m.Message}");
+            Console.Out.Flush();
         }
     }
 }

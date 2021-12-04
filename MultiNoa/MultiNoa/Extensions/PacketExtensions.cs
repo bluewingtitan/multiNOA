@@ -42,7 +42,7 @@ namespace MultiNoa.Extensions
                 output = PacketConverter.BytesToObject(bytes, containsLength);
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 output = null;
                 return false;

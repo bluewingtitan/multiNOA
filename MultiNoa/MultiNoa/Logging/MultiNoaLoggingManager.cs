@@ -9,7 +9,7 @@ namespace MultiNoa.Logging
         /// Used to log messages inside MultiNOA. Set this to your own implementation to use with your own logging system.
         /// The default logger is very (and I mean that) basic.
         /// </summary>
-        public static ILogger Logger = new DefaultLogger();
+        public static ILogger Logger = new NoaDefaultLogger();
         
         /// <summary>
         /// Used to log a simple text in every style.
@@ -23,8 +23,45 @@ namespace MultiNoa.Logging
             Logger.Error(msg);
             Logger.Fatal(msg);
         }
+
+
+        /// <summary>
+        /// A logger that simply cancels all output.
+        /// </summary>
+        public class NoaNoLogger : ILogger
+        {
+            public void Debug(string logMessage)
+            {
+                return;
+            }
+
+            public void Verbose(string logMessage)
+            {
+                return;
+            }
+
+            public void Information(string logMessage)
+            {
+                return;
+            }
+
+            public void Warning(string logMessage)
+            {
+                return;
+            }
+
+            public void Error(string logMessage)
+            {
+                return;
+            }
+
+            public void Fatal(string logMessage)
+            {
+                return;
+            }
+        }
         
-        private class DefaultLogger: ILogger
+        public class NoaDefaultLogger: ILogger
         {
             public void Debug(string logMessage)
             {
