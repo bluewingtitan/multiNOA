@@ -50,7 +50,7 @@ struct Message
 ```
 
 Now you can use it like this:
-```
+```c#
 var packet = new Message{
     Message = "Message Content",
     SomeNumber = 1293
@@ -58,8 +58,21 @@ var packet = new Message{
 ```
 
 And send it like this:
-```
+```c#
 client.SendData(packet);
 ```
+
+Want to do some handling?
+```c#
+[PacketHandler]
+public static class Handlers{
+  [HandlerMethod(15)]
+  public static void HandleMessage(Message m, ConnectionBase connection){
+    Console.WriteLine($"New Message: {m.Message}. Number: {m.SomeNumber}\n" + 
+                      $"From: {connection.GetEndpointIp()");
+  }
+}
+```
+
 
 MultiNoa is that flexible, I was able to write a basic chat app with it in around 5 minutes.
