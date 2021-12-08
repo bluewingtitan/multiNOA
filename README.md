@@ -1,5 +1,5 @@
 ![# multiNoa](https://github.com/bluewingtitan/multiNOA/raw/master/Resources/BadgeDark.png)
-> **multi**player **n**etworking library **o**f **a**ton
+> **multi**player **n**etworking **o**f **a**ton
 
 
 ## Intro
