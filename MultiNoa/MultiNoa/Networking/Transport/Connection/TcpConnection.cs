@@ -11,30 +11,17 @@ namespace MultiNoa.Networking.Transport.Connection
 {
     public class TcpConnection: ConnectionBase
     {
-        private static readonly IPacketHandler DefaultHandler = new PacketReflectionHandler();
-        
         private string _address = null;
         private TcpClient _socket;
-        private ClientBase _client;
         
         private NetworkStream _stream;
         private byte[] _receiveBuffer;
 
-        private IDynamicThread currentThread;
-        private readonly string _protocolVersion;
-
-        private IPacketHandler _handler;
-
-        private readonly ExecutionScheduler _handlers = new ExecutionScheduler();
-        
         /// <summary>
         /// Constructs a new TcpConnection. Will use a PacketReflectionHandler if handler-parameter is not populated or null.
         /// </summary>
-        public TcpConnection(string protocolVersion): base()
+        public TcpConnection(string protocolVersion): base(protocolVersion)
         {
-            _protocolVersion = protocolVersion;
-            _handler = DefaultHandler;
-            this._client = null;
         }
 
         public void Connect(string serverIp, int port)
@@ -70,27 +57,6 @@ namespace MultiNoa.Networking.Transport.Connection
         {
             _socket.Dispose();
         }
-        
-        public override void ChangeThread(IDynamicThread newThread)
-        {
-            if (currentThread != null)
-            {
-                currentThread.RemoveUpdatable(this); 
-                currentThread = newThread;
-            }
-            newThread.AddUpdatable(this);
-        }
-        
-
-        public override string GetProtocolVersion()
-        {
-            return _protocolVersion;
-        }
-        
-        public override void SetPacketHandler(IPacketHandler newHandler)
-        {
-            _handler = newHandler;
-        }
 
         public override string GetEndpointIp()
         {
@@ -105,16 +71,6 @@ namespace MultiNoa.Networking.Transport.Connection
                 MultiNoaLoggingManager.Logger.Debug($"Sending {bytes} bytes to {GetEndpointIp()}");
                 _stream.BeginWrite(data, 0, bytes, null, null);
             }
-        }
-
-        public override ClientBase GetClient()
-        {
-            return _client;
-        }
-
-        public override void SetClient(ClientBase client)
-        {
-            _client = client;
         }
 
 
@@ -145,55 +101,6 @@ namespace MultiNoa.Networking.Transport.Connection
                 MultiNoaLoggingManager.Logger.Error("Error receiving tcp: \n" + e.ToString());
                 Disconnect();
             }
-        }
-        
-        /// <summary>
-        /// Handles a byte-array containing one or multiple individual packets
-        /// </summary>
-        /// <param name="data"></param>
-        private void HandleData(byte[] data)
-        {
-            var packetLenght = 0;
-            var packet = new Packet(data);
-
-            if (packet.UnreadLength() >= 4)
-            {
-                packetLenght = packet.Read<NetworkInt>().GetTypedValue();
-                if (packetLenght <= 0)
-                {
-                    return;
-                }
-            }
-            
-            while (packetLenght > 0 && packetLenght <= packet.UnreadLength())
-            {
-                MultiNoaLoggingManager.Logger.Debug($"Parsing packet of size {packetLenght}");
-                
-                // Do packet analysis now and prepare/schedule handling for next tick
-                byte[] packetBytes = packet.ReadBytes(packetLenght);
-                _handlers.ScheduleExecution(_handler.PrepareHandling(packetBytes, this));
-                
-                // Analyze next packet contained in bytes
-                packetLenght = 0;
-                if (packet.UnreadLength() >= 4)
-                {
-                    packetLenght = packet.Read<NetworkInt>().GetTypedValue();
-                    if (packetLenght <= 0)
-                    {
-                        return;
-                    }
-                }
-
-                if (packetLenght <= 1)
-                {
-                    return;
-                }
-            }
-        }
-
-        public override void Update()
-        {
-            _handlers.ExecuteAll();
         }
 
         public override void PerSecondUpdate()

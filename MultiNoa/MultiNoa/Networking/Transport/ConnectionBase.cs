@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using MultiNoa.GameSimulation;
+using MultiNoa.Logging;
 using MultiNoa.Networking.Client;
 using MultiNoa.Networking.Data.DataContainer;
 using MultiNoa.Networking.PacketHandling;
@@ -10,9 +12,13 @@ namespace MultiNoa.Networking.Transport
 {
     public abstract class ConnectionBase: IUpdatable
     {
+        private static readonly IPacketHandler DefaultHandler = new PacketReflectionHandler();
 
-        protected ConnectionBase()
+        protected ConnectionBase(string protocolVersion)
         {
+            this._client = null;
+            _handler = DefaultHandler;
+            _protocolVersion = protocolVersion;
             ChangeThread(MultiNoaSetup.DefaultThread);
             
             // Prepare for horror.
@@ -20,20 +26,32 @@ namespace MultiNoa.Networking.Transport
             // Recover from horror.
         }
         
+        private IPacketHandler _handler;
+        private IDynamicThread currentThread;
+        private readonly string _protocolVersion;
+        
         protected const int DataBufferSize = 4096;
 
+        private ClientBase _client;
         public delegate void ConnectionEventDelegate(ConnectionBase connection);
 
         public event ConnectionEventDelegate OnConnected;
         public event ConnectionEventDelegate OnDisconnected;
 
-        public abstract void Update();
+        public void Update()
+        {
+            _handlers.ExecuteAll();
+        }
         public abstract void PerSecondUpdate();
-        public abstract void SetPacketHandler(IPacketHandler newHandler);
         public abstract string GetEndpointIp();
         protected abstract void TransferData(byte[] data);
-        public abstract ClientBase GetClient();
-        public abstract void SetClient(ClientBase client);
+        public ClientBase GetClient() => _client;
+        private readonly ExecutionScheduler _handlers = new ExecutionScheduler();
+
+        public void SetClient(ClientBase client)
+        {
+            _client = client;
+        }
 
 
         public void SendData(object objectToSend, bool stayInThread = false)
@@ -44,18 +62,8 @@ namespace MultiNoa.Networking.Transport
                 return;
             }
 
-            // => Do struct to packet, middleware and other logic in seperate thread to keep main game threads running
-            var t = new Thread(() =>
-            {
-                var bytes = PacketConverter.ObjectToByte(objectToSend, writeLength: false);
-
-                bytes = NoaMiddlewareManager.OnSend(bytes, this);
-
-                // Insert length
-                bytes.InsertRange(0, new NetworkInt(bytes.Count).TurnIntoBytes());
-
-                TransferData(bytes.ToArray());
-            });
+            // => Do struct to packet, middleware and other logic in separate thread to keep main game threads running
+            var t = new Thread(() => SendDataInThread(objectToSend));
             t.Start();
         }
 
@@ -74,6 +82,55 @@ namespace MultiNoa.Networking.Transport
         
         
         
+        /// <summary>
+        /// Handles a byte-array containing one or multiple individual packets
+        /// </summary>
+        /// <param name="data"></param>
+        protected void HandleData(byte[] data)
+        {
+            var packetLenght = 0;
+            var packet = new Packet(data);
+
+            if (packet.UnreadLength() >= 4)
+            {
+                packetLenght = packet.Read<NetworkInt>().GetTypedValue();
+                if (packetLenght <= 0)
+                {
+                    return;
+                }
+            }
+            
+            while (packetLenght > 0 && packetLenght <= packet.UnreadLength())
+            {
+                MultiNoaLoggingManager.Logger.Debug($"Parsing packet of size {packetLenght}");
+                
+                // Do packet analysis now and prepare/schedule handling for next tick
+                var packetBytes = new List<byte>(packet.ReadBytes(packetLenght));
+
+                packetBytes = NoaMiddlewareManager.OnReceive(packetBytes, this);
+                
+                _handlers.ScheduleExecution(_handler.PrepareHandling(packetBytes.ToArray(), this));
+                
+                // Analyze next packet contained in bytes
+                packetLenght = 0;
+                if (packet.UnreadLength() >= 4)
+                {
+                    packetLenght = packet.Read<NetworkInt>().GetTypedValue();
+                    if (packetLenght <= 0)
+                    {
+                        return;
+                    }
+                }
+
+                if (packetLenght <= 1)
+                {
+                    return;
+                }
+            }
+        }
+        
+        
+        
         internal void InvokeOnConnected()
         {
             OnConnected?.Invoke(this);
@@ -86,7 +143,27 @@ namespace MultiNoa.Networking.Transport
         }
         
         protected abstract void OnDisconnect();
-        public abstract void ChangeThread(IDynamicThread newThread);
-        public abstract string GetProtocolVersion();
+        
+        
+        public void ChangeThread(IDynamicThread newThread)
+        {
+            if (currentThread != null)
+            {
+                currentThread.RemoveUpdatable(this); 
+                currentThread = newThread;
+            }
+            newThread.AddUpdatable(this);
+        }
+        
+
+        public string GetProtocolVersion()
+        {
+            return _protocolVersion;
+        }
+        
+        public void SetPacketHandler(IPacketHandler newHandler)
+        {
+            _handler = newHandler;
+        }
     }
 }

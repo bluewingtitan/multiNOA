@@ -13,7 +13,6 @@ namespace ChatDemo
 {
     public class ChatClient: ClientBase
     {
-        protected readonly ServerBase Server;
         protected readonly TcpConnection Connection;
         protected readonly ulong ClientId = 0;
 
@@ -91,7 +90,7 @@ namespace ChatDemo
             Connection = new TcpConnection(ChatApp.ProtocolVersion);
             Connection.Connect(ip, ChatApp.ServerPort);
             Connection.SetClient(this);
-            
+
             Thread.Sleep(2000);
             StartTyping();
         }
