@@ -1,4 +1,4 @@
-![# multiNoa](https://raw.githubusercontent.com/bluewingtitan/multiNOA/master/Resources/LogoSketch2.png?token=AJGYBCA5HKBUXACFYN72AXDBXHBOO)
+![# multiNoa](https://github.com/bluewingtitan/multiNOA/raw/master/Resources/BadgeDark.png)
 > **multi**player **n**etworking library **o**f **a**ton
 
 
