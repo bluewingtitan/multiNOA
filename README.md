@@ -41,11 +41,11 @@ For each type of message you want to send, you define packet struct with it's un
 [PacketStruct(15)]
 struct Message
 {
-  [NetworkProperty]
-  public string Message {get; private set;}
-  
-  [NetworkProperty]
-  public int SomeNumber {get; private set;}
+    [NetworkProperty]
+    public string Message {get; private set;}
+    
+    [NetworkProperty]
+    public int SomeNumber {get; private set;}
 }
 ```
 
@@ -54,7 +54,7 @@ Now you can use it like this:
 var packet = new Message{
     Message = "Message Content",
     SomeNumber = 1293
-  };
+};
 ```
 
 And send it like this:
@@ -65,12 +65,13 @@ client.SendData(packet);
 Want to do some handling?
 ```c#
 [PacketHandler]
-public static class Handlers{
-  [HandlerMethod(15)]
-  public static void HandleMessage(Message m, ConnectionBase connection){
-    Console.WriteLine($"New Message: {m.Message}. Number: {m.SomeNumber}\n" + 
-                      $"From: {connection.GetEndpointIp()");
-  }
+public static class Handlers
+{
+    [HandlerMethod(15)]
+    public static void HandleMessage(Message m, ConnectionBase connection)
+    {
+        Console.WriteLine($"New Message: {m.Message}. Number: {m.SomeNumber}\nFrom: {connection.GetEndpointIp()}");
+    }
 }
 ```
 
