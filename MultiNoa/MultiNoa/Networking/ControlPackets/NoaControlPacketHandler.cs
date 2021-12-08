@@ -33,7 +33,7 @@ namespace MultiNoa.Networking.ControlPackets
                     RunningNoaVersion = MultiNoaSetup.VersionCode,
                     Username = c.GetClient().Username
                 };
-                c.SendData(PacketConverter.ObjectToByte(wReceived)); // TODO: Shorthand/Abstraction for sending objects instead of bytes.
+                c.SendData(wReceived);
                 
                 c.GetClient()?.InvokeOnClientReady();
                 c.InvokeOnConnected();

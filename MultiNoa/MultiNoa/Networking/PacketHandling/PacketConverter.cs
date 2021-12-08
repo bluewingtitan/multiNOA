@@ -101,7 +101,7 @@ namespace MultiNoa.Networking.PacketHandling
         }
 
 
-        public static byte[] ObjectToByte(object o, bool skipTypeCheck = false, bool writeLength = true)
+        public static List<byte> ObjectToByte(object o, bool skipTypeCheck = false, bool writeLength = true)
         {
             var bytes = new List<byte>();
             
@@ -157,8 +157,8 @@ namespace MultiNoa.Networking.PacketHandling
             if(writeLength) 
                 // Write length!
                 bytes.InsertRange(0, new NetworkInt(bytes.Count).TurnIntoBytes());
-            
-            return bytes.ToArray();
+
+            return bytes;
         }
 
         public static object BytesToObject(byte[] b, bool containsLength = false)

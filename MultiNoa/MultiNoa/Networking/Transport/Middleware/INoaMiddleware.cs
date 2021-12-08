@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace MultiNoa.Networking.Transport.Middleware
 {
     /// <summary>
@@ -19,7 +21,9 @@ namespace MultiNoa.Networking.Transport.Middleware
         /// </summary>
         /// <returns>If this middleware EVER modifies the input data</returns>
         public bool DoesModify();
-        public byte[] OnSend(byte[] data, ConnectionBase connection);
-        public byte[] OnReceive(byte[] data, ConnectionBase connection);
+        
+        public List<byte> OnSend(List<byte> data, ConnectionBase connection);
+        
+        public List<byte> OnReceive(List<byte> data, ConnectionBase connection);
     }
 }

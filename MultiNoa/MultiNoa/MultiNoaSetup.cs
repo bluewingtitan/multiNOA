@@ -17,7 +17,7 @@ namespace MultiNoa
         
         public const string VersionCode = "alpha-1.0";
         internal static bool SetupDone = false;
-        internal static INoaMiddleware[] NotModifyingMiddlewares = new INoaMiddleware[0];
+        internal static INoaMiddleware[] NonModifyingMiddlewares = new INoaMiddleware[0];
         internal static INoaMiddleware[] ModifyingMiddlewares = new INoaMiddleware[0];
         
         
@@ -90,7 +90,7 @@ namespace MultiNoa
                 }
             }
 
-            NotModifyingMiddlewares = notModifying.ToArray();
+            NonModifyingMiddlewares = notModifying.ToArray();
             ModifyingMiddlewares = modifying.ToArray();
         }
     }

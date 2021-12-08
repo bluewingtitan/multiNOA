@@ -11,14 +11,14 @@ namespace MultiNoa.Networking.Client
         protected readonly ulong _clientId;
         protected Room CurrentRoom { get; private set; }
         
-        public NoaServersideClient(ServerBase server, ConnectionBase connection, ulong id) : base("user")
+        public NoaServersideClient(ServerBase server, ConnectionBase connection, ulong id) : base("noa-user")
         {
             _server = server;
             _connection = connection;
             _clientId = id;
         }
 
-        public override void SendData(byte[] data)
+        public override void SendData(object data)
         {
             _connection.SendData(data);
         }

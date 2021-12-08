@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using MultiNoa.Networking.PacketHandling;
 
 namespace MultiNoa.Extensions
@@ -14,7 +15,7 @@ namespace MultiNoa.Extensions
         /// <param name="writeLength">Write packet length? (Needed to send bytes)</param>
         /// <typeparam name="T">Type to convert</typeparam>
         /// <returns>Population-State of byte[] "bytes"</returns>
-        public static bool TryConvertToBytes<T>(this T obj, out byte[] bytes, bool skipTypeCheck = false, bool writeLength = true) where T: struct
+        public static bool TryConvertToBytes<T>(this T obj, out List<byte> bytes, bool skipTypeCheck = false, bool writeLength = true) where T: struct
         {
             try
             {

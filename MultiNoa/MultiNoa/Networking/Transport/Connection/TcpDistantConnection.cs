@@ -169,7 +169,7 @@ namespace MultiNoa.Networking.Transport.Connection
             return _address;
         }
 
-        public override void SendData(byte[] data)
+        protected override void TransferData(byte[] data)
         {
             var bytes = data.Length;
             MultiNoaLoggingManager.Logger.Debug($"Sending {bytes} bytes to {GetEndpointIp()}");

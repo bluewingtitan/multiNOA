@@ -24,7 +24,7 @@ namespace ChatDemo
             MultiNoaLoggingManager.Logger.Information($"[{client.GetRoom().GetRoomName()}] <{client.Username}> {m.Message}");
             
                 
-            client.GetRoom().Broadcast(PacketConverter.ObjectToByte(answer), client);
+            client.GetRoom().Broadcast(answer, client);
         }
         
         

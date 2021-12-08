@@ -82,6 +82,7 @@ namespace MultiNoa.Networking.Rooms
             return success;
         }
 
+        
         public bool TryGetClient(ulong id, out ClientBase client)
         {
             return _clients.TryGetValue(id, out client);
@@ -93,7 +94,7 @@ namespace MultiNoa.Networking.Rooms
         }
 
 
-        public void Broadcast(byte[] message, ClientBase exclude = null)
+        public void Broadcast(object message, ClientBase exclude = null)
         {
             MultiNoaLoggingManager.Logger.Debug($"Broadcasting to {_clients.Count} clients");
             foreach (var (_, client) in _clients)

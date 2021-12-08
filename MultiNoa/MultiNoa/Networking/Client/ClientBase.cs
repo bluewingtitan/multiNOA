@@ -24,7 +24,7 @@ namespace MultiNoa.Networking.Client
                 {
                     NewUsername = value
                 };
-                GetConnection().SendData(PacketConverter.ObjectToByte(newName));
+                SendData(newName);
             }
         }
 
@@ -48,7 +48,7 @@ namespace MultiNoa.Networking.Client
         public delegate void ClientReadyDelegate(ClientBase client);
         internal event ClientReadyDelegate OnClientConnected;
         public event ClientReadyDelegate OnClientReady;
-        public abstract void SendData(byte[] data);
+        public abstract void SendData(object data);
         public abstract ServerBase GetServer();
         public abstract ConnectionBase GetConnection();
         public abstract ulong GetId();

@@ -1,23 +1,21 @@
+using System.Collections.Generic;
 using MultiNoa.Logging;
 
 namespace MultiNoa.Networking.Transport.Middleware
 {
     public class NoaNetworkLoggingMiddleware: INoaMiddleware
     {
-        public bool DoesModify()
-        {
-            return false;
-        }
+        public bool DoesModify() => false;
 
-        public byte[] OnSend(byte[] data, ConnectionBase connection)
+        public List<byte> OnSend(List<byte> data, ConnectionBase connection)
         {
-            MultiNoaLoggingManager.Logger.Verbose($"Sending {data.Length} bytes to {connection.GetEndpointIp()}");
+            MultiNoaLoggingManager.Logger.Verbose($"Sending {data.Count} bytes to {connection.GetEndpointIp()}");
             return data;
         }
 
-        public byte[] OnReceive(byte[] data, ConnectionBase connection)
+        public List<byte> OnReceive(List<byte> data, ConnectionBase connection)
         {
-            MultiNoaLoggingManager.Logger.Verbose($"Received {data.Length} bytes from {connection.GetEndpointIp()}");
+            MultiNoaLoggingManager.Logger.Verbose($"Received {data.Count} bytes from {connection.GetEndpointIp()}");
             return data;
         }
     }

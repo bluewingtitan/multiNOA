@@ -97,7 +97,7 @@ namespace MultiNoa.Networking.Transport.Connection
             return _address;
         }
 
-        public override void SendData(byte[] data)
+        protected override void TransferData(byte[] data)
         {
             if (_socket != null)
             {

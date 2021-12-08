@@ -66,7 +66,7 @@ namespace MultiNoa.Networking.Server
 
                     client.OnClientConnected += OnClientWelcomed;
                     
-                    connection.SendData(PacketConverter.ObjectToByte(packet));
+                    connection.SendData(packet);
 
                     return;
                 }

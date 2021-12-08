@@ -1,6 +1,10 @@
+using System;
+using System.Threading;
 using MultiNoa.GameSimulation;
 using MultiNoa.Networking.Client;
+using MultiNoa.Networking.Data.DataContainer;
 using MultiNoa.Networking.PacketHandling;
+using MultiNoa.Networking.Transport.Middleware;
 
 namespace MultiNoa.Networking.Transport
 {
@@ -27,10 +31,49 @@ namespace MultiNoa.Networking.Transport
         public abstract void PerSecondUpdate();
         public abstract void SetPacketHandler(IPacketHandler newHandler);
         public abstract string GetEndpointIp();
-        public abstract void SendData(byte[] data);
+        protected abstract void TransferData(byte[] data);
         public abstract ClientBase GetClient();
         public abstract void SetClient(ClientBase client);
 
+
+        public void SendData(object objectToSend, bool stayInThread = false)
+        {
+            if (stayInThread)
+            {
+                SendDataInThread(objectToSend);
+                return;
+            }
+
+            // => Do struct to packet, middleware and other logic in seperate thread to keep main game threads running
+            var t = new Thread(() =>
+            {
+                var bytes = PacketConverter.ObjectToByte(objectToSend, writeLength: false);
+
+                bytes = NoaMiddlewareManager.OnSend(bytes, this);
+
+                // Insert length
+                bytes.InsertRange(0, new NetworkInt(bytes.Count).TurnIntoBytes());
+
+                TransferData(bytes.ToArray());
+            });
+            t.Start();
+        }
+
+
+        private void SendDataInThread(object objectToSend)
+        {
+            var bytes = PacketConverter.ObjectToByte(objectToSend, writeLength: false);
+
+            bytes = NoaMiddlewareManager.OnSend(bytes, this);
+            
+            // Insert length
+            bytes.InsertRange(0, new NetworkInt(bytes.Count).TurnIntoBytes());
+
+            TransferData(bytes.ToArray());
+        }
+        
+        
+        
         internal void InvokeOnConnected()
         {
             OnConnected?.Invoke(this);

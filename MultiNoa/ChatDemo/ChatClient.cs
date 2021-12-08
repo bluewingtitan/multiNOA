@@ -40,7 +40,7 @@ namespace ChatDemo
                 {
                     Message = newInput
                 };
-                Connection.SendData(PacketConverter.ObjectToByte(msg));
+                SendData(msg);
             }
             
             Console.WriteLine("Thank you for using NoaChat.");
@@ -50,7 +50,7 @@ namespace ChatDemo
         }
         
         
-        public override void SendData(byte[] data)
+        public override void SendData(object data)
         {
             Connection.SendData(data);
         }
