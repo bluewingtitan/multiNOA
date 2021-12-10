@@ -4,6 +4,20 @@ namespace MultiNoa.Networking.Transport.Middleware
 {
     public static class NoaMiddlewareManager
     {
+
+        public static void OnConnectedServerside(ConnectionBase connection)
+        {
+            foreach (var nonModifyingMiddleware in MultiNoaSetup.NonModifyingMiddlewares)
+            {
+                nonModifyingMiddleware.OnConnectedServerside(connection);
+            }
+            
+            foreach (var nonModifyingMiddleware in MultiNoaSetup.ModifyingMiddlewares)
+            {
+                nonModifyingMiddleware.OnConnectedServerside(connection);
+            }
+        }
+        
         public static List<byte> OnSend(List<byte> bytes, ConnectionBase connection)
         {
             foreach (var nonModifyingMiddleware in MultiNoaSetup.NonModifyingMiddlewares)

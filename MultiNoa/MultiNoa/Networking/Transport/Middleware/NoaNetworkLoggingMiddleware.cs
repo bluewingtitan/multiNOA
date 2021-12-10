@@ -6,6 +6,10 @@ namespace MultiNoa.Networking.Transport.Middleware
     public class NoaNetworkLoggingMiddleware: INoaMiddleware
     {
         public bool DoesModify() => false;
+        public void OnConnectedServerside(ConnectionBase connection)
+        {
+            MultiNoaLoggingManager.Logger.Verbose($"Fully connected {connection.GetEndpointIp()}");
+        }
 
         public List<byte> OnSend(List<byte> data, ConnectionBase connection)
         {

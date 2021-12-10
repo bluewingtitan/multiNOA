@@ -68,7 +68,7 @@ namespace MultiNoa.Networking.Transport.Connection
             if (_socket != null)
             {
                 var bytes = data.Length;
-                MultiNoaLoggingManager.Logger.Debug($"Sending {bytes} bytes to {GetEndpointIp()}");
+                //MultiNoaLoggingManager.Logger.Debug($"Sending {bytes} bytes to {GetEndpointIp()}");
                 _stream.BeginWrite(data, 0, bytes, null, null);
             }
         }
@@ -78,16 +78,16 @@ namespace MultiNoa.Networking.Transport.Connection
         {
             try
             {
-                int byteLegth = _stream.EndRead(result);
-                MultiNoaLoggingManager.Logger.Debug($"Received {byteLegth} bytes from {GetEndpointIp()}");
-                if (byteLegth <= 0)
+                int byteLength = _stream.EndRead(result);
+                //MultiNoaLoggingManager.Logger.Debug($"Received {byteLength} bytes from {GetEndpointIp()}");
+                if (byteLength <= 0)
                 {
-                    Disconnect();
+                    //Disconnect();
                     return;
                 }
                 
-                byte[] data = new byte[byteLegth];
-                Array.Copy(_receiveBuffer, data, byteLegth);
+                byte[] data = new byte[byteLength];
+                Array.Copy(_receiveBuffer, data, byteLength);
 
                 HandleData(data);
                 

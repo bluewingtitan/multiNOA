@@ -50,9 +50,12 @@ namespace MultiNoa
         {
             if (SetupDone)
             {
-                MultiNoaLoggingManager.Logger.Warning($"Tried to setup multiNoa a second time. Stack Trace: {Environment.StackTrace}");
+                MultiNoaLoggingManager.Logger.Warning($"Tried to setup multiNoa a second time.\n{Environment.StackTrace}");
+                return;
             }
             SetupDone = true;
+
+            RegisterMiddlewares(config.Middlewares);
 
             PacketReflectionHandler.RegisterAssembly(typeof(MultiNoaConfig).Assembly);
             PacketReflectionHandler.RegisterAssembly(config.MainAssembly);

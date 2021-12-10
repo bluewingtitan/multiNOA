@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Reflection;
 using System.Threading;
 using MultiNoa;
 using MultiNoa.GameSimulation;
@@ -8,6 +9,8 @@ using MultiNoa.Networking.PacketHandling;
 using MultiNoa.Networking.Server;
 using MultiNoa.Networking.Transport;
 using MultiNoa.Networking.Transport.Connection;
+using MultiNoa.Networking.Transport.Middleware;
+using MultiNoaCryptography.RSA;
 
 namespace ChatDemo
 {
@@ -26,18 +29,25 @@ namespace ChatDemo
 
         private static void Main(string[] args)
         {
-            MultiNoaSetup.DefaultSetup(typeof(ChatApp).Assembly);
+            MultiNoaSetup.CustomSetup(
+                new MultiNoaConfig
+                {
+                    MainAssembly = typeof(ChatClient).Assembly,
+                    ExtraAssemblies = new Assembly[0],
+                    Middlewares = new INoaMiddleware[] {new NoaNetworkLoggingMiddleware(), new NoaRsaMiddleware(), }
+                });
 
             if (args.Length > 0)
             {
                 // => Start Server
                 MultiNoaLoggingManager.Logger.Information("Starting Server...");
                 _server = new NoaTcpServer(ServerPort, ProtocolVersion, 5, "Chat Server");
+
             }
             else
             {
                 // No debug messages!
-                MultiNoaLoggingManager.Logger = new MultiNoaLoggingManager.NoaNoLogger();
+                //MultiNoaLoggingManager.Logger = new MultiNoaLoggingManager.NoaNoLogger();
 
                 Console.Write("Username: ");
                 var username = Console.ReadLine();

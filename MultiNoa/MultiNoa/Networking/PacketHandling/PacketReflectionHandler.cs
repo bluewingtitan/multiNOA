@@ -36,12 +36,7 @@ namespace MultiNoa.Networking.PacketHandling
             {
                 throw new ArgumentException($"Passed type {t.FullName} does not contain PacketClass Attribute");
             }
-
-            if (!(t.IsAbstract && t.IsSealed))
-            {
-                throw new ArgumentException($"Passed type {t.FullName} is not a static class");
-            }
-
+            
 
             var isInternal = (t.GetCustomAttribute(typeof(MultiNoaInternal)) is MultiNoaInternal);
             
@@ -50,6 +45,13 @@ namespace MultiNoa.Networking.PacketHandling
                 .Where(e => e.GetCustomAttributes(typeof(HandlerMethod), true).Length > 0)
                 .Select(e =>
                 {
+                    if (!e.IsStatic)
+                    {
+                        MultiNoaLoggingManager.Logger.Warning($"Method {e.Name} is declared as handler method but not static.");
+                        return new KeyValuePair<MethodInfo, HandlerMethod>(null, null);
+                    }
+                    
+                    
                     // Not getting single specific attribute, as other attributes will be implemented at this point later on too!
                     var data = e.GetCustomAttributes().ToArray();
 

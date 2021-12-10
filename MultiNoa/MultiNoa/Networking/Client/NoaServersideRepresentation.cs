@@ -4,14 +4,17 @@ using MultiNoa.Networking.Transport;
 
 namespace MultiNoa.Networking.Client
 {
-    public class NoaServersideClient: ClientBase
+    /// <summary>
+    /// Represents a client on the server side.
+    /// </summary>
+    public class NoaServersideRepresentation: ClientBase
     {
         protected readonly ServerBase _server;
         protected readonly ConnectionBase _connection;
         protected readonly ulong _clientId;
         protected Room CurrentRoom { get; private set; }
         
-        public NoaServersideClient(ServerBase server, ConnectionBase connection, ulong id) : base("noa-user")
+        public NoaServersideRepresentation(ServerBase server, ConnectionBase connection, ulong id) : base("noa-user")
         {
             _server = server;
             _connection = connection;

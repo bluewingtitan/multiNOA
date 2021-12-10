@@ -5,6 +5,7 @@ using MultiNoa.Networking.ControlPackets;
 using MultiNoa.Networking.PacketHandling;
 using MultiNoa.Networking.Rooms;
 using MultiNoa.Networking.Transport;
+using MultiNoa.Networking.Transport.Middleware;
 
 // ReSharper disable VirtualMemberCallInConstructor
 
@@ -45,7 +46,7 @@ namespace MultiNoa.Networking.Server
         
         protected virtual IDynamicThread ConstructDynamicThread(int tps, string name) => new DynamicThread(tps, name);
 
-        protected virtual ClientBase ConstructClient(ConnectionBase connection, ulong clientId) => new NoaServersideClient(this, connection, clientId);
+        protected virtual ClientBase ConstructClient(ConnectionBase connection, ulong clientId) => new NoaServersideRepresentation(this, connection, clientId);
 
         public bool TryGetClient(ulong id, out ClientBase client) => _baseRoom.TryGetClient(id, out client);
 
@@ -86,6 +87,7 @@ namespace MultiNoa.Networking.Server
             Thread.AddOffsetTask(new OffsetAction(() => 
                 {
                     MultiNoaLoggingManager.Logger.Verbose($"Client {client.GetConnection().GetEndpointIp()} was fully connected");
+                    NoaMiddlewareManager.OnConnectedServerside(client.GetConnection());
                     client.OnClientConnected -= OnClientWelcomed;
                     _baseRoom.TryAddClient(client);
                     client.InvokeOnClientReady();

@@ -52,7 +52,7 @@ namespace MultiNoa.Networking.Transport.Connection
             try
             {
                 int byteLegth = _stream.EndRead(result);
-                MultiNoaLoggingManager.Logger.Debug($"Received {byteLegth} bytes from {GetEndpointIp()}");
+                //MultiNoaLoggingManager.Logger.Debug($"Received {byteLegth} bytes from {GetEndpointIp()}");
                 if (byteLegth <= 0)
                 {
                     Disconnect();
@@ -90,7 +90,7 @@ namespace MultiNoa.Networking.Transport.Connection
         protected override void TransferData(byte[] data)
         {
             var bytes = data.Length;
-            MultiNoaLoggingManager.Logger.Debug($"Sending {bytes} bytes to {GetEndpointIp()}");
+            //MultiNoaLoggingManager.Logger.Debug($"Sending {bytes} bytes to {GetEndpointIp()}");
             _stream.BeginWrite(data, 0, bytes, null, null);
         }
 

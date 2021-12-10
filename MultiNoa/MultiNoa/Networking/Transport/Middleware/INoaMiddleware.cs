@@ -21,6 +21,12 @@ namespace MultiNoa.Networking.Transport.Middleware
         /// </summary>
         /// <returns>If this middleware EVER modifies the input data</returns>
         public bool DoesModify();
+
+        /// <summary>
+        /// Called every time a connection is fully established (AFTER the protocol check)
+        /// </summary>
+        /// <param name="connection"></param>
+        public void OnConnectedServerside(ConnectionBase connection);
         
         public List<byte> OnSend(List<byte> data, ConnectionBase connection);
         

@@ -10,6 +10,12 @@ namespace MultiNoa.Networking.ControlPackets
             private const int Offset = -1024;
             public const int ConnectionRefusedPacket = Offset + 0;
             public const int WelcomePacket = Offset + 1;
+
+            #region Encryption
+
+            public const int RsaKeyFromServer = Offset + 64;
+
+            #endregion
         }
 
         public static class FromClient
@@ -17,6 +23,13 @@ namespace MultiNoa.Networking.ControlPackets
             private const int Offset = -2048;
             public const int WelcomeReceived = Offset + 0;
             public const int SyncUsername = Offset + 1;
+            
+            #region Encryption
+
+            public const int RsaKeyFromClient = Offset + 64;
+            
+            #endregion
         }
+        
     }
 }

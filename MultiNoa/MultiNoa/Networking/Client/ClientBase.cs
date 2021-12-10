@@ -7,6 +7,9 @@ using MultiNoa.Networking.Transport;
 
 namespace MultiNoa.Networking.Client
 {
+    /// <summary>
+    /// The base implementation of IClient.
+    /// </summary>
     public abstract class ClientBase
     {
         #region Synced Fields

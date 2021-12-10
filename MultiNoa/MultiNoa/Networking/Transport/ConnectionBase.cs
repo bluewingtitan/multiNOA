@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using MultiNoa.GameSimulation;
@@ -13,6 +14,7 @@ namespace MultiNoa.Networking.Transport
     public abstract class ConnectionBase: IUpdatable
     {
         private static readonly IPacketHandler DefaultHandler = new PacketReflectionHandler();
+        private readonly ConcurrentDictionary<INoaMiddleware, object> _middlewareData = new ConcurrentDictionary<INoaMiddleware, object>();
 
         protected ConnectionBase(string protocolVersion)
         {
@@ -25,9 +27,19 @@ namespace MultiNoa.Networking.Transport
             OnDisconnected += c => c.GetClient()?.GetRoom().RemoveClient(c.GetClient());
             // Recover from horror.
         }
+
+        public bool TryGetMiddlewareData(INoaMiddleware middleware, out object data)
+        {
+            return _middlewareData.TryGetValue(middleware, out data);
+        }
+
+        public void SetMiddlewareData(INoaMiddleware middleware, object data)
+        {
+            _middlewareData[middleware] = data;
+        }
         
         private IPacketHandler _handler;
-        private IDynamicThread currentThread;
+        private IDynamicThread _currentThread;
         private readonly string _protocolVersion;
         
         protected const int DataBufferSize = 4096;
@@ -54,25 +66,26 @@ namespace MultiNoa.Networking.Transport
         }
 
 
-        public void SendData(object objectToSend, bool stayInThread = false)
+        public void SendData(object objectToSend, bool stayInThread = false, bool skipMiddlewares = false)
         {
             if (stayInThread)
             {
-                SendDataInThread(objectToSend);
+                SendDataInThread(objectToSend, skipMiddlewares);
                 return;
             }
 
             // => Do struct to packet, middleware and other logic in separate thread to keep main game threads running
-            var t = new Thread(() => SendDataInThread(objectToSend));
+            var t = new Thread(() => SendDataInThread(objectToSend, skipMiddlewares));
             t.Start();
         }
 
 
-        private void SendDataInThread(object objectToSend)
+        private void SendDataInThread(object objectToSend, bool skipMiddlewares)
         {
             var bytes = PacketConverter.ObjectToByte(objectToSend, writeLength: false);
 
-            bytes = NoaMiddlewareManager.OnSend(bytes, this);
+            if(!skipMiddlewares)
+                bytes = NoaMiddlewareManager.OnSend(bytes, this);
             
             // Insert length
             bytes.InsertRange(0, new NetworkInt(bytes.Count).TurnIntoBytes());
@@ -102,7 +115,7 @@ namespace MultiNoa.Networking.Transport
             
             while (packetLenght > 0 && packetLenght <= packet.UnreadLength())
             {
-                MultiNoaLoggingManager.Logger.Debug($"Parsing packet of size {packetLenght}");
+                //MultiNoaLoggingManager.Logger.Debug($"Parsing packet of size {packetLenght}");
                 
                 // Do packet analysis now and prepare/schedule handling for next tick
                 var packetBytes = new List<byte>(packet.ReadBytes(packetLenght));
@@ -147,10 +160,10 @@ namespace MultiNoa.Networking.Transport
         
         public void ChangeThread(IDynamicThread newThread)
         {
-            if (currentThread != null)
+            if (_currentThread != null)
             {
-                currentThread.RemoveUpdatable(this); 
-                currentThread = newThread;
+                _currentThread.RemoveUpdatable(this); 
+                _currentThread = newThread;
             }
             newThread.AddUpdatable(this);
         }
