@@ -65,11 +65,6 @@ namespace ChatDemo
             Connection.Disconnect();
         }
 
-        public override Room GetRoom()
-        {
-            return null; // As it's clientside.
-        }
-
         public ChatClient(string username, string ip) : base(username)
         {
             MultiNoaLoggingManager.Logger.Information("Starting Client...");

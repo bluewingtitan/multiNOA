@@ -12,7 +12,6 @@ namespace MultiNoa.Networking.Client
         protected readonly ServerBase _server;
         protected readonly ConnectionBase _connection;
         protected readonly ulong _clientId;
-        protected Room CurrentRoom { get; private set; }
         
         public NoaServersideClient(ServerBase server, ConnectionBase connection, ulong id) : base("noa-user")
         {
@@ -44,29 +43,6 @@ namespace MultiNoa.Networking.Client
         public override void Disconnect()
         {
             _connection.Disconnect();
-        }
-
-        public override Room GetRoom()
-        {
-            return CurrentRoom;
-        }
-
-        public void MoveToRoom(Room room)
-        {
-            GetRoom()?.RemoveClient(this);
-            
-            if (GetRoom()?.GetRoomThread() != room.GetRoomThread())
-            {
-                GetConnection().ChangeThread(room.GetRoomThread());
-            }
-            
-            
-            OnMovedToRoom(room);
-        }
-
-        protected void OnMovedToRoom(Room room)
-        {
-            CurrentRoom = room;
         }
     }
 }
