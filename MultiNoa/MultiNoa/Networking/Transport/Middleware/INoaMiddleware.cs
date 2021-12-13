@@ -23,6 +23,11 @@ namespace MultiNoa.Networking.Transport.Middleware
         public bool DoesModify();
 
         /// <summary>
+        /// Called once before setup, and before calling DoesModify().
+        /// </summary>
+        public void Setup();
+
+        /// <summary>
         /// Called every time a connection is fully established (AFTER the protocol check)
         /// </summary>
         /// <param name="connection"></param>

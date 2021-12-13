@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using MultiNoa.Logging;
@@ -7,22 +8,50 @@ using MultiNoa.Networking.PacketHandling;
 using MultiNoa.Networking.Transport;
 using MultiNoa.Networking.Transport.Middleware;
 
-namespace MultiNoaCryptography.RSA
+namespace MultiNoa.Networking.Transport.Middleware
 {
     [PacketHandler]
     [MultiNoaInternal]
     public class NoaRsaMiddleware: INoaMiddleware
     {
-        private static NoaRsaMiddleware instance;
+        /// <summary>
+        /// Used as key in the clients middleware data storage.
+        /// </summary>
+        private static NoaRsaMiddleware _instance;
         
+        /// <summary>
+        /// The padding to use for cryptography.
+        /// </summary>
+        private static readonly RSAEncryptionPadding Padding = RSAEncryptionPadding.Pkcs1;
+        
+        /// <summary>
+        /// Amount of bytes in key size.
+        /// </summary>
         private const int KeySize = 2048;
+        
+        /// <summary>
+        /// Amount of bytes fitting into a key of specified size.
+        /// </summary>
+        private const int BlockSpace = 214;
+        
+        
+        /// <summary>
+        /// Amount of bytes in a block when decrypting
+        /// </summary>
+        private const int BlockSize = 256;
+
+        private delegate byte[] CryptoFunction(byte[] data, RSAEncryptionPadding padding);
 
         public NoaRsaMiddleware()
         {
-            instance = this;
+            _instance = this;
         }
         
         public bool DoesModify() => true;
+        public void Setup()
+        {
+            MultiNoaLoggingManager.Logger.Information("Initialized NoaRsaMiddleware. Please be aware of the fact, that this middleware bloats up data to a multiple of 256 bytes and may be quite memory-intensive.");
+        }
 
         public void OnConnectedServerside(ConnectionBase connection)
         {
@@ -33,7 +62,7 @@ namespace MultiNoaCryptography.RSA
             var key = rsa.ExportRSAPublicKey();
             
             var data = new EncryptionData(rsa, null);
-            connection.SetMiddlewareData(instance, data);
+            connection.SetMiddlewareData(_instance, data);
             
             MultiNoaLoggingManager.Logger.Debug($"Sending {connection.GetEndpointIp()} public key of size {key.Length}");
             
@@ -43,10 +72,10 @@ namespace MultiNoaCryptography.RSA
             }, skipMiddlewares: true);
         }
 
-        // TODO: Split up into blocks of 256 bytes!
+        
         public List<byte> OnSend(List<byte> data, ConnectionBase connection)
         {
-            if (!connection.TryGetMiddlewareData(instance, out var mData))
+            if (!connection.TryGetMiddlewareData(_instance, out var mData))
             {
                 return data;
             }
@@ -56,20 +85,39 @@ namespace MultiNoaCryptography.RSA
                 if (!encryptionData.Initialized)
                     return data;
                 
-                return new List<byte>(
-                    encryptionData.DistantRsa.Encrypt(data.ToArray(), RSAEncryptionPadding.Pkcs1)
-                );
+                return CryptographyHelper(data, BlockSpace, (bytes, padding) => encryptionData.DistantRsa.Encrypt(bytes, padding));
             }
             
             MultiNoaLoggingManager.Logger.Error($"Wasn't able to encrypt message to {connection.GetEndpointIp()}\n" +
                                                 $"Reason: Faulty key data.");
             return data;
-
         }
 
+        private static List<byte> CryptographyHelper(List<byte> data, int blockSize, CryptoFunction cryptoFunction)
+        {
+            var blocks = (int) Math.Ceiling((double) data.Count / blockSize);
+
+            var totalLength = blocks * blockSize;
+
+            while (data.Count < totalLength)
+                data.Add(0);
+
+            for (int bn = 0; bn < blocks; bn++)
+            {
+                var removed = data.GetRange(0, blockSize).ToArray();
+                data.RemoveRange(0, blockSize);
+                
+                var encrypted = cryptoFunction(removed, Padding);
+                data.AddRange(encrypted);
+            }
+
+            return data;
+        }
+        
+        
         public List<byte> OnReceive(List<byte> data, ConnectionBase connection)
         {
-            if (!connection.TryGetMiddlewareData(instance, out var mData))
+            if (!connection.TryGetMiddlewareData(_instance, out var mData))
             {
                 return data;
             }
@@ -79,9 +127,7 @@ namespace MultiNoaCryptography.RSA
                 if (!encryptionData.Initialized)
                     return data;
                 
-                return new List<byte>(
-                    encryptionData.LocalRsa.Decrypt(data.ToArray(), RSAEncryptionPadding.Pkcs1)
-                );
+                return CryptographyHelper(data, BlockSize,(bytes, padding) => encryptionData.LocalRsa.Decrypt(bytes, padding));
             }
             
             MultiNoaLoggingManager.Logger.Error($"Wasn't able to encrypt message to {connection.GetEndpointIp()}\n" +
@@ -138,7 +184,7 @@ namespace MultiNoaCryptography.RSA
 
             var data = new EncryptionData(rsa, distantRsa) {Initialized = true};
 
-            connection.SetMiddlewareData(instance, data);
+            connection.SetMiddlewareData(_instance, data);
             
             MultiNoaLoggingManager.Logger.Debug($"Sending {connection.GetEndpointIp()} public key of size {distantKey.Length}");
             
@@ -153,7 +199,7 @@ namespace MultiNoaCryptography.RSA
         {
             var key = fromClient.Key.GetTypedValue();
             
-            if (!connection.TryGetMiddlewareData(instance, out var mData))
+            if (!connection.TryGetMiddlewareData(_instance, out var mData))
             {
                 MultiNoaLoggingManager.Logger.Error($"Wasn't able to conclude public key exchange with {connection.GetEndpointIp()}! The connection will stay unencrypted!\n" +
                                                     $"Reason: Lost private key.");
@@ -173,7 +219,7 @@ namespace MultiNoaCryptography.RSA
             encryptionData.DistantRsa = newRsa;
             encryptionData.Initialized = true;
             
-            connection.SetMiddlewareData(instance, encryptionData);
+            connection.SetMiddlewareData(_instance, encryptionData);
 
         }
 

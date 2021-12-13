@@ -1,16 +1,9 @@
 ﻿using System;
-using System.Net;
 using System.Reflection;
-using System.Threading;
 using MultiNoa;
-using MultiNoa.GameSimulation;
 using MultiNoa.Logging;
-using MultiNoa.Networking.PacketHandling;
 using MultiNoa.Networking.Server;
-using MultiNoa.Networking.Transport;
-using MultiNoa.Networking.Transport.Connection;
 using MultiNoa.Networking.Transport.Middleware;
-using MultiNoaCryptography.RSA;
 
 namespace ChatDemo
 {
@@ -19,6 +12,10 @@ namespace ChatDemo
     /// With the built API in here, one could build an entire basic chatroom without writing any code towards networking other than the one allready there.
     ///
     /// It's a demonstration of the simplicity multiNoa allows.
+    ///
+    ///
+    /// It's running at 5 ticks per second (more is definitely not needed for a chat app...),
+    /// so it might appear slower, as it's waiting for the next tick on the server, then for the next tick on the client too.
     /// </summary>
     internal static class ChatApp
     {
