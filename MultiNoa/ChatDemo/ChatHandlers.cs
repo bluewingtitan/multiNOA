@@ -1,5 +1,6 @@
 using System;
 using MultiNoa.Logging;
+using MultiNoa.Networking.Client;
 using MultiNoa.Networking.PacketHandling;
 using MultiNoa.Networking.Transport;
 
@@ -13,15 +14,15 @@ namespace ChatDemo
         [HandlerMethod(0)]
         public static void HandleMessageSend(ChatPackets.FromClient.MessageFromClient m, ConnectionBase c)
         {
-            var client = c.GetClient();
+            var client = (IServersideClient) c.GetClient();
             
             var answer = new ChatPackets.FromServer.MessageFromServer
             {
                 Message = m.Message,
-                Username = client.Username
+                Username = client.GetUsername()
             };
             
-            MultiNoaLoggingManager.Logger.Information($"[{client.GetRoom().GetRoomName()}] <{client.Username}> {m.Message}");
+            MultiNoaLoggingManager.Logger.Information($"[{client.GetRoom().GetRoomName()}] <{client.GetUsername()}> {m.Message}");
             
                 
             client.GetRoom().Broadcast(answer, client);

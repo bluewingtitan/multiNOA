@@ -8,72 +8,63 @@ using MultiNoa.Networking.Transport;
 namespace MultiNoa.Networking.Client
 {
     /// <summary>
-    /// The base implementation of IClient.
+    /// The base implementation of IClient
     /// </summary>
-    public abstract class ClientBase
+    public abstract class ClientBase: IClient
     {
         #region Synced Fields
+        protected string _username = "User";
 
-        private string _username = "User";
-
-        public string Username
+        public string GetUsername()
         {
-            get => _username;
-            set
-            {
-                _username = value;
-                // Sync new name
-                var newName = new NoaControlPackets.FromClient.SyncUsername
-                {
-                    NewUsername = value
-                };
-                SendData(newName);
-            }
+            return _username;
         }
 
-        /// <summary>
-        /// Sets the username without syncing back.
-        /// </summary>
-        /// <param name="newName"></param>
-        internal void SetUsernameUnsynced(string newName)
+        public void SetUsername(string username, bool synced = true)
         {
-            _username = newName;
+            if (synced)
+            {
+                // TODO: Sync!
+                
+            }
+
+            _username = username;
         }
 
         #endregion
-
 
         public ClientBase(string username)
         {
             _username = username;
         }
         
-        public delegate void ClientReadyDelegate(ClientBase client);
-        internal event ClientReadyDelegate OnClientConnected;
-        public event ClientReadyDelegate OnClientReady;
+        internal event IClient.ClientReadyDelegate OnClientConnected;
+        public event IClient.ClientReadyDelegate OnClientReady;
         public abstract void SendData(object data);
-        public abstract ServerBase GetServer();
         public abstract ConnectionBase GetConnection();
-        public abstract ulong GetId();
         public abstract void Disconnect();
         public abstract Room GetRoom();
 
-        public void MoveToRoom(Room room)
+        public void AddOnClientConnected(IClient.ClientReadyDelegate callback)
         {
-            GetRoom()?.RemoveClient(this);
-            
-            if (GetRoom()?.GetRoomThread() != room.GetRoomThread())
-            {
-                GetConnection().ChangeThread(room.GetRoomThread());
-            }
-            
-            
-            OnMovedToRoom(room);
+            OnClientConnected += callback;
         }
+        public void RemoveOnClientConnected(IClient.ClientReadyDelegate callback)
+        {
+            OnClientConnected -= callback;
+        }
+        public void InvokeOnClientConnected() => OnClientConnected?.Invoke(this);
         
-        internal void InvokeOnClientConnected() => OnClientConnected?.Invoke(this);
-        internal void InvokeOnClientReady() => OnClientReady?.Invoke(this);
+        
+        public void AddOnOnClientReady(IClient.ClientReadyDelegate callback)
+        {
+            OnClientReady += callback;
+        }
+        public void RemoveOnClientReady(IClient.ClientReadyDelegate callback)
+        {
+            OnClientReady -= callback;
+        }
+        public void InvokeOnClientReady() => OnClientReady?.Invoke(this);
 
-        protected abstract void OnMovedToRoom(Room room);
     }
 }

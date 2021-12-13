@@ -18,13 +18,22 @@ namespace MultiNoa.Networking.Transport
 
         protected ConnectionBase(string protocolVersion)
         {
-            this._client = null;
+            _client = null;
             _handler = DefaultHandler;
             _protocolVersion = protocolVersion;
             ChangeThread(MultiNoaSetup.DefaultThread);
             
             // Prepare for horror.
-            OnDisconnected += c => c.GetClient()?.GetRoom().RemoveClient(c.GetClient());
+
+            OnDisconnected += c =>
+            {
+                if (c.GetClient() is IServersideClient sClient)
+                {
+
+                    sClient.GetRoom().RemoveClient(sClient);
+                }
+            };
+
             // Recover from horror.
         }
 
@@ -44,7 +53,7 @@ namespace MultiNoa.Networking.Transport
         
         protected const int DataBufferSize = 4096;
 
-        private ClientBase _client;
+        private IClient _client;
         public delegate void ConnectionEventDelegate(ConnectionBase connection);
 
         public event ConnectionEventDelegate OnConnected;
@@ -57,10 +66,10 @@ namespace MultiNoa.Networking.Transport
         public abstract void PerSecondUpdate();
         public abstract string GetEndpointIp();
         protected abstract void TransferData(byte[] data);
-        public ClientBase GetClient() => _client;
+        public IClient GetClient() => _client;
         private readonly ExecutionScheduler _handlers = new ExecutionScheduler();
 
-        public void SetClient(ClientBase client)
+        public void SetClient(IClient client)
         {
             _client = client;
         }

@@ -31,7 +31,7 @@ namespace MultiNoa.Networking.ControlPackets
                 var wReceived = new NoaControlPackets.FromClient.WelcomeReceived()
                 {
                     RunningNoaVersion = MultiNoaSetup.VersionCode,
-                    Username = c.GetClient().Username
+                    Username = c.GetClient().GetUsername()
                 };
                 c.SendData(wReceived);
                 
@@ -55,7 +55,7 @@ namespace MultiNoa.Networking.ControlPackets
                 
                 c.GetClient()?.InvokeOnClientConnected();
                 c.InvokeOnConnected();
-                c.GetClient()?.SetUsernameUnsynced(welcomeReceived.Username);
+                c.GetClient()?.SetUsername(welcomeReceived.Username, false);
             }
 
             [HandlerMethod(NoaControlPacketIds.FromClient.SyncUsername)]
@@ -64,8 +64,8 @@ namespace MultiNoa.Networking.ControlPackets
                 var client = c.GetClient();
                 if (client != null)
                 {
-                    MultiNoaLoggingManager.Logger.Verbose($"Changed Username of {c.GetEndpointIp()} from '{client.Username}' to '{username.NewUsername}'");
-                    c.GetClient()?.SetUsernameUnsynced(username.NewUsername);
+                    MultiNoaLoggingManager.Logger.Verbose($"Changed Username of {c.GetEndpointIp()} from '{client.GetUsername()}' to '{username.NewUsername}'");
+                    c.GetClient()?.SetUsername(username.NewUsername, false);
                 }
             }
         }

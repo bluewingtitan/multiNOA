@@ -7,14 +7,14 @@ namespace MultiNoa.Networking.Client
     /// <summary>
     /// Represents a client on the server side.
     /// </summary>
-    public class NoaServersideRepresentation: ClientBase
+    public class NoaServersideClient: ClientBase, IServersideClient
     {
         protected readonly ServerBase _server;
         protected readonly ConnectionBase _connection;
         protected readonly ulong _clientId;
         protected Room CurrentRoom { get; private set; }
         
-        public NoaServersideRepresentation(ServerBase server, ConnectionBase connection, ulong id) : base("noa-user")
+        public NoaServersideClient(ServerBase server, ConnectionBase connection, ulong id) : base("noa-user")
         {
             _server = server;
             _connection = connection;
@@ -26,7 +26,7 @@ namespace MultiNoa.Networking.Client
             _connection.SendData(data);
         }
 
-        public override ServerBase GetServer()
+        public ServerBase GetServer()
         {
             return _server;
         }
@@ -36,7 +36,7 @@ namespace MultiNoa.Networking.Client
             return _connection;
         }
 
-        public override ulong GetId()
+        public ulong GetId()
         {
             return _clientId;
         }
@@ -51,7 +51,20 @@ namespace MultiNoa.Networking.Client
             return CurrentRoom;
         }
 
-        protected override void OnMovedToRoom(Room room)
+        public void MoveToRoom(Room room)
+        {
+            GetRoom()?.RemoveClient(this);
+            
+            if (GetRoom()?.GetRoomThread() != room.GetRoomThread())
+            {
+                GetConnection().ChangeThread(room.GetRoomThread());
+            }
+            
+            
+            OnMovedToRoom(room);
+        }
+
+        protected void OnMovedToRoom(Room room)
         {
             CurrentRoom = room;
         }

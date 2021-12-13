@@ -15,7 +15,7 @@ namespace MultiNoa.Networking.Rooms
     {
         private static ulong _roomId = 0;
         
-        private readonly IDictionary<ulong, ClientBase> _clients;
+        private readonly IDictionary<ulong, IServersideClient> _clients;
         
         protected readonly string Password;
         protected readonly string Roomname;
@@ -35,9 +35,9 @@ namespace MultiNoa.Networking.Rooms
         public Room(ServerBase server, IDynamicThread thread, string roomName = "Room",bool threadSaveMode = false, string password = null)
         {
             if(threadSaveMode)
-                _clients = new ConcurrentDictionary<ulong, ClientBase>();
+                _clients = new ConcurrentDictionary<ulong, IServersideClient>();
             else
-                _clients = new Dictionary<ulong, ClientBase>();
+                _clients = new Dictionary<ulong, IServersideClient>();
 
             RoomId = _roomId;
             _roomId++;
@@ -64,7 +64,7 @@ namespace MultiNoa.Networking.Rooms
             return RoomId;
         }
 
-        public bool TryAddClient(ClientBase client, string password = null)
+        public bool TryAddClient(IServersideClient client, string password = null)
         {
             if (!string.IsNullOrEmpty(Password) && !string.Equals(password, Password))
             {
@@ -83,18 +83,18 @@ namespace MultiNoa.Networking.Rooms
         }
 
         
-        public bool TryGetClient(ulong id, out ClientBase client)
+        public bool TryGetClient(ulong id, out IServersideClient client)
         {
             return _clients.TryGetValue(id, out client);
         }
 
-        internal void RemoveClient(ClientBase client)
+        internal void RemoveClient(IServersideClient client)
         {
             _clients.Remove(client.GetId());
         }
 
 
-        public void Broadcast(object message, ClientBase exclude = null)
+        public void Broadcast(object message, IServersideClient exclude = null)
         {
             MultiNoaLoggingManager.Logger.Debug($"Broadcasting to {_clients.Count} clients");
             foreach (var (_, client) in _clients)

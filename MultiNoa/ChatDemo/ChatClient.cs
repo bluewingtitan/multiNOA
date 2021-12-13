@@ -11,7 +11,7 @@ using MultiNoa.Networking.Transport.Connection;
 
 namespace ChatDemo
 {
-    public class ChatClient: ClientBase
+    public class ChatClient: ClientBase, IUserSideClient
     {
         protected readonly TcpConnection Connection;
         protected readonly ulong ClientId = 0;
@@ -54,19 +54,10 @@ namespace ChatDemo
             Connection.SendData(data);
         }
 
-        public override ServerBase GetServer()
-        {
-            return null; // As it's clientside
-        }
 
         public override ConnectionBase GetConnection()
         {
             return Connection;
-        }
-
-        public override ulong GetId()
-        {
-            return ClientId;
         }
 
         public override void Disconnect()
@@ -77,11 +68,6 @@ namespace ChatDemo
         public override Room GetRoom()
         {
             return null; // As it's clientside.
-        }
-
-        protected override void OnMovedToRoom(Room room)
-        {
-            
         }
 
         public ChatClient(string username, string ip) : base(username)

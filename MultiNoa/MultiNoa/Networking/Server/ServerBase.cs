@@ -46,9 +46,9 @@ namespace MultiNoa.Networking.Server
         
         protected virtual IDynamicThread ConstructDynamicThread(int tps, string name) => new DynamicThread(tps, name);
 
-        protected virtual ClientBase ConstructClient(ConnectionBase connection, ulong clientId) => new NoaServersideRepresentation(this, connection, clientId);
+        protected virtual IServersideClient ConstructClient(ConnectionBase connection, ulong clientId) => new NoaServersideClient(this, connection, clientId);
 
-        public bool TryGetClient(ulong id, out ClientBase client) => _baseRoom.TryGetClient(id, out client);
+        public bool TryGetClient(ulong id, out IServersideClient client) => _baseRoom.TryGetClient(id, out client);
 
         private void OnConnected(ConnectionBase connection)
         {
@@ -65,7 +65,7 @@ namespace MultiNoa.Networking.Server
                         RunningNoaVersion = MultiNoaSetup.VersionCode
                     };
 
-                    client.OnClientConnected += OnClientWelcomed;
+                    client.AddOnClientConnected(OnClientWelcomed);
                     
                     connection.SendData(packet);
 
@@ -82,23 +82,23 @@ namespace MultiNoa.Networking.Server
         /// Event invoked once client sends "WelcomeReceived"-Packet, stating the wish of being fully connected.
         /// </summary>
         /// <param name="client"></param>
-        private void OnClientWelcomed(ClientBase client)
+        private void OnClientWelcomed(IClient client)
         {
             Thread.AddOffsetTask(new OffsetAction(() => 
                 {
                     MultiNoaLoggingManager.Logger.Verbose($"Client {client.GetConnection().GetEndpointIp()} was fully connected");
                     NoaMiddlewareManager.OnConnectedServerside(client.GetConnection());
-                    client.OnClientConnected -= OnClientWelcomed;
-                    _baseRoom.TryAddClient(client);
+                    client.RemoveOnClientConnected(OnClientWelcomed);
+                    _baseRoom.TryAddClient((IServersideClient) client);
                     client.InvokeOnClientReady();
                 }, 0));
         }
         
         public void Stop()
         {
+            OnStop();
             _listener.StopListening();
             Thread.Stop();
-            OnStop();
         }
         
         public IDynamicThread GetServerThread()
@@ -119,6 +119,5 @@ namespace MultiNoa.Networking.Server
         protected abstract void OnUpdate();
         protected abstract void OnPerSecondUpdate();
         protected abstract void OnStop();
-
     }
 }
