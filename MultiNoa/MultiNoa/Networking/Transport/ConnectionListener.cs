@@ -1,5 +1,3 @@
-using MultiNoa.Networking.Server;
-
 namespace MultiNoa.Networking.Transport
 {
     /// <summary>

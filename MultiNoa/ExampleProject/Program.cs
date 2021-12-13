@@ -1,6 +1,4 @@
-﻿using System;
-using System.Reflection;
-using ExampleProject.Packets;
+﻿using ExampleProject.Packets;
 using MultiNoa;
 using MultiNoa.Networking.PacketHandling;
 

@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
-using MultiNoa.GameSimulation;
 using MultiNoa.Logging;
-using MultiNoa.Networking.Client;
-using MultiNoa.Networking.Data.DataContainer;
-using MultiNoa.Networking.PacketHandling;
 
 namespace MultiNoa.Networking.Transport.Connection
 {

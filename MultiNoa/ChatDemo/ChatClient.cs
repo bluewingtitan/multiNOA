@@ -1,11 +1,7 @@
 using System;
 using System.Threading;
-using MultiNoa.GameSimulation;
 using MultiNoa.Logging;
 using MultiNoa.Networking.Client;
-using MultiNoa.Networking.PacketHandling;
-using MultiNoa.Networking.Rooms;
-using MultiNoa.Networking.Server;
 using MultiNoa.Networking.Transport;
 using MultiNoa.Networking.Transport.Connection;
 

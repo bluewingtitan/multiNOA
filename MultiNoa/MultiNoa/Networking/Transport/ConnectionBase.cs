@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using MultiNoa.GameSimulation;
-using MultiNoa.Logging;
 using MultiNoa.Networking.Client;
 using MultiNoa.Networking.Data.DataContainer;
 using MultiNoa.Networking.PacketHandling;

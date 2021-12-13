@@ -1,4 +1,3 @@
-using System;
 using MultiNoa.Networking.Transport.Connection;
 
 namespace MultiNoa.Networking.Server

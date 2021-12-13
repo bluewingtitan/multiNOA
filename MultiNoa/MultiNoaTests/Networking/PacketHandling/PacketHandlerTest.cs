@@ -1,7 +1,4 @@
-using System;
-using System.Text;
 using MultiNoa;
-using MultiNoa.Logging;
 using MultiNoa.Networking.Data;
 using MultiNoa.Networking.Data.DataContainer;
 using MultiNoa.Networking.Data.DataContainer.Generic;

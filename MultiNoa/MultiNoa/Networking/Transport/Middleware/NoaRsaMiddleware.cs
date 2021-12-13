@@ -5,8 +5,6 @@ using MultiNoa.Logging;
 using MultiNoa.Networking.ControlPackets;
 using MultiNoa.Networking.Data.DataContainer.Generic;
 using MultiNoa.Networking.PacketHandling;
-using MultiNoa.Networking.Transport;
-using MultiNoa.Networking.Transport.Middleware;
 
 namespace MultiNoa.Networking.Transport.Middleware
 {
