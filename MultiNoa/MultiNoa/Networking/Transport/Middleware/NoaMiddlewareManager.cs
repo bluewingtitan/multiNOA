@@ -12,24 +12,25 @@ namespace MultiNoa.Networking.Transport.Middleware
                 nonModifyingMiddleware.OnConnectedServerside(connection);
             }
             
-            foreach (var nonModifyingMiddleware in MultiNoaSetup.ModifyingMiddlewares)
+            foreach (var modifyingMiddleware in MultiNoaSetup.ModifyingMiddlewares)
             {
-                nonModifyingMiddleware.OnConnectedServerside(connection);
+                modifyingMiddleware.OnConnectedServerside(connection);
             }
         }
         
         public static List<byte> OnSend(List<byte> bytes, ConnectionBase connection)
         {
-            foreach (var nonModifyingMiddleware in MultiNoaSetup.NonModifyingMiddlewares)
-            {
-                nonModifyingMiddleware.OnSend(bytes, connection);
-            }
 
             var nextBytes = bytes;
             
             for (var i = 0; i < MultiNoaSetup.ModifyingMiddlewares.Length; i++)
             {
                 nextBytes = MultiNoaSetup.ModifyingMiddlewares[i].OnSend(nextBytes, connection);
+            }
+            
+            foreach (var nonModifyingMiddleware in MultiNoaSetup.NonModifyingMiddlewares)
+            {
+                nonModifyingMiddleware.OnSend(nextBytes, connection);
             }
 
             return nextBytes;

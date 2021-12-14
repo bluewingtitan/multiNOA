@@ -15,7 +15,7 @@ namespace MultiNoa.Networking.Transport.Middleware
         /// <summary>
         /// Used as key in the clients middleware data storage.
         /// </summary>
-        private static NoaRsaMiddleware _instance;
+        private static NoaRsaMiddleware _instance = null;
         
         /// <summary>
         /// The padding to use for cryptography.
@@ -42,7 +42,7 @@ namespace MultiNoa.Networking.Transport.Middleware
 
         public NoaRsaMiddleware()
         {
-            _instance = this;
+            _instance ??= this;
         }
         
         public bool DoesModify() => true;

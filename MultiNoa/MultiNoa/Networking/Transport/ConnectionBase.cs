@@ -11,6 +11,9 @@ namespace MultiNoa.Networking.Transport
 {
     public abstract class ConnectionBase: IUpdatable
     {
+        protected const int DataBufferSize = 4096;
+        
+        
         private static readonly IPacketHandler DefaultHandler = new PacketReflectionHandler();
         private readonly ConcurrentDictionary<INoaMiddleware, object> _middlewareData = new ConcurrentDictionary<INoaMiddleware, object>();
 
@@ -49,7 +52,6 @@ namespace MultiNoa.Networking.Transport
         private IDynamicThread _currentThread;
         private readonly string _protocolVersion;
         
-        protected const int DataBufferSize = 4096;
 
         private IClient _client;
         public delegate void ConnectionEventDelegate(ConnectionBase connection);
@@ -73,19 +75,12 @@ namespace MultiNoa.Networking.Transport
         }
 
 
-        public void SendData(object objectToSend, bool stayInThread = false, bool skipMiddlewares = false)
+        public void SendData(object objectToSend, bool skipMiddlewares = false)
         {
-            if (stayInThread)
-            {
-                SendDataInThread(objectToSend, skipMiddlewares);
-                return;
-            }
-
             // => Do struct to packet, middleware and other logic in separate thread to keep main game threads running
             var t = new Thread(() => SendDataInThread(objectToSend, skipMiddlewares));
             t.Start();
         }
-
 
         private void SendDataInThread(object objectToSend, bool skipMiddlewares)
         {

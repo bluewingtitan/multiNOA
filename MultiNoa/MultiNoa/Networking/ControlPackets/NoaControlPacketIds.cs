@@ -1,3 +1,5 @@
+using MultiNoa.Networking.Transport.Middleware.Fragmentation;
+
 namespace MultiNoa.Networking.ControlPackets
 {
     /// <summary>
@@ -30,6 +32,20 @@ namespace MultiNoa.Networking.ControlPackets
             
             #endregion
         }
+
+
+        public static class Symmetrical
+        {
+            private const int Offset = -4069;
+            
+            #region Fragmentation
+
+            public const int FragmentPacket = Offset + 0;
+
+            #endregion
+            
+        }
+        
         
     }
 }

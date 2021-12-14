@@ -6,6 +6,8 @@ namespace MultiNoa.Networking.Transport.Connection
 {
     public class TcpConnection: ConnectionBase
     {
+        private object _lockObj = 0;
+        
         private string _address = null;
         private TcpClient _socket;
         
@@ -63,8 +65,12 @@ namespace MultiNoa.Networking.Transport.Connection
             if (_socket != null)
             {
                 var bytes = data.Length;
-                //MultiNoaLoggingManager.Logger.Debug($"Sending {bytes} bytes to {GetEndpointIp()}");
-                _stream.BeginWrite(data, 0, bytes, null, null);
+
+                // Never write into the stream multiple times!
+                lock (_lockObj)
+                {
+                    _stream.BeginWrite(data, 0, bytes, null, null);
+                }
             }
         }
 
