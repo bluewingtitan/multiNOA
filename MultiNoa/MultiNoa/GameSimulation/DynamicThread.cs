@@ -5,15 +5,8 @@ using MultiNoa.Logging;
 
 namespace MultiNoa.GameSimulation
 {
-    public class DynamicThread
+    public class DynamicThread:IDynamicThread
     {
-        public static bool AreRunning { get; private set; }
-
-        /// <summary>
-        /// Stops all running dynamic threads => not reversable, only use as part of a stop-routine!
-        /// </summary>
-        public static void StopAll() => AreRunning = false;
-        
         /**
          * Use DynamicThread.Stop() to stop this thread.
          */
@@ -53,31 +46,36 @@ namespace MultiNoa.GameSimulation
             _runningThread = new Thread(ThreadFunction) {Name = ThreadName};
             _runningThread.Start();
         }
-        
-        
 
         public void Stop()
         {
             IsRunning = false;
         }
-
-
+        
         private void ThreadFunction()
         {
             MultiNoaLoggingManager.Logger.Information($"Thread {ThreadName} was started successfully.");
 
-            var tickStart = DateTime.Now;
+            var nextLoop = DateTime.Now;
+            var ticksBehind = 0;
+            var ticksUntilSecondTick = GoalTPS;
             
-            DateTime nextLoop = DateTime.Now;
-            int ticksBehind = 0;
-            
-            while (AreRunning && IsRunning)
+            while (IDynamicThread.AreRunning && IsRunning)
             {
                 while (nextLoop < DateTime.Now)
                 {
-                    tickStart = DateTime.Now;
+                    var tickStart = DateTime.Now;
                     _scheduler.ExecuteAll();
                     Update();
+                    
+                    ticksUntilSecondTick--;
+
+                    if (ticksUntilSecondTick <= 0)
+                    {
+                        ticksUntilSecondTick = GoalTPS;
+                        PerSecondUpdates();
+                    }
+                    
                     
                     #region Tick management
 
@@ -160,7 +158,13 @@ namespace MultiNoa.GameSimulation
             _scheduler.ScheduleExecution(() => OffsetTasks.Add(task));
         }
         
-        
+        private void PerSecondUpdates()
+        {
+            foreach (var updatable in Updatables)
+            {
+                updatable.PerSecondUpdate();
+            }
+        }
         
         private void Update()
         {
@@ -182,7 +186,15 @@ namespace MultiNoa.GameSimulation
     
     public interface IUpdatable
     {
+        /// <summary>
+        /// Called with each tick
+        /// </summary>
         public void Update();
+        
+        /// <summary>
+        /// Called once a second
+        /// </summary>
+        public void PerSecondUpdate();
     }
     
     /// <summary>

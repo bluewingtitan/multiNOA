@@ -1,91 +1,71 @@
 using System;
-using System.Collections.Generic;
-using System.Net;
 using System.Net.Sockets;
-using MultiNoa.GameSimulation;
-using MultiNoa.Networking.Client;
-using MultiNoa.Networking.Data.DataContainer;
-using MultiNoa.Networking.PacketHandling;
+using MultiNoa.Logging;
 
 namespace MultiNoa.Networking.Transport.Connection
 {
-    public class TcpConnection: IConnection
+    public class TcpConnection: ConnectionBase
     {
-        private IPAddress _address = null;
-        private TcpClient Socket;
-        private readonly IClient client;
+        private string _address = null;
+        private TcpClient _socket;
         
-        private NetworkStream stream;
-        private byte[] receiveBuffer;
-        private Action _onDisconnect;
+        private NetworkStream _stream;
+        private byte[] _receiveBuffer;
 
-        private IPacketHandler _handler;
-
-        private ExecutionScheduler _handlers = new ExecutionScheduler();
-        
-        public TcpConnection(Action onDisconnect, IPacketHandler handler, IClient client)
+        /// <summary>
+        /// Constructs a new TcpConnection. Will use a PacketReflectionHandler if handler-parameter is not populated or null.
+        /// </summary>
+        public TcpConnection(string protocolVersion): base(protocolVersion)
         {
-            _onDisconnect = onDisconnect;
-            _handler = handler;
-            this.client = client;
         }
-        
-        public void Connect(IPAddress serverIp, int port)
+
+        public void Connect(string serverIp, int port)
         {
             _address = serverIp;
             
-            Socket = new TcpClient
+            _socket = new TcpClient
             {
-                ReceiveBufferSize = IConnection.DataBufferSize,
-                SendBufferSize = IConnection.DataBufferSize
+                ReceiveBufferSize = ConnectionBase.DataBufferSize,
+                SendBufferSize = ConnectionBase.DataBufferSize
             };
 
-            receiveBuffer = new byte[IConnection.DataBufferSize];
-            Socket.BeginConnect(serverIp, port, ConnectCallback, Socket);
+            _receiveBuffer = new byte[ConnectionBase.DataBufferSize];
+            _socket.BeginConnect(serverIp, port, ConnectCallback, _socket);
         }
         
         private void ConnectCallback(IAsyncResult result)
         {
-            Socket.EndConnect(result);
+            _socket.EndConnect(result);
 
-            if (!Socket.Connected)
+            if (!_socket.Connected)
             {
                 return;
             }
 
-            stream = Socket.GetStream();
+            _stream = _socket.GetStream();
             
 
-            stream.BeginRead(receiveBuffer, 0, IConnection.DataBufferSize, ReceiveCallback, null);
+            _stream.BeginRead(_receiveBuffer, 0, ConnectionBase.DataBufferSize, ReceiveCallback, null);
         }
 
-        public void Disconnect()
+        protected override void OnDisconnect()
         {
-            Socket.Dispose();
-            _onDisconnect?.Invoke();
-        }
-        
-        public void SetPacketHandler(IPacketHandler newHandler)
-        {
-            _handler = newHandler;
+            _socket.Dispose();
         }
 
-        public IPAddress GetEndpointIp()
+        public override string GetEndpointIp()
         {
             return _address;
         }
 
-        public void SendData(byte[] data)
+        protected override void TransferData(byte[] data)
         {
-            if (Socket != null)
+            if (_socket != null)
             {
-                stream.BeginWrite(data, 0, data.Length, null, null);
+                var bytes = data.Length;
+                //MultiNoaLoggingManager.Logger.Debug($"Sending {bytes} bytes to {GetEndpointIp()}");
+                _stream.BeginWrite(data, 0, bytes, null, null);
             }
-        }
-
-        public IClient GetClient()
-        {
-            return client;
         }
 
 
@@ -93,75 +73,34 @@ namespace MultiNoa.Networking.Transport.Connection
         {
             try
             {
-                int byteLegth = stream.EndRead(result);
-                if (byteLegth <= 0)
+                int byteLength = _stream.EndRead(result);
+                //MultiNoaLoggingManager.Logger.Debug($"Received {byteLength} bytes from {GetEndpointIp()}");
+                if (byteLength <= 0)
                 {
-                    Disconnect();
+                    //Disconnect();
                     return;
                 }
                 
-                byte[] data = new byte[byteLegth];
-                Array.Copy(receiveBuffer, data, byteLegth);
+                byte[] data = new byte[byteLength];
+                Array.Copy(_receiveBuffer, data, byteLength);
 
                 HandleData(data);
                 
 
 
                 // Start listening again
-                stream.BeginRead(receiveBuffer, 0, IConnection.DataBufferSize, ReceiveCallback, null);
+                _stream.BeginRead(_receiveBuffer, 0, ConnectionBase.DataBufferSize, ReceiveCallback, null);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                MultiNoaLoggingManager.Logger.Error("Error receiving tcp: \n" + e.ToString());
                 Disconnect();
             }
         }
-        
-        /// <summary>
-        /// Handles a byte-array containing one or multiple individual packets
-        /// </summary>
-        /// <param name="data"></param>
-        private void HandleData(byte[] data)
-        {
-            var packetLenght = 0;
-            var packet = new Packet(data);
 
-            if (packet.UnreadLength() >= 4)
-            {
-                packetLenght = packet.Read<NetworkInt>().GetTypedValue();
-                if (packetLenght <= 0)
-                {
-                    return;
-                }
-            }
+        public override void PerSecondUpdate()
+        {
             
-            while (packetLenght > 0 && packetLenght <= packet.UnreadLength())
-            {
-                
-                // Do packet analysis now and prepare/schedule handling for next tick
-                byte[] packetBytes = packet.ReadBytes(packetLenght);
-                _handlers.ScheduleExecution(_handler.PrepareHandling(packetBytes, this));
-                
-                // Analyze next packet contained in bytes
-                packetLenght = 0;
-                if (packet.UnreadLength() >= 4)
-                {
-                    packetLenght = packet.Read<NetworkInt>().GetTypedValue();
-                    if (packetLenght <= 0)
-                    {
-                        return;
-                    }
-                }
-
-                if (packetLenght <= 1)
-                {
-                    return;
-                }
-            }
-        }
-
-        public void Update()
-        {
-            _handlers.ExecuteAll();
         }
     }
 }

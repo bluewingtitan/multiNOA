@@ -1,7 +1,4 @@
-using System;
-using System.Text;
 using MultiNoa;
-using MultiNoa.Logging;
 using MultiNoa.Networking.Data;
 using MultiNoa.Networking.Data.DataContainer;
 using MultiNoa.Networking.Data.DataContainer.Generic;
@@ -32,7 +29,7 @@ namespace MultiNoaTests.Networking.PacketHandling
             
             var bytes = PacketConverter.ObjectToByte(str1, writeLength:false);
 
-            var str2 = PacketConverter.BytesToObject<DemoStruct1>(bytes, out var dummy);
+            var str2 = PacketConverter.BytesToObject<DemoStruct1>(bytes.ToArray(), out var dummy);
             
             Assert.AreEqual(str1.Byte1.GetTypedValue(), str2.Byte1.GetTypedValue());
             Assert.AreEqual(str1.Byte2.GetTypedValue(), str2.Byte2.GetTypedValue());
@@ -47,7 +44,7 @@ namespace MultiNoaTests.Networking.PacketHandling
         {
             var str1 = new DemoStruct2("demo!¸´ÜÈ", 71654468L, 2, -2938, 12321);
             var bytes = PacketConverter.ObjectToByte(str1, writeLength:false);
-            var str2 = PacketConverter.BytesToObject<DemoStruct2>(bytes, out var dummy);
+            var str2 = PacketConverter.BytesToObject<DemoStruct2>(bytes.ToArray(), out var dummy);
             
             Assert.AreEqual(str1.Byte1.GetTypedValue(),str2.Byte1.GetTypedValue());
             Assert.AreEqual(str1.Int1.GetTypedValue(),str2.Int1.GetTypedValue());
@@ -64,7 +61,7 @@ namespace MultiNoaTests.Networking.PacketHandling
         {
             var str1 = new DemoStruct3(912309, "demo!¸´ÜÈ", 1.02384f);
             var bytes = PacketConverter.ObjectToByte(str1, writeLength:false);
-            var str2 = PacketConverter.BytesToObject<DemoStruct3>(bytes, out var dummy);
+            var str2 = PacketConverter.BytesToObject<DemoStruct3>(bytes.ToArray(), out var dummy);
             
             Assert.AreEqual(str1.Float1, str2.Float1);
             Assert.AreEqual(str1.Int1, str2.Int1);
@@ -79,7 +76,7 @@ namespace MultiNoaTests.Networking.PacketHandling
             for (int i = 0; i < 100000; i++)
             {
                 var bytes = PacketConverter.ObjectToByte(str1, writeLength: false);
-                var str2 = PacketConverter.BytesToObject<DemoStruct2>(bytes, out var dummy);
+                var str2 = PacketConverter.BytesToObject<DemoStruct2>(bytes.ToArray(), out var dummy);
             }
         }
 
@@ -99,7 +96,7 @@ namespace MultiNoaTests.Networking.PacketHandling
 
             var bytes = PacketConverter.ObjectToByte(str1, writeLength:false);
             
-            var str2 = PacketConverter.BytesToObject<TestGenericsStruct>(bytes, out var dummy);
+            var str2 = PacketConverter.BytesToObject<TestGenericsStruct>(bytes.ToArray(), out var dummy);
             
             
             Assert.AreEqual(str1.StringNetworkArray.GetTypedValue()[0], str2.StringNetworkArray.GetTypedValue()[0]);

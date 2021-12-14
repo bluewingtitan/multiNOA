@@ -17,7 +17,7 @@ namespace MultiNoa.Networking.PacketHandling
         /// </summary>
         /// <param name="fromClient">The Client the packet came from</param>
         /// <param name="packet">A packet that has the packet_id already read out</param>
-        public delegate void PacketHandleFunction(IConnection fromClient, Packet packet);
+        public delegate void PacketHandleFunction(ConnectionBase fromClient, Packet packet);
         
         
         /// <summary>
@@ -26,7 +26,7 @@ namespace MultiNoa.Networking.PacketHandling
         /// <param name="packetBytes">Unfiltered bytes the packet delivered</param>
         /// <param name="fromClient">The Client the packet came from</param>
         /// <returns>Was the handling successful or not?</returns>
-        public bool HandlePacket(byte[] packetBytes, IConnection fromClient);
+        public bool HandlePacket(byte[] packetBytes, ConnectionBase fromClient);
         
         /// <summary>
         /// Main Functionality, used for any packet arriving, seperate by packets.
@@ -36,6 +36,6 @@ namespace MultiNoa.Networking.PacketHandling
         /// <param name="packetBytes">raw bytes of the received packet</param>
         /// <param name="fromClient">IConnection the bytes came from for context-aware handling</param>
         /// <returns>Action to be executed to start handling</returns>
-        public Action PrepareHandling(byte[] packetBytes, IConnection fromClient);
+        public Action PrepareHandling(byte[] packetBytes, ConnectionBase fromClient);
     }
 }

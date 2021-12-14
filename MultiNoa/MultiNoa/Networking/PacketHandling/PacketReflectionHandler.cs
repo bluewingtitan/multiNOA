@@ -36,22 +36,37 @@ namespace MultiNoa.Networking.PacketHandling
             {
                 throw new ArgumentException($"Passed type {t.FullName} does not contain PacketClass Attribute");
             }
+            
 
-            if (!(t.IsAbstract && t.IsSealed))
-            {
-                throw new ArgumentException($"Passed type {t.FullName} is not a static class");
-            }
-
+            var isInternal = (t.GetCustomAttribute(typeof(MultiNoaInternal)) is MultiNoaInternal);
+            
+            
             var props = t.GetMethods()
                 .Where(e => e.GetCustomAttributes(typeof(HandlerMethod), true).Length > 0)
                 .Select(e =>
                 {
+                    if (!e.IsStatic)
+                    {
+                        MultiNoaLoggingManager.Logger.Warning($"Method {e.Name} is declared as handler method but not static.");
+                        return new KeyValuePair<MethodInfo, HandlerMethod>(null, null);
+                    }
+                    
+                    
                     // Not getting single specific attribute, as other attributes will be implemented at this point later on too!
                     var data = e.GetCustomAttributes().ToArray();
 
                     for (int i = 0; i < data.Length; i++)
-                        if (data[i].GetType() == typeof(HandlerMethod))
-                            return new KeyValuePair<MethodInfo, HandlerMethod>(e, data[i] as HandlerMethod);
+                        if (data[i] is HandlerMethod attr)
+                        {
+
+                            if (attr.PacketId < 0 && !isInternal)
+                            {
+                                throw new CustomAttributeFormatException($"Attribute {typeof(HandlerMethod).FullName} should not use packet ids under 0, as those are reserved for multiNoa internal usage!\n" +
+                                                                         $"Problematic Attribute: {e.Name} at {t.FullName}");
+                            }
+                            
+                            return new KeyValuePair<MethodInfo, HandlerMethod>(e, attr);
+                        }
 
                     return new KeyValuePair<MethodInfo, HandlerMethod>(null, null);
 
@@ -80,7 +95,7 @@ namespace MultiNoa.Networking.PacketHandling
                         continue;
                     }
                     
-                    if (typeof(IConnection).IsAssignableFrom(parameterInfo.ParameterType))
+                    if (typeof(ConnectionBase).IsAssignableFrom(parameterInfo.ParameterType))
                     {
                         pi.Add(new ParameterCache(ParamterMode.Connection, parameterInfo));
                         continue;
@@ -101,27 +116,27 @@ namespace MultiNoa.Networking.PacketHandling
                 
                 Infos[method.PacketId] = new HandlerInfo(method.PacketId, info, method, pi);
             }
-            
-            MultiNoaLoggingManager.Logger.Debug($"Registered Handlers for type '{t.FullName}'");
+            if(!isInternal)
+                MultiNoaLoggingManager.Logger.Debug($"Registered Handlers for type '{t.FullName}'");
         }
 
-        public bool HandlePacket(byte[] packetBytes, IConnection fromClient)
+        public bool HandlePacket(byte[] packetBytes, ConnectionBase fromClient)
         {
             return HandlePacketStatic(packetBytes, fromClient);
         }
 
-        public Action PrepareHandling(byte[] packetBytes, IConnection fromClient)
+        public Action PrepareHandling(byte[] packetBytes, ConnectionBase fromClient)
         {
             return PrepareHandlingStatic(packetBytes, fromClient);
         }
 
-        public static bool HandlePacketStatic(byte[] b, IConnection fromClient)
+        public static bool HandlePacketStatic(byte[] b, ConnectionBase fromClient)
         {
             PrepareHandlingStatic(b, fromClient)();
             return true;
         }
 
-        public static Action PrepareHandlingStatic(byte[] b, IConnection fromClient)
+        public static Action PrepareHandlingStatic(byte[] b, ConnectionBase fromClient)
         {
             var o = PacketConverter.BytesToObject(b);
             
@@ -210,7 +225,13 @@ namespace MultiNoa.Networking.PacketHandling
             
         }
     }
-    
+
+
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+    internal class MultiNoaInternal : Attribute
+    {
+        // Empty Attribute that enables usage of packet-ids under 0 (multiNoa-management packages) for structs and handlers
+    }
     
     
     [AttributeUsage(AttributeTargets.Method)]

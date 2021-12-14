@@ -1,8 +1,10 @@
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Reflection;
+using MultiNoa.GameSimulation;
 using MultiNoa.Logging;
 using MultiNoa.Networking.PacketHandling;
+using MultiNoa.Networking.Transport.Middleware;
 
 namespace MultiNoa
 {
@@ -11,8 +13,13 @@ namespace MultiNoa
     /// </summary>
     public static class MultiNoaSetup
     {
-        public const string VersionCode = "alpha-0.1";
-        internal static bool _setupDone = false;
+        internal static DynamicThread DefaultThread = new DynamicThread(2, "MultiNoa Default");
+        
+        public const string VersionCode = "alpha-1.0";
+        internal static bool SetupDone = false;
+        internal static INoaMiddleware[] NonModifyingMiddlewares = new INoaMiddleware[0];
+        internal static INoaMiddleware[] ModifyingMiddlewares = new INoaMiddleware[0];
+        
         
         /// <summary>
         /// Sets up MultiNoa in a way fitting for most use cases, given that all dynamically handled packet types are defined within the given assembly.
@@ -25,8 +32,7 @@ namespace MultiNoa
                 {
                     MainAssembly = mainAssembly,
                     ExtraAssemblies = new Assembly[0],
-                    ConversionMode = PacketConversionMode.Reflective,
-                    HandlingMode = PacketHandlingMode.Reflective
+                    Middlewares = new INoaMiddleware[] {new NoaNetworkLoggingMiddleware()}
                 });
         }
 
@@ -36,104 +42,74 @@ namespace MultiNoa
         /// <param name="config">Configuration Class Instance</param>
         public static void CustomSetup(MultiNoaConfig config)
         {
-            
+            Setup(config);
         }
 
 
         private static void Setup(MultiNoaConfig config)
         {
-            if (_setupDone)
+            if (SetupDone)
             {
-                MultiNoaLoggingManager.Logger.Warning($"Tried to setup multiNoa a second time. Stack Trace: {Environment.StackTrace}");
+                MultiNoaLoggingManager.Logger.Warning($"Tried to setup multiNoa a second time.\n{Environment.StackTrace}");
+                return;
             }
-            _setupDone = true;
+            SetupDone = true;
 
-            switch (config.HandlingMode)
-            {
-                case PacketHandlingMode.Reflective:
-                    PacketReflectionHandler.RegisterAssembly(config.MainAssembly);
-                    foreach (var configExtraAssembly in config.ExtraAssemblies)
-                        PacketReflectionHandler.RegisterAssembly(configExtraAssembly);
-                    break;
-                
-                case PacketHandlingMode.Custom:
-                default:
-                    break;
-            }
-            
-            switch (config.ConversionMode)
-            {
-                case PacketConversionMode.Reflective:
-                    DataContainerManager.RegisterAssembly(typeof(MultiNoaConfig).Assembly);
-                    PacketConverter.RegisterAssembly(config.MainAssembly);
-                    DataContainerManager.RegisterAssembly(config.MainAssembly);
-                    foreach (var configExtraAssembly in config.ExtraAssemblies)
-                    {
-                        PacketConverter.RegisterAssembly(configExtraAssembly);
-                        DataContainerManager.RegisterAssembly(configExtraAssembly);
-                    }
-                    break;
-                
-                case PacketConversionMode.Custom:
-                default:
-                    break;
-            }
-            
+            RegisterMiddlewares(config.Middlewares);
 
+            PacketReflectionHandler.RegisterAssembly(typeof(MultiNoaConfig).Assembly);
+            PacketReflectionHandler.RegisterAssembly(config.MainAssembly);
+            foreach (var configExtraAssembly in config.ExtraAssemblies)
+                PacketReflectionHandler.RegisterAssembly(configExtraAssembly);
+            
+            
+            
+            PacketConverter.RegisterAssembly(typeof(MultiNoaConfig).Assembly);
+            PacketConverter.RegisterAssembly(config.MainAssembly);
+            DataContainerManager.RegisterAssembly(config.MainAssembly);
+            DataContainerManager.RegisterAssembly(typeof(MultiNoaConfig).Assembly);
+            foreach (var configExtraAssembly in config.ExtraAssemblies)
+            {
+                PacketConverter.RegisterAssembly(configExtraAssembly);
+                DataContainerManager.RegisterAssembly(configExtraAssembly);
+            }
+        }
+
+
+        private static void RegisterMiddlewares(INoaMiddleware[] middlewares)
+        {
+            var modifying = new List<INoaMiddleware>();
+            var notModifying = new List<INoaMiddleware>();
+
+            foreach (var middleware in middlewares)
+            {
+                if (middleware.DoesModify())
+                {
+                    modifying.Add(middleware);
+                }
+                else
+                {
+                    notModifying.Add(middleware);
+                }
+            }
+
+            NonModifyingMiddlewares = notModifying.ToArray();
+            ModifyingMiddlewares = modifying.ToArray();
         }
     }
-
-
 
     public struct MultiNoaConfig
     {
+        public INoaMiddleware[] Middlewares;
         public Assembly[] ExtraAssemblies;
         public Assembly MainAssembly;
-        public PacketConversionMode ConversionMode;
-        public PacketHandlingMode HandlingMode;
 
-        public MultiNoaConfig(Assembly mainAssembly, PacketConversionMode conversionMode, PacketHandlingMode handlingMode, Assembly[] extraAssemblies)
+        public MultiNoaConfig(Assembly mainAssembly, Assembly[] extraAssemblies, INoaMiddleware[] middlewares)
         {
             MainAssembly = mainAssembly;
-            ConversionMode = conversionMode;
-            HandlingMode = handlingMode;
             ExtraAssemblies = extraAssemblies;
+            Middlewares = middlewares;
         }
     }
 
-
-    // I know that PacketConversionMode and PacketHandlingMode currently offer the exact same API, but this might not be the case forever.
-
-    public enum PacketConversionMode
-    {
-        /// <summary>
-        /// Set this if you intend to use the PacketConverter and/or DataContainerManager for packet (de-)serialization
-        /// </summary>
-        Reflective,
-        
-        /// <summary>
-        /// Set this if you intend to use your custom implementations for converting byte-arrays to data and vice-versa.
-        /// </summary>
-        Custom,
-    }
-
-    public enum PacketHandlingMode
-    {
-        /// <summary>
-        /// Set this if you intend to use the PacketReflectionHandler as Packet Handler
-        /// </summary>
-        Reflective,
-        
-        /// <summary>
-        /// Set this if you intend in only using your own custom packet handlers.
-        /// This will skip the analysis of your assembly.
-        /// </summary>
-        Custom,
-    }
-    
-    
-    
-    
-    
-    
 }

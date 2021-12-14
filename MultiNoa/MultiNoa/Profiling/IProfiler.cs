@@ -1,5 +1,3 @@
-using MultiNoa.Profiling.Timing;
-
 namespace MultiNoa.Profiling
 {
     public interface IProfiler

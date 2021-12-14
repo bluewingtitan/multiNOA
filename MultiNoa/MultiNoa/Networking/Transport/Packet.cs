@@ -8,7 +8,9 @@ namespace MultiNoa.Networking.Transport
 {
     /// <summary>
     /// Represents a message that can be transmitted via networking.
-    /// Highly inspired by Tom Weilands Packet Class in functionality, but designed to be way more flexible
+    /// Highly inspired by Tom Weilands Packet Class in functionality, but designed to be way more flexible.
+    ///
+    /// Primarily used as abstraction for received data to help byte-array operations to look less messy.
     /// </summary>
     public class Packet
     {
@@ -38,6 +40,7 @@ namespace MultiNoa.Networking.Transport
         /// <param name="data">Data to set</param>
         public Packet(byte[] data)
         {
+            _buffer = new List<byte>();
             SetBytes(data);
             Finalized = true;
         }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Reflection;
-using ExampleProject.Packets;
+﻿using ExampleProject.Packets;
 using MultiNoa;
 using MultiNoa.Networking.PacketHandling;
 
@@ -15,7 +13,7 @@ namespace ExampleProject
             var msg = new Message(-42069, "——Cool Message——", "Hi Dude! Hope you are doing   𝖋𝖎𝖓𝖊!   😲");
             var bytes = PacketConverter.ObjectToByte(msg, writeLength: false);
 
-            PacketReflectionHandler.HandlePacketStatic(bytes, null);
+            PacketReflectionHandler.HandlePacketStatic(bytes.ToArray(), null);
             
             
             CallstackProfiling.StartCallstackProfiler();
