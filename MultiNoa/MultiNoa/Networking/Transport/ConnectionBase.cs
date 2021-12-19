@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
+using MultiNoa.Extensions;
 using MultiNoa.GameSimulation;
 using MultiNoa.Networking.Client;
 using MultiNoa.Networking.Data.DataContainer;
@@ -13,6 +14,7 @@ namespace MultiNoa.Networking.Transport
     {
         private static readonly IPacketHandler DefaultHandler = new PacketReflectionHandler();
         private readonly ConcurrentDictionary<INoaMiddleware, object> _middlewareData = new ConcurrentDictionary<INoaMiddleware, object>();
+        
 
         protected ConnectionBase(string protocolVersion)
         {
@@ -44,6 +46,8 @@ namespace MultiNoa.Networking.Transport
         {
             _middlewareData[middleware] = data;
         }
+
+        
         
         private IPacketHandler _handler;
         private IDynamicThread _currentThread;

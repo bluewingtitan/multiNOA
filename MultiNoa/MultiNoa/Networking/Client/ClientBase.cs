@@ -1,3 +1,5 @@
+using MultiNoa.Extensions;
+using MultiNoa.Logging;
 using MultiNoa.Networking.Rooms;
 using MultiNoa.Networking.Transport;
 
@@ -39,11 +41,54 @@ namespace MultiNoa.Networking.Client
             _username = username;
         }
         
+        private byte _rightGroups = 0;
+        
         internal event IClient.ClientReadyDelegate OnClientConnected;
         public event IClient.ClientReadyDelegate OnClientReady;
         public abstract void SendData(object data);
         public abstract ConnectionBase GetConnection();
         public abstract void Disconnect();
+        
+        public bool GetAuthorityGroup(AuthorityGroup group)
+        {
+            return group == AuthorityGroup.Default || _rightGroups.ToBitArray()[(int) group-1];
+        }
+        public void AddToGroup(AuthorityGroup group)
+        {
+            if(group == AuthorityGroup.Default)
+                return;
+            
+            var c = _rightGroups.ToBitArray();
+            c[(int) group-1] = true;
+
+            var r = c.ToByte();
+            if (r == null)
+            {
+                MultiNoaLoggingManager.Logger.Warning($"Failed to add client to group {group.ToString()}: failed to convert");
+                return;
+            }
+            
+            _rightGroups = (byte) r;
+        }
+
+        public void RemoveFromGroup(AuthorityGroup group)
+        {
+            if(group == AuthorityGroup.Default)
+                return;
+            
+            var c = _rightGroups.ToBitArray();
+            c[(int) group-1] = false;
+
+            var r = c.ToByte();
+            if (r == null)
+            {
+                MultiNoaLoggingManager.Logger.Warning($"Failed to remove client to group {group.ToString()}: failed to convert");
+                return;
+            }
+            
+            _rightGroups = (byte) r;
+        }
+        
 
         public void AddOnClientConnected(IClient.ClientReadyDelegate callback)
         {
