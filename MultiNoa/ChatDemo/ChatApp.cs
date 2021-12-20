@@ -4,6 +4,7 @@ using MultiNoa;
 using MultiNoa.Logging;
 using MultiNoa.Networking.Server;
 using MultiNoa.Networking.Transport.Middleware;
+using MultiNoa.Networking.Transport.Middleware.Fragmentation;
 
 namespace ChatDemo
 {
@@ -31,7 +32,7 @@ namespace ChatDemo
                 {
                     MainAssembly = typeof(ChatClient).Assembly,
                     ExtraAssemblies = new Assembly[0],
-                    Middlewares = new INoaMiddleware[] {new NoaNetworkLoggingMiddleware(), new NoaRsaMiddleware(), }
+                    Middlewares = new INoaMiddleware[] {new NoaNetworkLoggingMiddleware(), new NoaRsaMiddleware(), new NoaFragmentationMiddleware(),  }
                 });
 
             if (args.Length > 0)

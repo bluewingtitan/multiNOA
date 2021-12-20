@@ -13,10 +13,10 @@ namespace ChatDemo
         protected readonly ulong ClientId = 0;
 
 
-        public void StartTyping()
+        private void StartTyping()
         {
             var exited = false;
-            Console.WriteLine("Type 'exit' to exit the chat.");
+            Console.WriteLine("Type '/exit' to exit the chat.");
 
             while (!exited)
             {
@@ -24,11 +24,13 @@ namespace ChatDemo
                 if(String.IsNullOrEmpty(newInput))
                     continue;
                 
-                if (newInput.Equals("exit"))
+                if (newInput.Equals("/exit"))
                 {
                     exited = true;
                     continue;
                 }
+                
+                MultiNoaLoggingManager.Logger.Debug($"Sending message of string lenght {newInput.Length}");
                 
                 // Send message
                 var msg = new ChatPackets.FromClient.MessageFromClient

@@ -5,10 +5,10 @@ namespace MultiNoa.Networking.Transport.Middleware
 {
     public class NoaNetworkLoggingMiddleware: INoaMiddleware
     {
-        public bool DoesModify() => false;
+        public MiddlewareTarget GetTarget() => MiddlewareTarget.NonModifying;
+        
         public void Setup()
         {
-            throw new System.NotImplementedException();
         }
 
         public void OnConnectedServerside(ConnectionBase connection)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.ConstrainedExecution;
 using MultiNoa.GameSimulation;
 using MultiNoa.Logging;
 using MultiNoa.Networking.PacketHandling;
@@ -13,12 +14,18 @@ namespace MultiNoa
     /// </summary>
     public static class MultiNoaSetup
     {
+        public static int DataBufferSize { get; private set; }  = 8196;
+
+
         internal static DynamicThread DefaultThread = new DynamicThread(2, "MultiNoa Default");
         
-        public const string VersionCode = "alpha-1.0";
-        internal static bool SetupDone = false;
+        public const string VersionCode = "alpha-2.0";
+        private static bool _setupDone = false;
+        internal static INoaMiddleware[] CheckingMiddlewares = new INoaMiddleware[0];
+        internal static INoaMiddleware[] EncryptingMiddlewares = new INoaMiddleware[0];
+        internal static INoaMiddleware[] FragmentingMiddlewares = new INoaMiddleware[0];
+        internal static INoaMiddleware[] CorrectingMiddlewares = new INoaMiddleware[0];
         internal static INoaMiddleware[] NonModifyingMiddlewares = new INoaMiddleware[0];
-        internal static INoaMiddleware[] ModifyingMiddlewares = new INoaMiddleware[0];
         
         
         /// <summary>
@@ -30,6 +37,7 @@ namespace MultiNoa
             Setup(
                 new MultiNoaConfig
                 {
+                    DataBufferSize = DataBufferSize,
                     MainAssembly = mainAssembly,
                     ExtraAssemblies = new Assembly[0],
                     Middlewares = new INoaMiddleware[] {new NoaNetworkLoggingMiddleware()}
@@ -48,14 +56,25 @@ namespace MultiNoa
 
         private static void Setup(MultiNoaConfig config)
         {
-            if (SetupDone)
+            if (_setupDone)
             {
-                MultiNoaLoggingManager.Logger.Warning($"Tried to setup multiNoa a second time.\n{Environment.StackTrace}");
+                MultiNoaLoggingManager.Logger.Warning($"Tried to set up multiNoa a second time.\n{Environment.StackTrace}");
                 return;
             }
-            SetupDone = true;
+            _setupDone = true;
+            
+            MultiNoaLoggingManager.Logger.Information(Constants.Ascii);
+            MultiNoaLoggingManager.Logger.Information($"Using multiNoa {VersionCode}");
 
             RegisterMiddlewares(config.Middlewares);
+
+
+            if (config.DataBufferSize < 4096)
+            {
+                MultiNoaLoggingManager.Logger.Warning("Using a buffer size of under 4096! This is not supported. Use something bigger for a more reliable experience");
+            }
+            
+            
 
             PacketReflectionHandler.RegisterAssembly(typeof(MultiNoaConfig).Assembly);
             PacketReflectionHandler.RegisterAssembly(config.MainAssembly);
@@ -78,23 +97,56 @@ namespace MultiNoa
 
         private static void RegisterMiddlewares(INoaMiddleware[] middlewares)
         {
-            var modifying = new List<INoaMiddleware>();
-            var notModifying = new List<INoaMiddleware>();
+            var checkingMiddlewares = new List<INoaMiddleware>();
+            var encryptingMiddlewares = new List<INoaMiddleware>();
+            var fragmentingMiddlewares = new List<INoaMiddleware>();
+            var correctingMiddlewares = new List<INoaMiddleware>();
+            var nonModifyingMiddlewares = new List<INoaMiddleware>();
 
             foreach (var middleware in middlewares)
             {
-                if (middleware.DoesModify())
+                switch (middleware.GetTarget())
                 {
-                    modifying.Add(middleware);
+                    case MiddlewareTarget.Checking:
+                        checkingMiddlewares.Add(middleware);
+                        break;
+                    case MiddlewareTarget.Encrypting:
+                        encryptingMiddlewares.Add(middleware);
+                        break;
+                    case MiddlewareTarget.Fragmenting:
+                        fragmentingMiddlewares.Add(middleware);
+                        break;
+                    case MiddlewareTarget.Correcting:
+                        correctingMiddlewares.Add(middleware);
+                        break;
+                    case MiddlewareTarget.NonModifying:
+                        nonModifyingMiddlewares.Add(middleware);
+                        break;
+                    
+                    case MiddlewareTarget.Dummy:
+                    default:
+                        break;
                 }
-                else
-                {
-                    notModifying.Add(middleware);
-                }
+                
+                middleware.Setup();
             }
 
-            NonModifyingMiddlewares = notModifying.ToArray();
-            ModifyingMiddlewares = modifying.ToArray();
+            CheckingMiddlewares = checkingMiddlewares.ToArray();
+            EncryptingMiddlewares = encryptingMiddlewares.ToArray();
+            FragmentingMiddlewares = fragmentingMiddlewares.ToArray();
+            CorrectingMiddlewares = correctingMiddlewares.ToArray();
+            NonModifyingMiddlewares = nonModifyingMiddlewares.ToArray();
+
+
+            if (FragmentingMiddlewares.Length == 0)
+            {
+                MultiNoaLoggingManager.Logger.Warning("You don't seem to have defined any fragmenting middleware. This may cause unexpected behaviour. Please use NoaFragmentationMiddleware or any original implementation to be save!");
+            }
+
+            if (EncryptingMiddlewares.Length == 0)
+            {
+                MultiNoaLoggingManager.Logger.Warning("You are sending all data unencrypted. This is not a big problem in most cases, but make sure to never ever send ANY confidential data in this configuration");
+            }
         }
     }
 
@@ -103,13 +155,42 @@ namespace MultiNoa
         public INoaMiddleware[] Middlewares;
         public Assembly[] ExtraAssemblies;
         public Assembly MainAssembly;
+        public int DataBufferSize;
 
-        public MultiNoaConfig(Assembly mainAssembly, Assembly[] extraAssemblies, INoaMiddleware[] middlewares)
+        public MultiNoaConfig(Assembly mainAssembly, Assembly[] extraAssemblies, INoaMiddleware[] middlewares, int dataBufferSize)
         {
             MainAssembly = mainAssembly;
             ExtraAssemblies = extraAssemblies;
             Middlewares = middlewares;
+            DataBufferSize = dataBufferSize;
         }
     }
+
+
+
+    internal static class Constants
+    {
+        public const string Ascii = @"
+
+#*                                      
+ ####                                   
+   #####                                
+     ######                             
+       #######                 ,,       
+        #########             ,,,       
+       ***##########        ***,,       
+       ///**###########   ******* *##.  
+       //////*/##########********#####  
+       /////////*#######,  *****######( 
+        //////////  ###       ######### 
+          ////////////***   ########### 
+            /////////////**#############
+              ////////////   ###########
+               /////////        ########
+                 //////            #####
+                  ///                 ##
+";
+    }
+    
 
 }

@@ -101,7 +101,7 @@ namespace MultiNoa.Networking.PacketHandling
         }
 
 
-        public static List<byte> ObjectToByte(object o, bool skipTypeCheck = false, bool writeLength = true)
+        public static List<byte> ObjectToByte(object o, bool skipTypeCheck = false, bool writeLength = false)
         {
             var bytes = new List<byte>();
             
@@ -152,10 +152,12 @@ namespace MultiNoa.Networking.PacketHandling
                     bytes.AddRange(c.TurnIntoBytes());
                     continue;
                 }
+                MultiNoaLoggingManager.Logger.Warning(
+                    $"Failed to convert property {prop.Name} to bytes: Prop had no defined conversion method");
             }
 
+            // Write length!
             if(writeLength) 
-                // Write length!
                 bytes.InsertRange(0, new NetworkInt(bytes.Count).TurnIntoBytes());
 
             return bytes;

@@ -1,12 +1,13 @@
 using System;
 using System.Net.Sockets;
+using System.Threading;
 using MultiNoa.Logging;
 
 namespace MultiNoa.Networking.Transport.Connection
 {
     public class TcpConnection: ConnectionBase
     {
-        private object _lockObj = 0;
+        private readonly object _lockObj = 0;
         
         private string _address = null;
         private TcpClient _socket;
@@ -27,11 +28,11 @@ namespace MultiNoa.Networking.Transport.Connection
             
             _socket = new TcpClient
             {
-                ReceiveBufferSize = ConnectionBase.DataBufferSize,
-                SendBufferSize = ConnectionBase.DataBufferSize
+                ReceiveBufferSize = MultiNoaSetup.DataBufferSize,
+                SendBufferSize = MultiNoaSetup.DataBufferSize
             };
 
-            _receiveBuffer = new byte[ConnectionBase.DataBufferSize];
+            _receiveBuffer = new byte[MultiNoaSetup.DataBufferSize];
             _socket.BeginConnect(serverIp, port, ConnectCallback, _socket);
         }
         
@@ -47,7 +48,7 @@ namespace MultiNoa.Networking.Transport.Connection
             _stream = _socket.GetStream();
             
 
-            _stream.BeginRead(_receiveBuffer, 0, ConnectionBase.DataBufferSize, ReceiveCallback, null);
+            _stream.BeginRead(_receiveBuffer, 0, MultiNoaSetup.DataBufferSize, ReceiveCallback, null);
         }
 
         protected override void OnDisconnect()
@@ -62,15 +63,13 @@ namespace MultiNoa.Networking.Transport.Connection
 
         protected override void TransferData(byte[] data)
         {
-            if (_socket != null)
-            {
-                var bytes = data.Length;
+            if (_socket == null) return;
+            var bytes = data.Length;
 
-                // Never write into the stream multiple times!
-                lock (_lockObj)
-                {
-                    _stream.BeginWrite(data, 0, bytes, null, null);
-                }
+            // Never write into the stream multiple times!
+            lock (_lockObj)
+            {
+                _stream.BeginWrite(data, 0, bytes, null, null).AsyncWaitHandle.WaitOne();
             }
         }
 
@@ -95,7 +94,7 @@ namespace MultiNoa.Networking.Transport.Connection
 
 
                 // Start listening again
-                _stream.BeginRead(_receiveBuffer, 0, ConnectionBase.DataBufferSize, ReceiveCallback, null);
+                _stream.BeginRead(_receiveBuffer, 0, MultiNoaSetup.DataBufferSize, ReceiveCallback, null);
             }
             catch (Exception e)
             {

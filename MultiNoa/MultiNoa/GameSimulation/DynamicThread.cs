@@ -54,7 +54,7 @@ namespace MultiNoa.GameSimulation
         
         private void ThreadFunction()
         {
-            MultiNoaLoggingManager.Logger.Information($"Thread {ThreadName} was started successfully.");
+            MultiNoaLoggingManager.Logger.Verbose($"Thread {ThreadName} was started successfully.");
 
             var nextLoop = DateTime.Now;
             var ticksBehind = 0;
@@ -110,7 +110,7 @@ namespace MultiNoa.GameSimulation
                 }
             }
             
-            MultiNoaLoggingManager.Logger.Information($"Thread {ThreadName} was closed successfully.");
+            MultiNoaLoggingManager.Logger.Verbose($"Thread {ThreadName} was closed successfully.");
         }
 
         /**

@@ -11,7 +11,7 @@ namespace ChatDemo
     {
 
         // Runs Server Side
-        [HandlerMethod(0)]
+        [HandlerMethod(ChatPackets.FromClient.MessageFromClient.PacketId)]
         public static void HandleMessageSend(ChatPackets.FromClient.MessageFromClient m, ConnectionBase c)
         {
             var client = (IServersideClient) c.GetClient();
@@ -22,7 +22,7 @@ namespace ChatDemo
                 Username = client.GetUsername()
             };
             
-            MultiNoaLoggingManager.Logger.Information($"[{client.GetRoom().GetRoomName()}] <{client.GetUsername()}> {m.Message}");
+            MultiNoaLoggingManager.Logger.Information($"[{client.GetRoom().GetRoomName()}] <{client.GetUsername()}> message of length {m.Message.Length}");
             
                 
             client.GetRoom().Broadcast(answer, client);
@@ -30,10 +30,10 @@ namespace ChatDemo
         
         
         // Client Side
-        [HandlerMethod(1)]
+        [HandlerMethod(ChatPackets.FromServer.MessageFromServer.PacketId)]
         public static void HandleMessageReceived(ChatPackets.FromServer.MessageFromServer m)
         {
-            Console.WriteLine($"<{m.Username}> {m.Message}");
+            Console.WriteLine($"<{m.Username}> {m.Message.Length}");
             Console.Out.Flush();
         }
     }

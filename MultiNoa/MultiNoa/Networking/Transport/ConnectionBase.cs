@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using MultiNoa.GameSimulation;
+using MultiNoa.Logging;
 using MultiNoa.Networking.Client;
 using MultiNoa.Networking.Data.DataContainer;
 using MultiNoa.Networking.PacketHandling;
@@ -11,11 +12,11 @@ namespace MultiNoa.Networking.Transport
 {
     public abstract class ConnectionBase: IUpdatable
     {
-        protected const int DataBufferSize = 4096;
         
         
         private static readonly IPacketHandler DefaultHandler = new PacketReflectionHandler();
-        private readonly ConcurrentDictionary<INoaMiddleware, object> _middlewareData = new ConcurrentDictionary<INoaMiddleware, object>();
+        private readonly Dictionary<INoaMiddleware, object> _middlewareData = new Dictionary<INoaMiddleware, object>();
+        private readonly object _dataLock = '0';
 
         protected ConnectionBase(string protocolVersion)
         {
@@ -40,12 +41,31 @@ namespace MultiNoa.Networking.Transport
 
         public bool TryGetMiddlewareData(INoaMiddleware middleware, out object data)
         {
-            return _middlewareData.TryGetValue(middleware, out data);
+            lock (_dataLock)
+            {
+                return _middlewareData.TryGetValue(middleware, out data);
+            }
         }
 
         public void SetMiddlewareData(INoaMiddleware middleware, object data)
         {
-            _middlewareData[middleware] = data;
+            lock (_dataLock)
+            {
+
+                _middlewareData[middleware] = data;
+            }
+        }
+
+        public void SetMiddlewareDataIfNotPresent(INoaMiddleware middleware, object data)
+        {
+
+            lock (_dataLock)
+            {
+                if (_middlewareData.ContainsKey(middleware)) return;
+                
+                MultiNoaLoggingManager.Logger.Debug($"Created new middleware data for {middleware.GetType().Name} on client {GetEndpointIp()}");
+                _middlewareData[middleware] = data;
+            }
         }
         
         private IPacketHandler _handler;
@@ -75,19 +95,35 @@ namespace MultiNoa.Networking.Transport
         }
 
 
-        public void SendData(object objectToSend, bool skipMiddlewares = false)
+        public void SendData(object objectToSend, bool skipMiddlewares = false, bool stayInThread = false, MiddlewareTarget[] excludes = null)
         {
+            if (stayInThread)
+            {
+                SendDataInThread(objectToSend, skipMiddlewares, excludes);
+                return;
+            }
+            
             // => Do struct to packet, middleware and other logic in separate thread to keep main game threads running
-            var t = new Thread(() => SendDataInThread(objectToSend, skipMiddlewares));
+            var t = new Thread(() => SendDataInThread(objectToSend, skipMiddlewares, excludes));
             t.Start();
         }
 
-        private void SendDataInThread(object objectToSend, bool skipMiddlewares)
+        private void SendDataInThread(object objectToSend, bool skipMiddlewares, MiddlewareTarget[] excludes = null)
         {
             var bytes = PacketConverter.ObjectToByte(objectToSend, writeLength: false);
 
             if(!skipMiddlewares)
-                bytes = NoaMiddlewareManager.OnSend(bytes, this);
+            {
+                bytes = NoaMiddlewareManager.OnSend(bytes, this, excludes);
+
+                if (bytes.Count == 0)
+                {
+                    // => 0 bytes: Don't send.
+                    MultiNoaLoggingManager.Logger.Debug(
+                        "No bytes to send after going through middleware stack, not sending anything");
+                    return;
+                }
+            }
             
             // Insert length
             bytes.InsertRange(0, new NetworkInt(bytes.Count).TurnIntoBytes());

@@ -80,7 +80,7 @@ namespace MultiNoa.Networking.Transport
         /// <param name="_data">Bytes to add</param>
         private void SetBytes(byte[] data)
         {
-            Write(new NetworkByteArray(data));
+            Write(new SerializableBuffer(data));
             _readableBuffer = _buffer.ToArray();
         }
 

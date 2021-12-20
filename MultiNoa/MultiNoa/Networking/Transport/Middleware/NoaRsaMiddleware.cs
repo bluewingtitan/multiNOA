@@ -45,7 +45,8 @@ namespace MultiNoa.Networking.Transport.Middleware
             _instance ??= this;
         }
         
-        public bool DoesModify() => true;
+        public MiddlewareTarget GetTarget() => MiddlewareTarget.Encrypting;
+        
         public void Setup()
         {
             MultiNoaLoggingManager.Logger.Information("Initialized NoaRsaMiddleware. Please be aware of the fact, that this middleware bloats up data to a multiple of 256 bytes and may be quite memory-intensive.");
@@ -67,7 +68,7 @@ namespace MultiNoa.Networking.Transport.Middleware
             connection.SendData(new RsaKeyFromServer
             {
                 Key = new NetworkArray<byte>(key)
-            }, skipMiddlewares: true);
+            }, excludes: new [] {MiddlewareTarget.Encrypting});
         }
 
         
@@ -189,7 +190,7 @@ namespace MultiNoa.Networking.Transport.Middleware
             connection.SendData(new RsaKeyFromClient
             {
                 Key = new NetworkArray<byte>(key)
-            }, skipMiddlewares: true);
+            }, excludes: new [] {MiddlewareTarget.Encrypting});
         }
         
         [HandlerMethod(NoaControlPacketIds.FromClient.RsaKeyFromClient)]
@@ -218,7 +219,6 @@ namespace MultiNoa.Networking.Transport.Middleware
             encryptionData.Initialized = true;
             
             connection.SetMiddlewareData(_instance, encryptionData);
-
         }
 
         #endregion
