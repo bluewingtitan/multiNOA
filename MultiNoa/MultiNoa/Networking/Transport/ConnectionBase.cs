@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
+using MultiNoa.Extensions;
 using MultiNoa.GameSimulation;
 using MultiNoa.Logging;
 using MultiNoa.Networking.Client;
@@ -55,18 +56,7 @@ namespace MultiNoa.Networking.Transport
                 _middlewareData[middleware] = data;
             }
         }
-
-        public void SetMiddlewareDataIfNotPresent(INoaMiddleware middleware, object data)
-        {
-
-            lock (_dataLock)
-            {
-                if (_middlewareData.ContainsKey(middleware)) return;
-                
-                MultiNoaLoggingManager.Logger.Debug($"Created new middleware data for {middleware.GetType().Name} on client {GetEndpointIp()}");
-                _middlewareData[middleware] = data;
-            }
-        }
+        
         
         private IPacketHandler _handler;
         private IDynamicThread _currentThread;
