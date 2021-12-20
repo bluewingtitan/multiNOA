@@ -187,7 +187,8 @@ namespace MultiNoa.Networking.Transport.Middleware.Fragmentation
                 // => this was the last packet in the series! => Initialize parsing!
                 PacketReflectionHandler.HandlePacketStatic(NoaMiddlewareManager.OnReceive(new List<byte>(bytes), c, new []
                     {
-                        MiddlewareTarget.Encrypting
+                        MiddlewareTarget.Encrypting,
+                        MiddlewareTarget.Correcting,
                     }).ToArray(), c);
             }
         }
