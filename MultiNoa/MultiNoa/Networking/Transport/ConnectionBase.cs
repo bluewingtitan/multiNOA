@@ -56,6 +56,16 @@ namespace MultiNoa.Networking.Transport
                 _middlewareData[middleware] = data;
             }
         }
+
+        public void SetMiddlewareDataIfNotPresent(INoaMiddleware middleware, object data)
+        {
+            lock (_dataLock)
+            {
+                if(_middlewareData.ContainsKey(middleware)) return;
+
+                _middlewareData[middleware] = data;
+            }
+        }
         
         
         private IPacketHandler _handler;

@@ -22,7 +22,7 @@ namespace ChatDemo
                 Username = client.GetUsername()
             };
             
-            MultiNoaLoggingManager.Logger.Information($"[{client.GetRoom().GetRoomName()}] <{client.GetUsername()}> message of length {m.Message.Length}");
+            MultiNoaLoggingManager.Logger.Information($"[{client.GetRoom().GetRoomName()}] <{client.GetUsername()}> message of length {m.Message}");
             
                 
             client.GetRoom().Broadcast(answer, client);
@@ -33,7 +33,7 @@ namespace ChatDemo
         [HandlerMethod(ChatPackets.FromServer.MessageFromServer.PacketId)]
         public static void HandleMessageReceived(ChatPackets.FromServer.MessageFromServer m)
         {
-            Console.WriteLine($"<{m.Username}> {m.Message.Length}");
+            Console.WriteLine($"<{m.Username}> {m.Message}");
             Console.Out.Flush();
         }
     }

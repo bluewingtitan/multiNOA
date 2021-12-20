@@ -62,17 +62,17 @@ namespace MultiNoa.Networking.Transport.Middleware
 
         private static readonly MiddlewareTarget[] CallOrder = new[]
         {
-            MiddlewareTarget.Checking, MiddlewareTarget.Encrypting, MiddlewareTarget.Correcting,
-            MiddlewareTarget.Fragmenting, MiddlewareTarget.NonModifying
+            MiddlewareTarget.Checking, MiddlewareTarget.Fragmenting, MiddlewareTarget.Encrypting,
+            MiddlewareTarget.Correcting, MiddlewareTarget.NonModifying
         };
         
         
         private static readonly Dictionary<MiddlewareTarget, CallAllMiddlewaresDelegate> Calls = new Dictionary<MiddlewareTarget, CallAllMiddlewaresDelegate>()
         {
             {MiddlewareTarget.Checking, CallChecking},
+            {MiddlewareTarget.Fragmenting, CallFragmenting},
             {MiddlewareTarget.Encrypting, CallEncrypting},
             {MiddlewareTarget.Correcting, CallCorrecting},
-            {MiddlewareTarget.Fragmenting, CallFragmenting},
             {MiddlewareTarget.NonModifying, CallNonModifying},
         };
 

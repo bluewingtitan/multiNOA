@@ -31,11 +31,8 @@ namespace MultiNoa.Networking.Transport.Middleware.Fragmentation
 
         public List<byte> OnSend(List<byte> data, ConnectionBase connection)
         {
-            MultiNoaLoggingManager.Logger.Warning($"[{data[0]},{data[1]},{data[2]},{data[3]}]");
-            MultiNoaLoggingManager.Logger.Warning($"[{data[4]},{data[5]},{data[6]},{data[7]}]");
             if(data.Count <= MaxPacketSize) return data;
 
-            
             MultiNoaLoggingManager.Logger.Debug("Packet is too big, trying to make it smaller");
 
             connection.SetMiddlewareDataIfNotPresent(_instance, new PacketFragmentData());
@@ -60,6 +57,7 @@ namespace MultiNoa.Networking.Transport.Middleware.Fragmentation
 
         private static void SendPacketInFragments(List<byte> d, ConnectionBase c, ulong seriesId)
         {
+            
             var packetsToSend = (int) Math.Ceiling((double) d.Count / MaxPacketSize);
             var sizePerPacket = (int) Math.Ceiling((double) d.Count / packetsToSend);
             
@@ -68,13 +66,14 @@ namespace MultiNoa.Networking.Transport.Middleware.Fragmentation
             for (int i = 0; i < packetsToSend; i++)
             {
                 var readAt = sizePerPacket * i;
-                var toSend = d.GetRange(readAt, Math.Min(sizePerPacket, ((d.Count - 1) - readAt)));
+                var toSend = d.GetRange(readAt, Math.Min(sizePerPacket, (d.Count - readAt)));
                 
                 c.SendData(new FragmentPacket
                 {
                     SeriesId = seriesId,
                     PacketIndex = i,
                     NumberOfPackets = packetsToSend,
+                    TotalByteLength = d.Count,
                     FixedPacketByteLength = sizePerPacket,
                     Bytes = toSend.ToArray()
                 },false, true, new [] {MiddlewareTarget.Fragmenting});
@@ -139,8 +138,6 @@ namespace MultiNoa.Networking.Transport.Middleware.Fragmentation
         [HandlerMethod(NoaControlPacketIds.Symmetrical.FragmentPacket)]
         public static void HandleFragmentPacket(FragmentPacket p, ConnectionBase c)
         {
-            MultiNoaLoggingManager.Logger.Warning("LL!");
-            
             c.SetMiddlewareDataIfNotPresent(_instance, new PacketFragmentData());
             
             if (!c.TryGetMiddlewareData(_instance, out var cdata)) return;
@@ -153,7 +150,7 @@ namespace MultiNoa.Networking.Transport.Middleware.Fragmentation
             {
                 if (!pf.UnfinishedPackets.ContainsKey(p.SeriesId))
                 {
-                    pf.UnfinishedPackets[p.SeriesId] = new byte[p.NumberOfPackets*p.FixedPacketByteLength];
+                    pf.UnfinishedPackets[p.SeriesId] = new byte[p.TotalByteLength];
                 }
 
                 var data = pf.UnfinishedPackets[p.SeriesId];
@@ -162,9 +159,9 @@ namespace MultiNoa.Networking.Transport.Middleware.Fragmentation
                 var index = p.PacketIndex * p.FixedPacketByteLength;
 
                 // Write into receive buffer
-                for (int i = index; i < index+newData.Length; i++)
+                for (int i = 0; i < newData.Length; i++)
                 {
-                    data[i] = newData[i - index];
+                    data[i + index] = newData[i];
                 }
                 
 
@@ -188,7 +185,10 @@ namespace MultiNoa.Networking.Transport.Middleware.Fragmentation
             if (receivedPackets == p.NumberOfPackets)
             {
                 // => this was the last packet in the series! => Initialize parsing!
-                PacketReflectionHandler.HandlePacketStatic(NoaMiddlewareManager.OnReceive(new List<byte>(bytes), c).ToArray(), c);
+                PacketReflectionHandler.HandlePacketStatic(NoaMiddlewareManager.OnReceive(new List<byte>(bytes), c, new []
+                    {
+                        MiddlewareTarget.Encrypting
+                    }).ToArray(), c);
             }
         }
         
@@ -199,8 +199,9 @@ namespace MultiNoa.Networking.Transport.Middleware.Fragmentation
             [NetworkProperty(0)] public int PacketIndex { get; set; }
             [NetworkProperty(1)] public int NumberOfPackets { get; set; }
             [NetworkProperty(2)] public int FixedPacketByteLength { get; set; }
-            [NetworkProperty(3)] public ulong SeriesId { get; set; }
-            [NetworkProperty(4)] public byte[] Bytes { get; set; }
+            [NetworkProperty(3)] public int TotalByteLength { get; set; }
+            [NetworkProperty(4)] public ulong SeriesId { get; set; }
+            [NetworkProperty(5)] public byte[] Bytes { get; set; }
         }
         
         
