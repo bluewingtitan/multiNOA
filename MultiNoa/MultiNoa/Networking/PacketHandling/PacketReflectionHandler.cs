@@ -163,7 +163,8 @@ namespace MultiNoa.Networking.PacketHandling
                     var c = fromClient.GetClient();
                     if (c is IServersideClient sc)
                     {
-                        var allowed = sc.GetAuthorityGroup((AuthorityGroup) shm.AllowedGroup);
+                        // if has allowed group OR is admin
+                        var allowed = sc.GetAuthorityGroup((AuthorityGroup) shm.AllowedGroup) || sc.GetAuthorityGroup(AuthorityGroup.Admin);
 
                         if (!allowed)
                         {
