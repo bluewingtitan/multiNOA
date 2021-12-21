@@ -6,9 +6,12 @@ namespace ChatDemo
     {
         public static class FromClient
         {
-            [PacketStruct(0)]
+            
+            [PacketStruct(PacketId)]
             public struct MessageFromClient
             {
+                public const int PacketId = 513;
+                
                 [NetworkProperty(0)]
                 public string Message { get; set; }
             }
@@ -16,9 +19,10 @@ namespace ChatDemo
         
         public static class FromServer
         {
-            [PacketStruct(1)]
+            [PacketStruct(PacketId)]
             public struct MessageFromServer
             {
+                public const int PacketId = 1;
                 [NetworkProperty(0)]
                 public string Message { get; set; }
                 

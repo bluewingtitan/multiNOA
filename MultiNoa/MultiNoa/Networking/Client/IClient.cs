@@ -37,6 +37,9 @@ namespace MultiNoa.Networking.Client
         public ulong GetId();
         public Room GetRoom();
         public void MoveToRoom(Room room);
+
+        public bool GetAuthorityGroup(AuthorityGroup group);
+        public void AddToGroup(AuthorityGroup group);
     }
 
     public interface IServersideClient: IClient, IServersideClientAddons

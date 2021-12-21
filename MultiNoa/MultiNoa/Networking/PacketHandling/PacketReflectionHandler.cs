@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using MultiNoa.Logging;
+using MultiNoa.Networking.Client;
 using MultiNoa.Networking.Transport;
 
 namespace MultiNoa.Networking.PacketHandling
@@ -151,9 +152,29 @@ namespace MultiNoa.Networking.PacketHandling
             {
                 throw new PacketConversionException($"No registered Handler for PacketId #{attribute.PacketId} with type {type.FullName}");
             }
-
+            
             var i = Infos[attribute.PacketId];
 
+
+            if (i.HandlerMethod.IsSpecialHandlerAttribute)
+            {
+                if (i.HandlerMethod is SecuredHandlerMethod shm)
+                {
+                    var c = fromClient.GetClient();
+                    if (c is IServersideClient sc)
+                    {
+                        // if has allowed group OR is admin
+                        var allowed = sc.GetAuthorityGroup((AuthorityGroup) shm.AllowedGroup) || sc.GetAuthorityGroup(AuthorityGroup.Admin);
+
+                        if (!allowed)
+                        {
+                            return () => MultiNoaLoggingManager.Logger.Information($"Client {fromClient.GetEndpointIp()} tried to invoke action of type {type.FullName} / Handler {i.MethodInfo.Name}");
+                        }
+                    }
+                }
+            }
+            
+            
             var pars = new object[i.ParameterCaches.Count];
 
             for (int j = 0; j < i.ParameterCaches.Count; j++)
@@ -238,12 +259,21 @@ namespace MultiNoa.Networking.PacketHandling
     public class HandlerMethod : Attribute
     {
         public readonly int PacketId;
+        public bool IsSpecialHandlerAttribute { get; protected set; } = false;
         public HandlerMethod(int packetId)
         {
             PacketId = packetId;
         }
     }
-    
-    
-    
+
+    public class SecuredHandlerMethod : HandlerMethod
+    {
+        public readonly byte AllowedGroup;
+        public SecuredHandlerMethod(int packetId, byte allowedGroup) : base(packetId)
+        {
+            IsSpecialHandlerAttribute = true;
+            if (allowedGroup > 8) allowedGroup = 8;
+            AllowedGroup = allowedGroup;
+        }
+    }
 }

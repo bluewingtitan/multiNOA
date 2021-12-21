@@ -14,13 +14,7 @@ namespace MultiNoa.Networking.Transport.Middleware
     /// </summary>
     public interface INoaMiddleware
     {
-        /// <summary>
-        /// Only executed once when registering the middleware.
-        ///
-        /// If this returns false, results of the middleware won't be stored or applied onto the chain later on.
-        /// </summary>
-        /// <returns>If this middleware EVER modifies the input data</returns>
-        public bool DoesModify();
+        public MiddlewareTarget GetTarget();
 
         /// <summary>
         /// Called once before setup, and before calling DoesModify().

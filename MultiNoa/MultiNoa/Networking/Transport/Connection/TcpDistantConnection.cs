@@ -7,6 +7,7 @@ namespace MultiNoa.Networking.Transport.Connection
     public class TcpDistantConnection: ConnectionBase
     {
         public TcpClient Socket;
+        private readonly object _lockObj = 0;
 
         private NetworkStream _stream;
         private Packet _receivedData;
@@ -20,15 +21,15 @@ namespace MultiNoa.Networking.Transport.Connection
         public void Connect(TcpClient socket)
         {
             Socket = socket;
-            Socket.ReceiveBufferSize = ConnectionBase.DataBufferSize;
-            Socket.SendBufferSize = ConnectionBase.DataBufferSize;
+            Socket.ReceiveBufferSize = MultiNoaSetup.DataBufferSize;
+            Socket.SendBufferSize = MultiNoaSetup.DataBufferSize;
 
             _stream = Socket.GetStream();
 
             _receivedData = new Packet();
-            _receiveBuffer = new byte[ConnectionBase.DataBufferSize];
+            _receiveBuffer = new byte[MultiNoaSetup.DataBufferSize];
 
-            _stream.BeginRead(_receiveBuffer, 0, ConnectionBase.DataBufferSize, ReceiveCallback, null);
+            _stream.BeginRead(_receiveBuffer, 0, MultiNoaSetup.DataBufferSize, ReceiveCallback, null);
 
             _address = socket.Client.RemoteEndPoint.ToString();
         }
@@ -63,7 +64,7 @@ namespace MultiNoa.Networking.Transport.Connection
 
 
                 // Start listening again
-                _stream.BeginRead(_receiveBuffer, 0, ConnectionBase.DataBufferSize, ReceiveCallback, null);
+                _stream.BeginRead(_receiveBuffer, 0, MultiNoaSetup.DataBufferSize, ReceiveCallback, null);
             }
             catch (Exception e)
             {
@@ -86,8 +87,10 @@ namespace MultiNoa.Networking.Transport.Connection
         protected override void TransferData(byte[] data)
         {
             var bytes = data.Length;
-            //MultiNoaLoggingManager.Logger.Debug($"Sending {bytes} bytes to {GetEndpointIp()}");
-            _stream.BeginWrite(data, 0, bytes, null, null);
+            lock (_lockObj)
+            {
+                _stream.BeginWrite(data, 0, bytes, null, null).AsyncWaitHandle.WaitOne();
+            }
         }
 
         

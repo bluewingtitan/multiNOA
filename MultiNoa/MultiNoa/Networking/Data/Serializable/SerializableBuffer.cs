@@ -1,13 +1,13 @@
 namespace MultiNoa.Networking.Data.Serializable
 {
     /// <summary>
-    /// Represents a byte array of a fixed length
+    /// Used inside of packets.
     /// </summary>
-    public class NetworkByteArray : INetworkSerializable
+    public class SerializableBuffer : INetworkSerializable
     {
         private readonly byte[] data;
 
-        public NetworkByteArray(byte[] data)
+        public SerializableBuffer(byte[] data)
         {
             this.data = data;
         }
