@@ -2,6 +2,13 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
+        <PackageVersion>0.1.0</PackageVersion>
+        <Title>multiNoa Networking Library</Title>
+        <Authors>bluewingtitan</Authors>
+        <Description>A multiplayer game networking library with focus on easy and fast implementation, extendability and scalability of the final product.
+
+Still very much in developement.</Description>
+        <Copyright>Dominik Mezler</Copyright>
     </PropertyGroup>
 
 </Project>
