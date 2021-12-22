@@ -10,7 +10,7 @@ namespace ChatDemo
             [PacketStruct(PacketId)]
             public struct MessageFromClient
             {
-                public const int PacketId = 513;
+                public const int PacketId = 0;
                 
                 [NetworkProperty(0)]
                 public string Message { get; set; }
