@@ -9,6 +9,10 @@
 
 Still very much in developement.</Description>
         <Copyright>Dominik Mezler</Copyright>
+        <PackageLicenseUrl>https://github.com/bluewingtitan/multiNOA/blob/master/LICENSE</PackageLicenseUrl>
+        <PackageIconUrl>https://github.com/bluewingtitan/multiNOA/raw/master/Resources/LogoSketch2.png</PackageIconUrl>
+        <RepositoryUrl>https://github.com/bluewingtitan/multiNOA</RepositoryUrl>
+        <PackageTags>multiplayer, networking</PackageTags>
     </PropertyGroup>
 
 </Project>
