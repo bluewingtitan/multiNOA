@@ -2,6 +2,7 @@
 > **multi**player **n**etworking **o**f **a**ton
 
 STILL HIGHLY IN THE WORKS!
+[Look at my trello](https://trello.com/b/7hMRFsFD/multinoa)
 
 ## Intro
 multiNoa is a highly dynamic networking library for creating **tick-based, tcp-focused, highly modular** multiplayer solutions without the struggle of writing the network layer from the ground up.
