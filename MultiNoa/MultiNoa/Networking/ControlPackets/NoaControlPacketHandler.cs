@@ -1,4 +1,5 @@
 using MultiNoa.Logging;
+using MultiNoa.Networking.Client;
 using MultiNoa.Networking.PacketHandling;
 using MultiNoa.Networking.Transport;
 
@@ -38,6 +39,17 @@ namespace MultiNoa.Networking.ControlPackets
                 c.GetClient()?.InvokeOnClientReady();
                 c.InvokeOnConnected();
             }
+
+            [HandlerMethod(NoaControlPacketIds.FromServer.SyncUsername)]
+            public static void SyncUsername(NoaControlPackets.FromServer.SyncUsername s, ConnectionBase c)
+            {
+                var client = c.GetClient();
+                if (client == null) return;
+                
+                MultiNoaLoggingManager.Logger.Verbose($"Changed Username of {c.GetEndpointIp()} from '{client.GetUsername()}' to '{s.NewUsername}'");
+                c.GetClient()?.SetUsername(s.NewUsername, false);
+            }
+            
         }
         
         [MultiNoaInternal]
@@ -55,18 +67,17 @@ namespace MultiNoa.Networking.ControlPackets
                 
                 c.GetClient()?.InvokeOnClientConnected();
                 c.InvokeOnConnected();
-                c.GetClient()?.SetUsername(welcomeReceived.Username, false);
+                (c.GetClient() as IServersideClient)?.SetUsername(welcomeReceived.Username, false);
             }
 
             [HandlerMethod(NoaControlPacketIds.FromClient.SyncUsername)]
-            public static void NameSynced(NoaControlPackets.FromClient.SyncUsername username, ConnectionBase c)
+            public static void SyncUsername(NoaControlPackets.FromClient.SyncUsername username, ConnectionBase c)
             {
                 var client = c.GetClient();
-                if (client != null)
-                {
-                    MultiNoaLoggingManager.Logger.Verbose($"Changed Username of {c.GetEndpointIp()} from '{client.GetUsername()}' to '{username.NewUsername}'");
-                    c.GetClient()?.SetUsername(username.NewUsername, false);
-                }
+                if (client == null) return;
+                
+                MultiNoaLoggingManager.Logger.Verbose($"Changed Username of {c.GetEndpointIp()} from '{client.GetUsername()}' to '{username.NewUsername}'");
+                c.GetClient()?.SetUsername(username.NewUsername, true);
             }
         }
     }

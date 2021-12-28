@@ -12,6 +12,7 @@ namespace MultiNoa.Networking.ControlPackets
             private const int Offset = -1024;
             public const int ConnectionRefusedPacket = Offset + 0;
             public const int WelcomePacket = Offset + 1;
+            public const int SyncUsername = Offset + 2;
 
             #region Encryption
 

@@ -18,7 +18,7 @@ namespace MultiNoa.Networking.Client
         
         
         public string GetUsername();
-        public void SetUsername(string username, bool synced = true);
+        public void SetUsername(string username, bool synced);
         public void SendData(object data);
         public ConnectionBase GetConnection();
         public void Disconnect();
@@ -26,6 +26,7 @@ namespace MultiNoa.Networking.Client
 
     public interface IUserSideClientAddons
     {
+        public void SetUsername(string username);
     }
     
     public interface IUserSideClient: IClient, IUserSideClientAddons{}
@@ -38,8 +39,9 @@ namespace MultiNoa.Networking.Client
         public Room GetRoom();
         public void MoveToRoom(Room room);
 
-        public bool GetAuthorityGroup(AuthorityGroup group);
-        public void AddToGroup(AuthorityGroup group);
+        public bool GetAuthorityGroup(string group);
+        public string[] GetAuthorityGroups();
+        public void AddToGroup(string group);
     }
 
     public interface IServersideClient: IClient, IServersideClientAddons
