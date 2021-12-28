@@ -164,11 +164,33 @@ namespace MultiNoa.Networking.PacketHandling
                     if (c is IServersideClient sc)
                     {
                         // if has allowed group OR is admin
-                        var allowed = sc.GetAuthorityGroup((AuthorityGroup) shm.AllowedGroup) || sc.GetAuthorityGroup(AuthorityGroup.Admin);
+                        var allowed = sc.GetAuthorityGroup(shm.AllowedGroup) || sc.GetAuthorityGroup(AuthorityGroups.Operator);
 
                         if (!allowed)
                         {
-                            return () => MultiNoaLoggingManager.Logger.Information($"Client {fromClient.GetEndpointIp()} tried to invoke action of type {type.FullName} / Handler {i.MethodInfo.Name}");
+                            if (shm.Severity <= 0)
+                                return () => {};
+
+                            if (shm.Severity == 1)
+                            {
+                                return () => MultiNoaLoggingManager.Logger.Verbose($"Client {fromClient.GetEndpointIp()} tried to invoke action of type {type.FullName} / Handler {i.MethodInfo.Name}");
+                            }
+                            
+                            if (shm.Severity == 2)
+                            {
+                                return () => MultiNoaLoggingManager.Logger.Information($"Client {fromClient.GetEndpointIp()} tried to invoke action of type {type.FullName} / Handler {i.MethodInfo.Name}");
+                            }
+                            
+                            if (shm.Severity >= 3)
+                            {
+                                return () =>
+                                {
+                                    fromClient.Disconnect();
+                                    MultiNoaLoggingManager.Logger.Warning(
+                                            $"Client {fromClient.GetEndpointIp()} tried to invoke action of type {type.FullName} / Handler {i.MethodInfo.Name}. Disconnected client.");
+                                };
+                            }
+                            
                         }
                     }
                 }
@@ -266,14 +288,22 @@ namespace MultiNoa.Networking.PacketHandling
         }
     }
 
+    [AttributeUsage(AttributeTargets.Method)]
     public class SecuredHandlerMethod : HandlerMethod
     {
-        public readonly byte AllowedGroup;
-        public SecuredHandlerMethod(int packetId, byte allowedGroup) : base(packetId)
+        public readonly string AllowedGroup;
+        public readonly int Severity;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="packetId">Id of the packet to be handled</param>
+        /// <param name="severity">0: Do nothing | 1: Log as verbose | 2: Log as Information | 3: Log as Warning and disconnect client</param>
+        /// <param name="allowedGroup">Group-String for allowed group</param>
+        public SecuredHandlerMethod(int packetId, int severity, string allowedGroup) : base(packetId)
         {
             IsSpecialHandlerAttribute = true;
-            if (allowedGroup > 8) allowedGroup = 8;
             AllowedGroup = allowedGroup;
+            Severity = severity;
         }
     }
 }

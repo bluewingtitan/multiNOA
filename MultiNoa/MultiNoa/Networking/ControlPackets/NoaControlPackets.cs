@@ -50,6 +50,14 @@ namespace MultiNoa.Networking.ControlPackets
                 public string RunningNoaVersion { get; set; }
             }
             
+            [MultiNoaInternal]
+            [PacketStruct(NoaControlPacketIds.FromServer.SyncUsername)]
+            public struct SyncUsername
+            {
+                [NetworkProperty(0)]
+                public string NewUsername { get; set; }
+            }
+            
         }
 
         public static class FromClient

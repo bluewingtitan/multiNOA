@@ -13,8 +13,6 @@ namespace MultiNoa.Networking.Transport
 {
     public abstract class ConnectionBase: IUpdatable
     {
-        
-        
         private static readonly IPacketHandler DefaultHandler = new PacketReflectionHandler();
         private readonly Dictionary<INoaMiddleware, object> _middlewareData = new Dictionary<INoaMiddleware, object>();
         private readonly object _dataLock = '0';
