@@ -33,7 +33,6 @@ namespace MultiNoaTests.Networking.PacketHandling
             
             Assert.AreEqual(str1.Byte1.GetTypedValue(), str2.Byte1.GetTypedValue());
             Assert.AreEqual(str1.Byte2.GetTypedValue(), str2.Byte2.GetTypedValue());
-
         }
 
         /// <summary>
@@ -44,7 +43,11 @@ namespace MultiNoaTests.Networking.PacketHandling
         {
             var str1 = new DemoStruct2("demo!¸´ÜÈ", 71654468L, 2, -2938, 12321);
             var bytes = PacketConverter.ObjectToByte(str1, writeLength:false);
-            var str2 = PacketConverter.BytesToObject<DemoStruct2>(bytes.ToArray(), out var dummy);
+            var byteArray = bytes.ToArray();
+            var str2 = PacketConverter.BytesToObject<DemoStruct2>(byteArray, out var dummy);
+            var str3 = PacketConverter.BytesToObject(byteArray);
+            
+            Assert.AreEqual(str2, str3);
             
             Assert.AreEqual(str1.Byte1.GetTypedValue(),str2.Byte1.GetTypedValue());
             Assert.AreEqual(str1.Int1.GetTypedValue(),str2.Int1.GetTypedValue());
@@ -83,8 +86,6 @@ namespace MultiNoaTests.Networking.PacketHandling
         [Test]
         public void TestGenerics()
         {
-            Assert.IsTrue(typeof(INetworkDataContainer).IsAssignableFrom(typeof(NetworkInt)));
-            
             var str1 = new TestGenericsStruct()
             {
                 StringNetworkArray = new NetworkArray<string>(new[] {"Test", "demo! ´ÜÈ","!!!"}),
@@ -107,7 +108,6 @@ namespace MultiNoaTests.Networking.PacketHandling
             Assert.AreEqual(str1.NetworkIntNetworkArray.GetTypedValue()[1], str2.NetworkIntNetworkArray.GetTypedValue()[1]);
             Assert.AreEqual(str1.NetworkIntNetworkArray.GetTypedValue()[2], str2.NetworkIntNetworkArray.GetTypedValue()[2]);
             Assert.AreEqual(str1.NetworkIntNetworkArray.GetTypedValue().Length, str2.NetworkIntNetworkArray.GetTypedValue().Length);
-            
         }
     }
 
@@ -125,7 +125,6 @@ namespace MultiNoaTests.Networking.PacketHandling
             Byte1 = new NetworkByte(b1);
             Byte2 = new NetworkByte(b2);
         }
-        
     }
     
     [PacketStruct(1)]
@@ -168,11 +167,8 @@ namespace MultiNoaTests.Networking.PacketHandling
     {
         [NetworkProperty]
         public NetworkArray<string> StringNetworkArray { get; set; }
-        
-        
+
         [NetworkProperty]
         public NetworkArray<NetworkInt> NetworkIntNetworkArray { get; set; }
-        
     }
-    
 }

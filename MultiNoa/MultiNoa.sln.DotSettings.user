@@ -2,6 +2,11 @@
 	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;
   &lt;Assembly Path="/usr/share/dotnet/packs/Microsoft.NETCore.App.Ref/3.1.0/ref/netcoreapp3.1/System.Runtime.dll" /&gt;
 &lt;/AssemblyExplorer&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=17bc507a_002Dfd92_002D4d63_002Dbaf4_002D4d88124a606d/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="PacketHandlerTest #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::95489B08-FBF8-409C-B2BF-D0A1B7899993::.NETCoreApp,Version=v3.1::MultiNoaTests.Networking.PacketHandling.PacketHandlerTest&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=96ebe0ce_002D63fb_002D4407_002D9795_002Db2dfc1085b20/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="PacketHandlerTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;NUnit3x::95489B08-FBF8-409C-B2BF-D0A1B7899993::.NETCoreApp,Version=v3.1::MultiNoaTests.Networking.PacketHandling.PacketHandlerTest&lt;/TestId&gt;&#xD;
