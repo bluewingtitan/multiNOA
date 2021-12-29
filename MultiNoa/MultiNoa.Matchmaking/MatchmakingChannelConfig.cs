@@ -1,6 +1,6 @@
 namespace MultiNoa.Matchmaking
 {
-    public struct MatchmakingConfig
+    public struct MatchmakingChannelConfig
     {
         public MatchmakingMode Mode;
         public int InitialRange;

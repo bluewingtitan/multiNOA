@@ -2,6 +2,9 @@ using System;
 
 namespace MultiNoa.Matchmaking.Elo
 {
+    /// <summary>
+    /// A simple Elo-Calculator
+    /// </summary>
     public static class EloCalculator
     {
         public static int AdjustmentFactor = 16;
