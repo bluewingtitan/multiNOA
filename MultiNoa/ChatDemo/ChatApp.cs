@@ -27,7 +27,7 @@ namespace ChatDemo
 
         private static void Main(string[] args)
         {
-            MultiNoaSetup.CustomSetup(
+            MultiNoaSetup.SetupCollection.CustomSetup(
                 new MultiNoaConfig
                 {
                     MainAssembly = typeof(ChatClient).Assembly,

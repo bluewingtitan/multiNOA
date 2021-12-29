@@ -6,6 +6,7 @@ using MultiNoa.GameSimulation;
 using MultiNoa.Logging;
 using MultiNoa.Networking.PacketHandling;
 using MultiNoa.Networking.Transport.Middleware;
+using MultiNoa.Networking.Transport.Middleware.Fragmentation;
 
 namespace MultiNoa
 {
@@ -26,13 +27,15 @@ namespace MultiNoa
         internal static INoaMiddleware[] FragmentingMiddlewares = new INoaMiddleware[0];
         internal static INoaMiddleware[] CorrectingMiddlewares = new INoaMiddleware[0];
         internal static INoaMiddleware[] NonModifyingMiddlewares = new INoaMiddleware[0];
+
+        public static readonly MultiNoaSetupCollection SetupCollection = new MultiNoaSetupCollection();
         
         
         /// <summary>
         /// Sets up MultiNoa in a way fitting for most use cases, given that all dynamically handled packet types are defined within the given assembly.
         /// </summary>
         /// <param name="mainAssembly"></param>
-        public static void DefaultSetup(Assembly mainAssembly)
+        internal static void DefaultSetup(Assembly mainAssembly)
         {
             Setup(
                 new MultiNoaConfig
@@ -40,7 +43,7 @@ namespace MultiNoa
                     DataBufferSize = DataBufferSize,
                     MainAssembly = mainAssembly,
                     ExtraAssemblies = new Assembly[0],
-                    Middlewares = new INoaMiddleware[] {new NoaNetworkLoggingMiddleware()}
+                    Middlewares = new INoaMiddleware[] {new NoaNetworkLoggingMiddleware(), new NoaFragmentationMiddleware(), new NoaRsaMiddleware()}
                 });
         }
 
@@ -48,7 +51,7 @@ namespace MultiNoa
         /// Only use if you need a setup that definitely differs from the default setup!
         /// </summary>
         /// <param name="config">Configuration Class Instance</param>
-        public static void CustomSetup(MultiNoaConfig config)
+        internal static void CustomSetup(MultiNoaConfig config)
         {
             Setup(config);
         }
@@ -150,6 +153,33 @@ namespace MultiNoa
         }
     }
 
+    public class MultiNoaSetupCollection
+    {
+        internal MultiNoaSetupCollection(){}
+
+        /// <summary>
+        /// Used for a fully custom setup.
+        /// </summary>
+        /// <param name="config">Config to follow</param>
+        public void CustomSetup(MultiNoaConfig config)
+        {
+            MultiNoaSetup.CustomSetup(config);
+        }
+    }
+
+    public static class DefaultSetupExtension
+    {
+        /// <summary>
+        /// Sets up MultiNoa in a way fitting for most use cases, given that all packet types + handlers are defined within mainAssembly.
+        /// </summary>
+        /// <param name="mainAssembly"></param>
+        public static void DefaultSetup(this MultiNoaSetupCollection collection, Assembly mainAssembly)
+        {
+            MultiNoaSetup.DefaultSetup(mainAssembly);
+        }
+    }
+    
+
     public struct MultiNoaConfig
     {
         public INoaMiddleware[] Middlewares;
@@ -164,6 +194,8 @@ namespace MultiNoa
             Middlewares = middlewares;
             DataBufferSize = dataBufferSize;
         }
+        
+        
     }
 
 

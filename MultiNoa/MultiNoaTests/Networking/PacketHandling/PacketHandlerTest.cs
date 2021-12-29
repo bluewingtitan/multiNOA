@@ -13,7 +13,7 @@ namespace MultiNoaTests.Networking.PacketHandling
         [OneTimeSetUp]
         public void Setup()
         {
-            MultiNoaSetup.DefaultSetup(typeof(PacketHandlerTest).Assembly);
+            MultiNoaSetup.SetupCollection.DefaultSetup(typeof(PacketHandlerTest).Assembly);
         }
         
         /// <summary>
