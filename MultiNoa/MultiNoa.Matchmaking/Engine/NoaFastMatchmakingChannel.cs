@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using MultiNoa.GameSimulation;
 using MultiNoa.Matchmaking.Elo;
@@ -13,18 +14,31 @@ namespace MultiNoa.Matchmaking.Engine
         public override IMatchmakingResult[] DoAGeneration()
         {
             var result = new List<IMatchmakingResult>();
-            while (_clients.Count >= Config.TeamSize*2)
+            
+            // Copy clients to working list
+            var cCopy = new SortedList<decimal, IMatchmakingClient>();
+
+            foreach (var c in _clients)
             {
+                cCopy.Add(decimal.Parse(c.GetMmr(_channelId) + "." + c.GetId(), NumberStyles.AllowDecimalPoint), c);
+            }
+            
+            var dueIterations = 10000;
+            
+            while (cCopy.Count >= Config.TeamSize*2 && dueIterations > 0)
+            {
+                dueIterations--;
+                
                 // Form the teams.
                 var teamA = new List<IMatchmakingClient>();
                 var teamB = new List<IMatchmakingClient>();
 
                 for (int i = 0; i < Config.TeamSize; i++)
                 {
-                    var a = _clients[0];
-                    var b = _clients[1];
-                    _clients.RemoveAt(0);
-                    _clients.RemoveAt(0);
+                    var a = cCopy[0];
+                    var b = cCopy[1];
+                    cCopy.RemoveAt(0);
+                    cCopy.RemoveAt(0);
 
                     teamA.Add(a);
                     teamB.Add(b);
