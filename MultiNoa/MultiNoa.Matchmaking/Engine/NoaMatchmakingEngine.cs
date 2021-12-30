@@ -14,12 +14,14 @@ namespace MultiNoa.Matchmaking.Engine
     /// </summary>
     public class NoaMatchmakingEngine: IMatchmakingEngine, IUpdatable
     {
-        public const int GenerationSeconds = 5;
+        private const int GenerationSeconds = 5;
         private IDynamicThread _thread;
-
+        
+        
         public NoaMatchmakingEngine(string name = "Matchmaking")
         {
-            _thread = new DynamicThread(1, name);
+            // Runs at 5 tps to be more flexible regarding adding/removing clients in matchmaking
+            _thread = new DynamicThread(5, name);
             _thread.AddUpdatable(this);
         }
         

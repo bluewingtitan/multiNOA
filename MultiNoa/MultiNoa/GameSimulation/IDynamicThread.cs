@@ -1,3 +1,5 @@
+using System;
+
 namespace MultiNoa.GameSimulation
 {
     public interface IDynamicThread
@@ -8,6 +10,8 @@ namespace MultiNoa.GameSimulation
         /// Stops all running instances of IDynamicThread => not reversable, only use as part of a full stop-routine!
         /// </summary>
         public static void StopAll() => AreRunning = false;
+
+        void ScheduleExecution(Action action);
         
         
         void Stop();

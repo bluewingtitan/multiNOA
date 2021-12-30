@@ -47,6 +47,11 @@ namespace MultiNoa.GameSimulation
             _runningThread.Start();
         }
 
+        public void ScheduleExecution(Action action)
+        {
+            _scheduler.ScheduleExecution(action);
+        }
+
         public void Stop()
         {
             IsRunning = false;
