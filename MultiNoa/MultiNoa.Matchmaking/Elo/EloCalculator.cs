@@ -27,9 +27,9 @@ namespace MultiNoa.Matchmaking.Elo
         /// <param name="oldElo">Old Elo Score of the player</param>
         /// <param name="expectedScore">Expected Score (between 0 and 1)</param>
         /// <param name="actualScore">Actual Score (between 0 and 1)</param>
-        /// <param name="adjustmentFactor">Higher means broader adjustments to the elo points. Negative to use default (24)</param>
+        /// <param name="adjustmentFactor">Higher means broader adjustments to the elo points. 0 for no changes. Can't be negative.</param>
         /// <returns>The new Elo Score of the player</returns>
-        public static int GetNewElo(int oldElo, double expectedScore, double actualScore, int adjustmentFactor = -1)
+        public static int GetNewElo(int oldElo, double expectedScore, double actualScore, int adjustmentFactor = DefaultAdjustmentFactor)
         {
             if (adjustmentFactor < 0)
                 adjustmentFactor = DefaultAdjustmentFactor;

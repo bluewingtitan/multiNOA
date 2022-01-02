@@ -64,7 +64,7 @@ namespace MultiNoa.Networking.Server
                         RunningNoaVersion = MultiNoaSetup.VersionCode
                     };
 
-                    client.AddOnClientConnected(OnClientWelcomed);
+                    client.OnClientConnected += OnClientWelcomed;
                     
                     connection.SendData(packet);
 
@@ -87,7 +87,7 @@ namespace MultiNoa.Networking.Server
                 {
                     MultiNoaLoggingManager.Logger.Verbose($"Client {client.GetConnection().GetEndpointIp()} was fully connected");
                     NoaMiddlewareManager.OnConnectedServerside(client.GetConnection());
-                    client.RemoveOnClientConnected(OnClientWelcomed);
+                    client.OnClientConnected -= OnClientWelcomed;
                     _baseRoom.TryAddClient((IServersideClient) client);
                     client.InvokeOnClientReady();
                 }, 0));

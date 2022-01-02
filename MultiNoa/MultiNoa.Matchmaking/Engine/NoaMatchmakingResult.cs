@@ -4,15 +4,22 @@ namespace MultiNoa.Matchmaking.Engine
     {
         private readonly IMatchmakingPlayerData[] _teamA;
         private readonly IMatchmakingPlayerData[] _teamB;
+        private readonly MatchmakingMode _mode;
+        private readonly int _channel;
 
-        public NoaMatchmakingResult(IMatchmakingPlayerData[] teamA, IMatchmakingPlayerData[] teamB)
+        public NoaMatchmakingResult(IMatchmakingPlayerData[] teamA, IMatchmakingPlayerData[] teamB, MatchmakingMode mode, int channel)
         {
             _teamA = teamA;
             _teamB = teamB;
+            _mode = mode;
+            _channel = channel;
         }
         
         public IMatchmakingPlayerData[] GetTeamA() => _teamA;
         public IMatchmakingPlayerData[] GetTeamB() => _teamB;
+        public MatchmakingMode GetMatchmakingMode() => _mode;
+
+        public int GetChannel() => _channel;
     }
 
     public class NoaMatchmakingPlayerData : IMatchmakingPlayerData

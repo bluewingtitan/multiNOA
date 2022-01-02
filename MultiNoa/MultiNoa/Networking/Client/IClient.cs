@@ -6,15 +6,15 @@ namespace MultiNoa.Networking.Client
 {
     public interface IClient
     {
-        public delegate void ClientReadyDelegate(IClient client);
+        public delegate void ClientEventDelegate(IClient client);
 
-        public void AddOnClientConnected(ClientReadyDelegate callback);
-        public void RemoveOnClientConnected(ClientReadyDelegate callback);
+        event ClientEventDelegate OnClientConnected;
+        event ClientEventDelegate OnClientReady;
+        event ClientEventDelegate OnClientDisconnected;
+
         public void InvokeOnClientConnected();
-        
-        public void AddOnOnClientReady(ClientReadyDelegate callback);
-        public void RemoveOnClientReady(ClientReadyDelegate callback);
         public void InvokeOnClientReady();
+        public void InvokeOnClientDisconnected();
         
         
         public string GetUsername();

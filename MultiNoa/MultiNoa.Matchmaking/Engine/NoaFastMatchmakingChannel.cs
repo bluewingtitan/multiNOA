@@ -70,7 +70,7 @@ namespace MultiNoa.Matchmaking.Engine
                     bData.Add(new NoaMatchmakingPlayerData(b, bExpected));
                 }
                 
-                result.Add(new NoaMatchmakingResult(aData.ToArray(), bData.ToArray()));
+                result.Add(new NoaMatchmakingResult(aData.ToArray(), bData.ToArray(), Config.Mode, _channelId));
             }
 
             return result.ToArray();

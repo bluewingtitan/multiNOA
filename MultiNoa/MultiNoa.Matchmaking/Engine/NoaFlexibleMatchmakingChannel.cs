@@ -6,8 +6,35 @@ using MultiNoa.Matchmaking.Elo;
 
 namespace MultiNoa.Matchmaking.Engine
 {
-    public class NoaStaticMatchmakingChannel: NoaMatchmakingChannel
+    public class NoaFlexibleMatchmakingChannel: NoaMatchmakingChannel
     {
+        private readonly Dictionary<ulong, int> _waitGenerations = new Dictionary<ulong, int>();
+
+
+        protected override void OnAddClient(ulong id)
+        {
+            _waitGenerations[id] = 0;
+        }
+
+        protected override void OnRemoveClient(ulong id)
+        {
+            _waitGenerations.Remove(id);
+        }
+
+        private int GetRange(IMatchmakingClient c1, IMatchmakingClient c2)
+        {
+            var r1 = Math.Min(
+            Config.InitialRange + Config.FlexibleIncreasePerGeneration * _waitGenerations[c1.GetId()],
+            Config.MaxAllowedRange);
+            
+            var r2 = Math.Min(
+                Config.InitialRange + Config.FlexibleIncreasePerGeneration * _waitGenerations[c2.GetId()],
+                Config.MaxAllowedRange);
+
+            return Math.Max(r1, r2);
+            
+        }
+        
         public override IMatchmakingResult[] DoAGeneration()
         {
             var result = new List<IMatchmakingResult>();
@@ -25,24 +52,32 @@ namespace MultiNoa.Matchmaking.Engine
                 var totalDif = 0;
                 for (int x = 0; x < cCopy.Count - 1; x++)
                 {
-                    var differenceToNext = Math.Abs(cCopy[x].GetMmr(_channelId) - cCopy[x + 1].GetMmr(_channelId));
+                    var currentClient = cCopy[x];
+                    var nextClient = cCopy[x + 1];
+                    var differenceToNext = Math.Abs(currentClient.GetMmr(_channelId) - nextClient.GetMmr(_channelId));
 
-                    if (differenceToNext > Config.InitialRange)
+                    var range = GetRange(currentClient, nextClient);
+
+                    if (differenceToNext > range)
                     {
+                        _waitGenerations[currentClient.GetId()]++;
                         cCopy.RemoveAt(x);
                         break;
                     }
 
                     totalDif += differenceToNext;
 
-                    if (totalDif > Config.InitialRange)
+                    if (totalDif > range)
                     {
                         foreach (var member in potentialGameMembers)
+                        {
+                            _waitGenerations[member.GetId()]++;
                             cCopy.Remove(member);
+                        }
                         break;
                     }
                     
-                    if(x == 0)
+                    if(potentialGameMembers.Count <= 0)
                         potentialGameMembers.Add(cCopy[x]);
                     potentialGameMembers.Add(cCopy[x+1]);
 
@@ -105,7 +140,8 @@ namespace MultiNoa.Matchmaking.Engine
             return result.ToArray();
         }
 
-        public NoaStaticMatchmakingChannel(int channelId, MatchmakingChannelConfig config, IDynamicThread thread) : base(channelId, config, thread)
-        {}
+        public NoaFlexibleMatchmakingChannel(int channelId, MatchmakingChannelConfig config, IDynamicThread thread) : base(channelId, config, thread)
+        {
+        }
     }
 }

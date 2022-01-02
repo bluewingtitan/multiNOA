@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using MultiNoa.GameSimulation;
+using MultiNoa.Networking.Client;
 
 namespace MultiNoa.Matchmaking.Engine
 {
@@ -16,6 +18,9 @@ namespace MultiNoa.Matchmaking.Engine
     {
         private const int GenerationSeconds = 5;
         private IDynamicThread _thread;
+        private readonly Dictionary<int, NoaMatchmakingChannel> _channels = new Dictionary<int, NoaMatchmakingChannel>();
+        public event IMatchmakingEngine.TeamsGeneratedDelegate OnTeamsGenerated;
+
         
         
         public NoaMatchmakingEngine(string name = "Matchmaking")
@@ -28,17 +33,43 @@ namespace MultiNoa.Matchmaking.Engine
         
         public void AddClient(IMatchmakingClient client, int channel)
         {
-            
+            _thread.ScheduleExecution(() =>
+            {
+                if (_channels.ContainsKey(channel))
+                {
+                    client.OnClientDisconnected += RemoveIClientOnDisconnect;
+                    _channels[channel].AddClient(client);
+                }
+            });
         }
 
         public void RemoveClient(IMatchmakingClient client)
         {
-            
+            _thread.ScheduleExecution(() =>
+            {
+                foreach (var (_, channel) in _channels)
+                {
+                    channel.RemoveClient(client);
+                }
+            });
+        }
+        
+        
+        private void RemoveIClientOnDisconnect(IClient client)
+        {
+            // We know that client implements IMatchmaking client, as the only way it's getting assigned this function as event call back is in a function where it's passed as IMatchmakingClient.
+            RemoveClient((IMatchmakingClient) client);
         }
 
         public void RemoveClient(ulong clientId)
         {
-            
+            _thread.ScheduleExecution(() =>
+            {
+                foreach (var (_, channel) in _channels)
+                {
+                    channel.RemoveClient(clientId);
+                }
+            });
         }
 
         public int GetClientsSearching()
@@ -48,7 +79,18 @@ namespace MultiNoa.Matchmaking.Engine
 
         public void DefineChannel(int channelId, MatchmakingChannelConfig config)
         {
-            
+            NoaMatchmakingChannel channel = config.Mode switch
+            {
+                MatchmakingMode.Fast => new NoaFastMatchmakingChannel(channelId, config, _thread),
+                MatchmakingMode.Flexible => new NoaFlexibleMatchmakingChannel(channelId, config, _thread),
+                MatchmakingMode.Static => new NoaStaticMatchmakingChannel(channelId, config, _thread),
+                _ => new NoaFastMatchmakingChannel(channelId, config, _thread)
+            };
+
+            _thread.ScheduleExecution(() =>
+            {
+                _channels[channelId] = channel;
+            });
         }
 
 
@@ -61,7 +103,15 @@ namespace MultiNoa.Matchmaking.Engine
             if (_counter <= 0)
             {
                 _counter = GenerationSeconds;
-                // TODO: Execute all channels.
+
+                var results = new List<IMatchmakingResult>();
+
+                foreach (var (_, channel) in _channels)
+                {
+                    results.AddRange(channel.DoAGeneration());
+                }
+                
+                OnTeamsGenerated?.Invoke(results.ToArray());
             }
         }
     }

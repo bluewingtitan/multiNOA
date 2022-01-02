@@ -3,6 +3,9 @@ namespace MultiNoa.Matchmaking
     public interface IMatchmakingEngine
     {
         #region Client-Related
+        public delegate void TeamsGeneratedDelegate(IMatchmakingResult[] results);
+        public event TeamsGeneratedDelegate OnTeamsGenerated;
+        
         
         public void AddClient(IMatchmakingClient client, int channel);
         public void RemoveClient(IMatchmakingClient client);

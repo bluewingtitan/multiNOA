@@ -28,9 +28,10 @@ namespace MultiNoa.Networking.Transport
 
             OnDisconnected += c =>
             {
+                c.GetClient()?.InvokeOnClientDisconnected();
+
                 if (c.GetClient() is IServersideClient sClient)
                 {
-
                     sClient.GetRoom().RemoveClient(sClient);
                 }
             };

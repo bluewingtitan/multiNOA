@@ -4,5 +4,7 @@ namespace MultiNoa.Matchmaking
     {
         public IMatchmakingPlayerData[] GetTeamA();
         public IMatchmakingPlayerData[] GetTeamB();
+        public MatchmakingMode GetMatchmakingMode();
+        public int GetChannel();
     }
 }
