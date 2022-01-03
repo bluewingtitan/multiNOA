@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MultiNoa.GameSimulation;
+using MultiNoa.Logging;
 using MultiNoa.Matchmaking.Elo;
 
 namespace MultiNoa.Matchmaking.Engine
@@ -47,57 +48,54 @@ namespace MultiNoa.Matchmaking.Engine
                     potentialGameMembers.Add(cCopy[x+1]);
 
                     if (potentialGameMembers.Count < Config.TeamSize * 2) continue;
+                    
+                    foreach (var member in potentialGameMembers)
                     {
-                        // Form the teams.
-                        var teamA = new List<IMatchmakingClient>();
-                        var teamB = new List<IMatchmakingClient>();
-
-                        for (int i = 0; i < Config.TeamSize; i++)
-                        {
-                            var a = potentialGameMembers[0];
-                            var b = potentialGameMembers[1];
-                            potentialGameMembers.RemoveAt(0);
-                            potentialGameMembers.RemoveAt(0);
-
-                            teamA.Add(a);
-                            teamB.Add(b);
-                        }
-
-                        var aAvg = teamA.Average(client => client.GetMmr(_channelId));
-                        var bAvg = teamA.Average(client => client.GetMmr(_channelId));
-                
-                        var aData = new List<IMatchmakingPlayerData>();
-                        var bData = new List<IMatchmakingPlayerData>();
-
-                        for (int i = 0; i < Config.TeamSize; i++)
-                        {
-                            var a = teamA[i];
-                            var aExpected =
-                                EloCalculator.ExpectedPoints(
-                                    (int) Math.Round((aAvg + a.GetMmr(_channelId)) / 2), // 50% team average elo, 50% personal elo.
-                                    (int) Math.Round(bAvg));
-                    
-                            aData.Add(new NoaMatchmakingPlayerData(a, aExpected));
-                    
-                    
-                            var b = teamB[i];
-                            var bExpected =
-                                EloCalculator.ExpectedPoints(
-                                    (int) Math.Round((bAvg + b.GetMmr(_channelId)) / 2), // 50% team average elo, 50% personal elo.
-                                    (int) Math.Round(aAvg));
-                    
-                            bData.Add(new NoaMatchmakingPlayerData(b, bExpected));
-                        }
-                
-                        result.Add(new NoaMatchmakingResult(aData.ToArray(), bData.ToArray(), Config.Mode, _channelId));
-
-
-                        foreach (var member in potentialGameMembers)
-                        {
-                            cCopy.Remove(member);
-                            break;
-                        }
+                        cCopy.Remove(member);
                     }
+                    // Form the teams.
+                    var teamA = new List<IMatchmakingClient>();
+                    var teamB = new List<IMatchmakingClient>();
+
+                    for (int i = 0; i < Config.TeamSize; i++)
+                    {
+                        var a = potentialGameMembers[i%2==0?0:1];
+                        var b = potentialGameMembers[i%2==0?1:0];
+                        potentialGameMembers.RemoveAt(0);
+                        potentialGameMembers.RemoveAt(0);
+
+                        teamA.Add(a);
+                        teamB.Add(b);
+                    }
+
+                    var aAvg = teamA.Average(client => client.GetMmr(_channelId));
+                    var bAvg = teamA.Average(client => client.GetMmr(_channelId));
+                
+                    var aData = new List<IMatchmakingPlayerData>();
+                    var bData = new List<IMatchmakingPlayerData>();
+
+                    for (int i = 0; i < Config.TeamSize; i++)
+                    {
+                        var a = teamA[i];
+                        var aExpected =
+                            EloCalculator.ExpectedPoints(
+                                (int) Math.Round((aAvg + a.GetMmr(_channelId)) / 2), // 50% team average elo, 50% personal elo.
+                                (int) Math.Round(bAvg));
+                    
+                        aData.Add(new NoaMatchmakingPlayerData(a, aExpected));
+                    
+                    
+                        var b = teamB[i];
+                        var bExpected =
+                            EloCalculator.ExpectedPoints(
+                                (int) Math.Round((bAvg + b.GetMmr(_channelId)) / 2), // 50% team average elo, 50% personal elo.
+                                (int) Math.Round(aAvg));
+                    
+                        bData.Add(new NoaMatchmakingPlayerData(b, bExpected));
+                    }
+                
+                    result.Add(new NoaMatchmakingResult(aData.ToArray(), bData.ToArray(), Config.Mode, _channelId));
+                    
 
                 }
             }
@@ -105,7 +103,10 @@ namespace MultiNoa.Matchmaking.Engine
             return result.ToArray();
         }
 
-        public NoaStaticMatchmakingChannel(int channelId, MatchmakingChannelConfig config, IDynamicThread thread) : base(channelId, config, thread)
-        {}
+        public NoaStaticMatchmakingChannel(int channelId, MatchmakingChannelConfig config, IDynamicThread thread) :
+            base(channelId, config, thread)
+        {
+            MultiNoaLoggingManager.Logger.Warning("You are using static mmr-related matchmaking. Make sure your playerbase is big enough to use this matchmaking style, as it will let players wait indefinitely for a match in their mmr-range!");
+        }
     }
 }

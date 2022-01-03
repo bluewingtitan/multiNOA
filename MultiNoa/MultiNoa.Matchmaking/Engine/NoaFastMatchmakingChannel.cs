@@ -16,12 +16,9 @@ namespace MultiNoa.Matchmaking.Engine
             var result = new List<IMatchmakingResult>();
             
             // Copy clients to working list
-            var cCopy = new SortedList<decimal, IMatchmakingClient>();
+            var cCopy = _clients.ToList();
+            cCopy.Sort((c1, c2) => c1.GetMmr(_channelId) - c2.GetMmr(_channelId));
 
-            foreach (var c in _clients)
-            {
-                cCopy.Add(decimal.Parse(c.GetMmr(_channelId) + "." + c.GetId(), NumberStyles.AllowDecimalPoint), c);
-            }
             
             var dueIterations = 10000;
             
@@ -35,8 +32,8 @@ namespace MultiNoa.Matchmaking.Engine
 
                 for (int i = 0; i < Config.TeamSize; i++)
                 {
-                    var a = cCopy[0];
-                    var b = cCopy[1];
+                    var a = cCopy[i%2==0?0:1];
+                    var b = cCopy[i%2==0?1:0];
                     cCopy.RemoveAt(0);
                     cCopy.RemoveAt(0);
 

@@ -93,6 +93,12 @@ namespace MultiNoa.Matchmaking.Engine
             });
         }
 
+        public void Stop()
+        {
+            _thread.Stop();
+            // TODO: remove all clients from channels
+        }
+
 
         public void Update() {}
 
@@ -109,6 +115,15 @@ namespace MultiNoa.Matchmaking.Engine
                 foreach (var (_, channel) in _channels)
                 {
                     results.AddRange(channel.DoAGeneration());
+                }
+
+                foreach (var r in results)
+                {
+                    foreach (var d in r.GetTeamA())
+                        RemoveClient(d.GetClient());
+
+                    foreach (var d in r.GetTeamB())
+                        RemoveClient(d.GetClient());
                 }
                 
                 OnTeamsGenerated?.Invoke(results.ToArray());

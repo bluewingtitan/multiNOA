@@ -6,6 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\MultiNoa.Matchmaking\MultiNoa.Matchmaking.csproj" />
       <ProjectReference Include="..\MultiNoa\MultiNoa.csproj" />
     </ItemGroup>
 

@@ -23,5 +23,7 @@ namespace MultiNoa.Matchmaking
 
         #endregion
 
+        public void Stop();
+
     }
 }

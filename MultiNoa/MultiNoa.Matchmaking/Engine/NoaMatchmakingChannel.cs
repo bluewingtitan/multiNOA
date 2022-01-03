@@ -22,24 +22,18 @@ namespace MultiNoa.Matchmaking.Engine
         
         public void AddClient(IMatchmakingClient c)
         {
-            _thread.ScheduleExecution(() =>
-            {
-                _clients.Add(c);
-                OnAddClient(c.GetId());
-            });
+            _clients.Add(c);
+            OnAddClient(c.GetId());
         }
 
         public void RemoveClient(ulong id)
         {
-            _thread.ScheduleExecution(() =>
+            var c = _clients.Find(client => client.GetId() == id);
+            if (c != null)
             {
-                var c = _clients.Find(client => client.GetId() == id);
-                if (c != null)
-                {
-                    _clients.Remove(c);
-                }
-                OnRemoveClient(id);
-            });
+                _clients.Remove(c);
+            }
+            OnRemoveClient(id);
         }
 
         
@@ -47,11 +41,8 @@ namespace MultiNoa.Matchmaking.Engine
 
         public void RemoveClient(IMatchmakingClient c)
         {
-            _thread.ScheduleExecution(() =>
-            {
-                _clients.Remove(c);
-                OnRemoveClient(c.GetId());
-            });
+            _clients.Remove(c);
+            OnRemoveClient(c.GetId());
         }
         
         protected virtual void OnRemoveClient(ulong id)
