@@ -53,8 +53,9 @@ namespace MultiNoa.Networking.Client
         
         private readonly List<string> _groups = new List<string>();
         
-        internal event IClient.ClientReadyDelegate OnClientConnected;
-        public event IClient.ClientReadyDelegate OnClientReady;
+        public event IClient.ClientEventDelegate OnClientConnected;
+        public event IClient.ClientEventDelegate OnClientDisconnected;
+        public event IClient.ClientEventDelegate OnClientReady;
         public abstract void SendData(object data);
         public abstract ConnectionBase GetConnection();
         public abstract void Disconnect();
@@ -75,14 +76,11 @@ namespace MultiNoa.Networking.Client
             _groups.Remove(group);
         }
 
-        public void AddOnClientConnected(IClient.ClientReadyDelegate callback) => OnClientConnected += callback;
-        public void RemoveOnClientConnected(IClient.ClientReadyDelegate callback) => OnClientConnected -= callback;
         public void InvokeOnClientConnected() => OnClientConnected?.Invoke(this);
-        public void AddOnOnClientReady(IClient.ClientReadyDelegate callback) => OnClientReady += callback;
-        public void RemoveOnClientReady(IClient.ClientReadyDelegate callback) => OnClientReady -= callback;
         public void InvokeOnClientReady() => OnClientReady?.Invoke(this);
+        public void InvokeOnClientDisconnected() => OnClientDisconnected?.Invoke(this);
 
-        
+
         public Room GetRoom()
         {
             return CurrentRoom;

@@ -41,10 +41,15 @@ namespace MultiNoa.GameSimulation
             ThreadName = threadName;
             
             TimePerTick = 1000d / tps;
-            GoalTPS = (int) Math.Round(1000 / TimePerTick);
+            GoalTPS = tps;
 
             _runningThread = new Thread(ThreadFunction) {Name = ThreadName};
             _runningThread.Start();
+        }
+
+        public void ScheduleExecution(Action action)
+        {
+            _scheduler.ScheduleExecution(action);
         }
 
         public void Stop()
