@@ -19,15 +19,17 @@ namespace ExampleProject
             var mm = new NoaMatchmakingEngine();
             mm.DefineChannel(0, new MatchmakingChannelConfig
             {
-                Mode = MatchmakingMode.Static,
-                TeamSize = 4,
-                InitialRange = 50,
+                Mode = MatchmakingMode.Flexible,
+                TeamSize = 2,
+                InitialRange = 10,
                 MaxAllowedRange = 10000,
-                FlexibleIncreasePerGeneration = 10
+                FlexibleIncreasePerGeneration = 5
             });
 
             mm.OnTeamsGenerated += results =>
             {
+                if(results.Length == 0 || results.Length>20) return;
+                MultiNoaLoggingManager.Logger.Information("----------------GENERATION-----------------");
                 foreach (var result in results)
                 {
                     var r = result.GetTeamA().Aggregate("", (current, d) => current + (d.GetClient().GetUsername() + " "))
@@ -35,14 +37,15 @@ namespace ExampleProject
 
                     MultiNoaLoggingManager.Logger.Information(r);
                 }
+                MultiNoaLoggingManager.Logger.Information("-------------------------------------------");
             };
 
             var clients = new List<DummyClient>();
             var r = new Random();
 
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 100000; i++)
             {
-                clients.Add(new DummyClient(r.Next(1000)));
+                clients.Add(new DummyClient(r.Next(5000)));
             }
 
             foreach (var c in clients)

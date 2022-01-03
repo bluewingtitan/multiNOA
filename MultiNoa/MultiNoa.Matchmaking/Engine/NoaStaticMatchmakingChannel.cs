@@ -106,7 +106,7 @@ namespace MultiNoa.Matchmaking.Engine
         public NoaStaticMatchmakingChannel(int channelId, MatchmakingChannelConfig config, IDynamicThread thread) :
             base(channelId, config, thread)
         {
-            MultiNoaLoggingManager.Logger.Warning("You are using static mmr-related matchmaking. Make sure your playerbase is big enough to use this matchmaking style, as it will let players wait indefinitely for a match in their mmr-range!");
+            MultiNoaLoggingManager.Logger.Information("You are using static mmr-based matchmaking. Make sure your playerbase is active enough to use this matchmaking style, as it will let players wait indefinitely for a match in their mmr-range!");
         }
     }
 }
