@@ -70,22 +70,34 @@ namespace MultiNoa.Networking.PacketHandling
             {
                 throw new Exception($"Tried to convert type without known converter: {t.FullName}.\nMake sure to cache a DataContainer for this type");
             }
+            
 
             var info = Infos[t];
 
-            if (!(Activator.CreateInstance(info.DataContainerType) is INetworkDataContainer container))
+            if (!typeof(IDisposable).IsAssignableFrom(info.DataContainerType))
             {
-                throw new Exception($"Was not able to instantiate {info.DataContainerType.FullName}. Does type have parameterless constructor?");
+                // Just want to note, that IDisposable is a forced part of the proper implementation. This error should NEVER EVER occur in a properly compiled project.
+                throw new Exception($"DataContainer for {t.FullName} does not seem to be properly implemented. Please check your implementation (IDisposable not implemented)\nThis error should NEVER occur in a properly compiled project!");
             }
 
-            if (container.SetValue(o))
+            using (var objC = Activator.CreateInstance(info.DataContainerType) as IDisposable)
             {
-                return container.TurnIntoBytes();
+                if (!(objC is INetworkDataContainer container))
+                {
+                    throw new Exception($"Was not able to instantiate {info.DataContainerType.FullName}. Does type have parameterless constructor?");
+                }
+
+                if (container.SetValue(o))
+                {
+                    return container.TurnIntoBytes();
+                }
+                else
+                {
+                    throw new Exception($"Was not able to set value of {info.DataContainerType.FullName} to object of type {t.FullName}");
+                }
             }
-            else
-            {
-                throw new Exception($"Was not able to set value of {info.DataContainerType.FullName} to object of type {t.FullName}");
-            }
+
+            
         }
 
         public static object ToValueType(byte[] b, Type t, out int byteLength)
@@ -96,15 +108,24 @@ namespace MultiNoa.Networking.PacketHandling
             }
 
             var info = Infos[t];
-
-            if (!(Activator.CreateInstance(info.DataContainerType) is INetworkDataContainer container))
+            
+            if (!typeof(IDisposable).IsAssignableFrom(info.DataContainerType))
             {
-                throw new Exception($"Was not able to instantiate {info.DataContainerType.FullName}. Does type have parameterless constructor?");
+                // Just want to note, that IDisposable is a forced part of the proper implementation. This error should NEVER EVER occur in a properly compiled project.
+                throw new Exception($"DataContainer for {t.FullName} does not seem to be properly implemented. Please check your implementation (IDisposable not implemented)\nThis error should NEVER occur in a properly compiled project!");
             }
+            
+            using (var objC = Activator.CreateInstance(info.DataContainerType) as IDisposable)
+            {
+                if (!(objC is INetworkDataContainer container))
+                {
+                    throw new Exception($"Was not able to instantiate {info.DataContainerType.FullName}. Does type have parameterless constructor?");
+                }
+                
+                byteLength = container.LoadFromBytes(b);
 
-            byteLength = container.LoadFromBytes(b);
-
-            return container.GetValue();
+                return container.GetValue();
+            }
         }
 
         public static T ToValueType<T>(byte[] b, out int byteLength)

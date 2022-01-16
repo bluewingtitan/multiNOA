@@ -125,9 +125,11 @@ namespace MultiNoa.Networking.PacketHandling
 
 
             // write packet id into byte-array
-            bytes.AddRange(new NetworkInt(attribute.PacketId).TurnIntoBytes());
-
-
+            using (var nInt = new NetworkInt(attribute.PacketId))
+            {
+                bytes.AddRange(nInt.TurnIntoBytes());
+            }
+            
 
             foreach (var (prop, attributeData) in data.Props)
             {
@@ -170,11 +172,16 @@ namespace MultiNoa.Networking.PacketHandling
                 // Strip length
                 b = b.GetSubarray(4, b.Length - 4);
             }
+
+            var pId = 0;
             
-            var idContainer = new NetworkInt();
-            idContainer.LoadFromBytes(b);
-            b = b.GetSubarray(4, b.Length - 4);
-            var pId = idContainer.GetTypedValue();
+            using (var idContainer = new NetworkInt())
+            {
+                idContainer.LoadFromBytes(b);
+                b = b.GetSubarray(4, b.Length - 4);
+                pId = idContainer.GetTypedValue();
+            }
+            
 
             if (!Infos.ContainsKey(pId))
             {
@@ -207,12 +214,19 @@ namespace MultiNoa.Networking.PacketHandling
                 }
                 else
                 {
-                    var container = Activator.CreateInstance(prop.PropertyType) as INetworkDataContainer;
-                
-                    l = container.LoadFromBytes(b);
-                    b = b.GetSubarray(l, b.Length - l);
-                    
-                    prop.SetValue(instance, container);
+                    using (var container = Activator.CreateInstance(prop.PropertyType) as INetworkDataContainer)
+                    {
+                        if (container == null)
+                        {
+                            throw new PacketConversionException(
+                                $"Was not able to create instance of INetworkDataContainer of type {prop.PropertyType.FullName}");
+                        }
+                        
+                        l = container.LoadFromBytes(b);
+                        b = b.GetSubarray(l, b.Length - l);
+
+                        prop.SetValue(instance, container);
+                    }
                 }
             }
 
@@ -249,11 +263,14 @@ namespace MultiNoa.Networking.PacketHandling
             
             if (containsPacketId)
             {
-                var idContainer = new NetworkInt();
-                readBytes += idContainer.LoadFromBytes(b);
-                b = b.GetSubarray(4, b.Length - 4);
+                var pId = 0;
+                using (var idContainer = new NetworkInt())
+                {
+                    readBytes += idContainer.LoadFromBytes(b);
+                    b = b.GetSubarray(4, b.Length - 4);
 
-                var pId = idContainer.GetTypedValue();
+                    pId = idContainer.GetTypedValue();
+                }
 
                 if (!skipTypeCheck && pId != attribute.PacketId)
                     throw new PacketConversionException($"Tried to parse packet with type-id #{pId} to {type.FullName}, should be #{attribute.PacketId}\n" +
@@ -273,13 +290,20 @@ namespace MultiNoa.Networking.PacketHandling
                 }
                 else
                 {
-                    var container = Activator.CreateInstance(prop.PropertyType) as INetworkDataContainer;
-                
-                    l = container.LoadFromBytes(b);
-                    readBytes += l;
-                    b = b.GetSubarray(l, b.Length - l);
-                    
-                    prop.SetValue(instance, container);
+                    using (var container = Activator.CreateInstance(prop.PropertyType) as INetworkDataContainer)
+                    {
+                        if (container == null)
+                        {
+                            throw new PacketConversionException(
+                                $"Was not able to create instance of INetworkDataContainer of type {prop.PropertyType.FullName}");
+                        }
+                        
+                        l = container.LoadFromBytes(b);
+                        readBytes += l;
+                        b = b.GetSubarray(l, b.Length - l);
+
+                        prop.SetValue(instance, container);
+                    }
                 }
             }
 

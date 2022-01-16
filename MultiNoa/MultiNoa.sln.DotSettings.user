@@ -7,7 +7,12 @@
     &lt;TestId&gt;NUnit3x::95489B08-FBF8-409C-B2BF-D0A1B7899993::.NETCoreApp,Version=v3.1::MultiNoaTests.Networking.PacketHandling.PacketHandlerTest&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=96ebe0ce_002D63fb_002D4407_002D9795_002Db2dfc1085b20/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="PacketHandlerTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=96ebe0ce_002D63fb_002D4407_002D9795_002Db2dfc1085b20/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="PacketHandlerTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::95489B08-FBF8-409C-B2BF-D0A1B7899993::.NETCoreApp,Version=v3.1::MultiNoaTests.Networking.PacketHandling.PacketHandlerTest&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=dc39eb7c_002D2f03_002D4200_002Dbaab_002Db224761f8f87/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="PacketHandlerTest #3" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;NUnit3x::95489B08-FBF8-409C-B2BF-D0A1B7899993::.NETCoreApp,Version=v3.1::MultiNoaTests.Networking.PacketHandling.PacketHandlerTest&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;

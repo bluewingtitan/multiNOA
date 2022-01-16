@@ -51,5 +51,10 @@ namespace MultiNoa.Networking.Data.Serializable
             _data = b;
             return true;
         }
+
+        public void Dispose()
+        {
+            // nothing to do here.
+        }
     }
 }

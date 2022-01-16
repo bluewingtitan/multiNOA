@@ -1,3 +1,5 @@
+using System;
+
 namespace MultiNoa.Networking.Data
 {
     /// <summary>
@@ -10,7 +12,7 @@ namespace MultiNoa.Networking.Data
     }
 
 
-    public interface INetworkDataContainer : INetworkSerializable, INetworkDeserializable
+    public interface INetworkDataContainer : INetworkSerializable, INetworkDeserializable, IDisposable
     {
         
     }
