@@ -67,7 +67,7 @@ namespace MultiNoa.GameSimulation
             
             while (IDynamicThread.AreRunning && IsRunning)
             {
-                while (nextLoop < DateTime.Now)
+                while (nextLoop < DateTime.Now && IDynamicThread.AreRunning && IsRunning)
                 {
                     var tickStart = DateTime.Now;
                     _scheduler.ExecuteAll();
@@ -114,7 +114,7 @@ namespace MultiNoa.GameSimulation
                     #endregion
                 }
             }
-            
+
             MultiNoaLoggingManager.Logger.Verbose($"Thread {ThreadName} was closed successfully.");
         }
 

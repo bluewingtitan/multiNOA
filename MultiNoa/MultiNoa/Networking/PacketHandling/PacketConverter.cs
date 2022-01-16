@@ -89,10 +89,9 @@ namespace MultiNoa.Networking.PacketHandling
             
             
             
-            // Sorting properties of class by index.
-            props.Sort((pair, valuePair) =>
-                (pair.Value.Index) -
-                (valuePair.Value.Index)
+            // Sorting properties of class by hashcode of name
+            props.Sort((pair1, pair2) =>
+                string.Compare(pair1.Key.Name, pair2.Key.Name, StringComparison.Ordinal)
             );
             
             Infos[attribute.PacketId] = new PacketClassInfo(t, new Dictionary<PropertyInfo, NetworkProperty>(props), attribute);
@@ -337,15 +336,13 @@ namespace MultiNoa.Networking.PacketHandling
     public class NetworkProperty : Attribute
     {
         internal bool useDataContainerManager = false;
-        public readonly int Index;
         
         /// <summary>
         /// Grants extra information to the Packet Converter, including index (missing indices will be skipped) of the Property.
         /// </summary>
         /// <param name="index">Force specific index of field in/from (de-)serialized packet</param>
-        public NetworkProperty(int index = 0)
+        public NetworkProperty()
         {
-            Index = index;
         }
     }
 

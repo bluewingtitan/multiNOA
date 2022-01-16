@@ -17,7 +17,7 @@ namespace MultiNoa.Networking.Transport.Middleware.Fragmentation
         
         private static NoaFragmentationMiddleware _instance = null;
 
-        public MiddlewareTarget GetTarget() => MiddlewareTarget.Fragmenting;
+        public MiddlewareTarget Target => MiddlewareTarget.Fragmenting;
         
         
         public void Setup()
@@ -197,12 +197,12 @@ namespace MultiNoa.Networking.Transport.Middleware.Fragmentation
         [PacketStruct(NoaControlPacketIds.Symmetrical.FragmentPacket)]
         public struct FragmentPacket
         {
-            [NetworkProperty(0)] public int PacketIndex { get; set; }
-            [NetworkProperty(1)] public int NumberOfPackets { get; set; }
-            [NetworkProperty(2)] public int FixedPacketByteLength { get; set; }
-            [NetworkProperty(3)] public int TotalByteLength { get; set; }
-            [NetworkProperty(4)] public ulong SeriesId { get; set; }
-            [NetworkProperty(5)] public byte[] Bytes { get; set; }
+            [NetworkProperty] public int PacketIndex { get; set; }
+            [NetworkProperty] public int NumberOfPackets { get; set; }
+            [NetworkProperty] public int FixedPacketByteLength { get; set; }
+            [NetworkProperty] public int TotalByteLength { get; set; }
+            [NetworkProperty] public ulong SeriesId { get; set; }
+            [NetworkProperty] public byte[] Bytes { get; set; }
         }
         
         

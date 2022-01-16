@@ -15,6 +15,12 @@ namespace MultiNoaTests.Networking.PacketHandling
         {
             MultiNoaSetup.SetupCollection.DefaultSetup(typeof(PacketHandlerTest).Assembly);
         }
+
+        [OneTimeTearDown]
+        public void TearDown()
+        {
+            MultiNoaSetup.ShutdownProcesses();
+        }
         
         /// <summary>
         /// tests basic functionality and sorting by property index
@@ -114,10 +120,10 @@ namespace MultiNoaTests.Networking.PacketHandling
     [PacketStruct(0)]
     public struct DemoStruct1
     {
-        [NetworkProperty(9)]
+        [NetworkProperty]
         public NetworkByte Byte2 { get; private set; }
         
-        [NetworkProperty(4)]
+        [NetworkProperty]
         public NetworkByte Byte1 { get; private set; }
 
         public DemoStruct1(byte b1, byte b2)

@@ -14,7 +14,7 @@ namespace MultiNoa.Networking.Transport.Middleware
     /// </summary>
     public interface INoaMiddleware
     {
-        public MiddlewareTarget GetTarget();
+        public MiddlewareTarget Target { get; }
 
         /// <summary>
         /// Called once before setup, and before calling DoesModify().

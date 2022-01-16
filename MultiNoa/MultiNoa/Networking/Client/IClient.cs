@@ -26,6 +26,7 @@ namespace MultiNoa.Networking.Client
 
     public interface IUserSideClientAddons
     {
+        public ulong ClientId { get; set; }
         public void SetUsername(string username);
     }
     

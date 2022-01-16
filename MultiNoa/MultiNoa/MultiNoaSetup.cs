@@ -20,7 +20,7 @@ namespace MultiNoa
 
         internal static DynamicThread DefaultThread = new DynamicThread(2, "MultiNoa Default");
         
-        public const string VersionCode = "0.1.2";
+        public const string VersionCode = "0.1.4";
         private static bool _setupDone = false;
         internal static INoaMiddleware[] CheckingMiddlewares = new INoaMiddleware[0];
         internal static INoaMiddleware[] EncryptingMiddlewares = new INoaMiddleware[0];
@@ -56,6 +56,15 @@ namespace MultiNoa
             Setup(config);
         }
 
+
+        /// <summary>
+        /// Stops all background processes started by MultiNoa.
+        /// </summary>
+        public static void ShutdownProcesses()
+        {
+            IDynamicThread.StopAll();
+        }
+        
 
         private static void Setup(MultiNoaConfig config)
         {
@@ -108,7 +117,7 @@ namespace MultiNoa
 
             foreach (var middleware in middlewares)
             {
-                switch (middleware.GetTarget())
+                switch (middleware.Target)
                 {
                     case MiddlewareTarget.Checking:
                         checkingMiddlewares.Add(middleware);

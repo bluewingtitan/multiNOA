@@ -44,6 +44,8 @@ namespace MultiNoa.Networking.Client
 
         #endregion
 
+        public ulong ClientId { get; set; }
+        
         protected Room CurrentRoom { get; private set; }
         
         public ClientBase(string username)

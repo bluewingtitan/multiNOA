@@ -22,7 +22,7 @@ namespace ChatDemo
                 Username = client.GetUsername()
             };
             
-            MultiNoaLoggingManager.Logger.Information($"[{client.GetRoom().GetRoomName()}] <{client.GetUsername()}> message of length {m.Message}");
+            MultiNoaLoggingManager.Logger.Information($"[{client.GetRoom().GetRoomName()}] <{client.GetUsername()}> {m.Message}");
             
                 
             client.GetRoom().Broadcast(answer, client);

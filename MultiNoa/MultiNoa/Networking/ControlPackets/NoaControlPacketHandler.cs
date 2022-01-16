@@ -15,6 +15,7 @@ namespace MultiNoa.Networking.ControlPackets
             [HandlerMethod(NoaControlPacketIds.FromServer.WelcomePacket)]
             public static void WelcomePacket(NoaControlPackets.FromServer.WelcomePacket welcomePacket, ConnectionBase c)
             {
+
                 if (!welcomePacket.RunningNoaVersion.Equals(MultiNoaSetup.VersionCode))
                 {
                     MultiNoaLoggingManager.Logger.Warning($"Different multiNoa-Versions used: server uses '{welcomePacket.RunningNoaVersion}', this client uses '{MultiNoaSetup.VersionCode}'");
@@ -28,11 +29,13 @@ namespace MultiNoa.Networking.ControlPackets
                 }
                 
                 MultiNoaLoggingManager.Logger.Verbose($"Server sent Welcome Packet with fitting protocol version");
+                var client = (IUserSideClient)c.GetClient();
+                client.ClientId = welcomePacket.ClientId;
                 
                 var wReceived = new NoaControlPackets.FromClient.WelcomeReceived()
                 {
                     RunningNoaVersion = MultiNoaSetup.VersionCode,
-                    Username = c.GetClient().GetUsername()
+                    Username = client.GetUsername()
                 };
                 c.SendData(wReceived);
                 
