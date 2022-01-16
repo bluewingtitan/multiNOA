@@ -51,6 +51,14 @@ namespace MultiNoa.Networking.ControlPackets
             }
             
             [MultiNoaInternal]
+            [PacketStruct(NoaControlPacketIds.FromServer.ConnectionEstablishedPacket)]
+            public struct ConnectionEstablished
+            {
+                [NetworkProperty(0)]
+                public string NewUsername { get; set; }
+            }
+                        
+            [MultiNoaInternal]
             [PacketStruct(NoaControlPacketIds.FromServer.SyncUsername)]
             public struct SyncUsername
             {

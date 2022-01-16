@@ -25,10 +25,20 @@ namespace MultiNoa.Networking.Server
         private readonly ConnectionListener _listener;
 
         public readonly string ProtocolVersion;
-        
+
         public ushort Port { get; }
 
         protected IDynamicThread Thread { get; }
+
+
+
+        #region Events
+        public delegate void ClientEventDelegate(IClient c);
+        public event ClientEventDelegate OnClientFinishConnecting;
+        public event ClientEventDelegate OnClientDisconnected;
+
+        #endregion
+        
         
         protected ServerBase(ushort port, string protocolVersion, ConnectionListener listener, int tps = 5, string name = "New Server")
         {
@@ -65,7 +75,9 @@ namespace MultiNoa.Networking.Server
                     };
 
                     client.OnClientConnected += OnClientWelcomed;
-                    
+
+                    client.GetConnection().OnDisconnected += con => InvokeClientDisconnected(client);
+
                     connection.SendData(packet);
 
                     return;
@@ -90,6 +102,10 @@ namespace MultiNoa.Networking.Server
                     client.OnClientConnected -= OnClientWelcomed;
                     _baseRoom.TryAddClient((IServersideClient) client);
                     client.InvokeOnClientReady();
+                    OnClientFinishConnecting?.Invoke(client);
+
+                    // invoke OnClientReady on user side
+                    client.SendData(new NoaControlPackets.FromServer.ConnectionEstablished());
                 }, 0));
         }
         
@@ -118,5 +134,12 @@ namespace MultiNoa.Networking.Server
         protected abstract void OnUpdate();
         protected abstract void OnPerSecondUpdate();
         protected abstract void OnStop();
+
+
+        private void InvokeClientDisconnected(IClient client)
+        {
+            OnClientDisconnected?.Invoke(client);
+        }
+        
     }
 }

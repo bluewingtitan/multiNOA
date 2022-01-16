@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using MultiNoa.GameSimulation;
 using MultiNoa.Logging;
 using MultiNoa.Networking.Client;
@@ -14,6 +15,15 @@ namespace MultiNoa.Networking.Rooms
     public class Room
     {
         private static ulong _roomId = 0;
+        private static object _roomIdLock = 0;
+
+        private static ulong GetNewRoomId()
+        {
+            lock (_roomIdLock)
+            {
+                return _roomId++;
+            }
+        }
         
         private readonly IDictionary<ulong, IServersideClient> _clients;
         
@@ -24,6 +34,18 @@ namespace MultiNoa.Networking.Rooms
         protected readonly ServerBase Server;
         protected readonly ulong RoomId;
 
+
+        #region Events
+        public delegate void ClientEventDelegate(IClient c);
+        public event ClientEventDelegate OnClientJoinRoom;
+        public event ClientEventDelegate OnClientLeaveRoom;
+
+
+        public delegate void RoomEventDelegate();
+        public event RoomEventDelegate OnRoomClosed;
+        
+        #endregion
+
         /// <summary>
         /// MultiNoa default IRoom implementation
         /// </summary>
@@ -32,23 +54,21 @@ namespace MultiNoa.Networking.Rooms
         /// <param name="roomName">Name of the room, purely representative</param>
         /// <param name="threadSaveMode">Should this room use a threadsave Dictionary-Implementation?</param>
         /// <param name="password">Password for a client to join</param>
-        public Room(ServerBase server, IDynamicThread thread, string roomName = "Room",bool threadSaveMode = false, string password = null)
+        public Room(ServerBase server, IDynamicThread thread, string roomName = "Room", bool threadSaveMode = false, string password = null)
         {
             if(threadSaveMode)
                 _clients = new ConcurrentDictionary<ulong, IServersideClient>();
             else
                 _clients = new Dictionary<ulong, IServersideClient>();
 
-            RoomId = _roomId;
-            _roomId++;
+            RoomId = GetNewRoomId();
             
             Password = password;
             Server = server;
             Thread = thread;
             Roomname = roomName;
         }
-        
-        
+
         public ServerBase GetServer()
         {
             return Server;
@@ -76,12 +96,39 @@ namespace MultiNoa.Networking.Rooms
             
             var success = _clients.TryAdd(client.GetId(), client);
             
-            if(success) client.MoveToRoom(this);
+            if(success)
+            {
+                client.MoveToRoom(this);
+                OnClientJoinRoom?.Invoke(client);
+            }
+            
 
 
             return success;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="newRoomForClients"></param>
+        /// <returns>Array of clients the room wasn't able to move to the new room</returns>
+        public IServersideClient[] CloseRoom(Room newRoomForClients)
+        {
+            List<IServersideClient> illegalClients = new List<IServersideClient>();
+            foreach (var (_, c) in _clients.ToArray())
+            {
+                if (!newRoomForClients.TryAddClient(c))
+                {
+                    illegalClients.Add(c);
+                }
+            }
+            
+            _clients.Clear();
+            OnRoomClosed?.Invoke();
+
+            return illegalClients.ToArray();
+        }
+        
         
         public bool TryGetClient(ulong id, out IServersideClient client)
         {
@@ -91,8 +138,8 @@ namespace MultiNoa.Networking.Rooms
         internal void RemoveClient(IServersideClient client)
         {
             _clients.Remove(client.GetId());
+            OnClientLeaveRoom?.Invoke(client);
         }
-
 
         public void Broadcast(object message, IServersideClient exclude = null)
         {
@@ -105,8 +152,6 @@ namespace MultiNoa.Networking.Rooms
             }
         }
         
-        
-
         public IDynamicThread GetRoomThread()
         {
             return Thread;

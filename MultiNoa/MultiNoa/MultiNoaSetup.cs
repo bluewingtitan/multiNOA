@@ -20,7 +20,7 @@ namespace MultiNoa
 
         internal static DynamicThread DefaultThread = new DynamicThread(2, "MultiNoa Default");
         
-        public const string VersionCode = "0.1.1";
+        public const string VersionCode = "0.1.2";
         private static bool _setupDone = false;
         internal static INoaMiddleware[] CheckingMiddlewares = new INoaMiddleware[0];
         internal static INoaMiddleware[] EncryptingMiddlewares = new INoaMiddleware[0];

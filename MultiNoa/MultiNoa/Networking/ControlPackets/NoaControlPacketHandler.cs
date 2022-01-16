@@ -40,6 +40,14 @@ namespace MultiNoa.Networking.ControlPackets
                 c.InvokeOnConnected();
             }
 
+
+            [HandlerMethod(NoaControlPacketIds.FromServer.ConnectionEstablishedPacket)]
+            public static void ConnectionEstablished(ConnectionBase c)
+            {
+                c.InvokeOnConnected();
+            }
+            
+
             [HandlerMethod(NoaControlPacketIds.FromServer.SyncUsername)]
             public static void SyncUsername(NoaControlPackets.FromServer.SyncUsername s, ConnectionBase c)
             {
