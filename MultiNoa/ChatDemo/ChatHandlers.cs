@@ -19,13 +19,13 @@ namespace ChatDemo
             var answer = new ChatPackets.FromServer.MessageFromServer
             {
                 Message = m.Message,
-                Username = client.GetUsername()
+                Username = client.Username
             };
             
-            MultiNoaLoggingManager.Logger.Information($"[{client.GetRoom().GetRoomName()}] <{client.GetUsername()}> {m.Message}");
+            MultiNoaLoggingManager.Logger.Information($"[{client.Room.GetRoomName()}] <{client.Username}> {m.Message}");
             
                 
-            client.GetRoom().Broadcast(answer, client);
+            client.Room.Broadcast(answer, client);
         }
         
         

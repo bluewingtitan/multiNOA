@@ -17,32 +17,35 @@ namespace MultiNoa.Networking.Client
         public void InvokeOnClientDisconnected();
         
         
-        public string GetUsername();
+        public string Username { get; }
         public void SetUsername(string username, bool synced);
         public void SendData(object data);
         public ConnectionBase GetConnection();
         public void Disconnect();
     }
 
+    public interface IGroupableClient
+    {
+        public bool GetAuthorityGroup(string group);
+        public string[] GetAuthorityGroups();
+        public void AddToGroup(string group);
+    }
+
     public interface IUserSideClientAddons
     {
-        public ulong ClientId { get; set; }
+        public ulong IdOnServer { get; set; }
         public void SetUsername(string username);
     }
     
-    public interface IUserSideClient: IClient, IUserSideClientAddons{}
+    public interface IUserSideClient: IClient, IUserSideClientAddons, IGroupableClient{}
     
 
     public interface IServersideClientAddons
     {
         public ServerBase GetServer();
-        public ulong GetId();
-        public Room GetRoom();
-        public void MoveToRoom(Room room);
-
-        public bool GetAuthorityGroup(string group);
-        public string[] GetAuthorityGroups();
-        public void AddToGroup(string group);
+        public ulong Id { get; }
+        public Room Room { get; }
+        public void MoveToRoomCallback(Room room);
     }
 
     public interface IServersideClient: IClient, IServersideClientAddons
@@ -52,7 +55,7 @@ namespace MultiNoa.Networking.Client
 
     
 
-    public interface IUniversalClient: IUserSideClient, IServersideClient
+    public interface IUniversalClient: IUserSideClient, IServersideClient, IGroupableClient
     {
     }
 

@@ -25,18 +25,18 @@ namespace MultiNoa.Matchmaking.Engine
         private int GetRange(IMatchmakingClient c1, IMatchmakingClient c2)
         {
             
-            if (!_waitGenerations.ContainsKey(c1.GetId()))
-                _waitGenerations[c1.GetId()] = 0;
+            if (!_waitGenerations.ContainsKey(c1.Id))
+                _waitGenerations[c1.Id] = 0;
             
-            if (!_waitGenerations.ContainsKey(c2.GetId()))
-                _waitGenerations[c2.GetId()] = 0;
+            if (!_waitGenerations.ContainsKey(c2.Id))
+                _waitGenerations[c2.Id] = 0;
             
             var r1 = Math.Min(
-            Config.InitialRange + Config.FlexibleIncreasePerGeneration * _waitGenerations[c1.GetId()],
+            Config.InitialRange + Config.FlexibleIncreasePerGeneration * _waitGenerations[c1.Id],
             Config.MaxAllowedRange);
             
             var r2 = Math.Min(
-                Config.InitialRange + Config.FlexibleIncreasePerGeneration * _waitGenerations[c2.GetId()],
+                Config.InitialRange + Config.FlexibleIncreasePerGeneration * _waitGenerations[c2.Id],
                 Config.MaxAllowedRange);
 
             return Math.Max(r1, r2);
@@ -68,9 +68,9 @@ namespace MultiNoa.Matchmaking.Engine
 
                     if (differenceToNext > range)
                     {
-                        if (!_waitGenerations.ContainsKey(currentClient.GetId()))
-                            _waitGenerations[currentClient.GetId()] = 0;
-                        _waitGenerations[currentClient.GetId()]++;
+                        if (!_waitGenerations.ContainsKey(currentClient.Id))
+                            _waitGenerations[currentClient.Id] = 0;
+                        _waitGenerations[currentClient.Id]++;
                         cCopy.RemoveAt(x);
                         break;
                     }
@@ -81,10 +81,10 @@ namespace MultiNoa.Matchmaking.Engine
                     {
                         foreach (var member in potentialGameMembers)
                         {
-                            if (!_waitGenerations.ContainsKey(member.GetId()))
-                                _waitGenerations[member.GetId()] = 0;
+                            if (!_waitGenerations.ContainsKey(member.Id))
+                                _waitGenerations[member.Id] = 0;
                             
-                            _waitGenerations[member.GetId()]++;
+                            _waitGenerations[member.Id]++;
                             cCopy.Remove(member);
                         }
                         break;

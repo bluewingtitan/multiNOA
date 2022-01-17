@@ -32,7 +32,7 @@ namespace MultiNoa.Networking.Transport
 
                 if (c.GetClient() is IServersideClient sClient)
                 {
-                    sClient.GetRoom().RemoveClient(sClient);
+                    sClient.Room.RemoveClient(sClient);
                 }
             };
 

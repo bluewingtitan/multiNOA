@@ -30,12 +30,12 @@ namespace MultiNoa.Networking.ControlPackets
                 
                 MultiNoaLoggingManager.Logger.Verbose($"Server sent Welcome Packet with fitting protocol version");
                 var client = (IUserSideClient)c.GetClient();
-                client.ClientId = welcomePacket.ClientId;
+                client.IdOnServer = welcomePacket.ClientId;
                 
                 var wReceived = new NoaControlPackets.FromClient.WelcomeReceived()
                 {
                     RunningNoaVersion = MultiNoaSetup.VersionCode,
-                    Username = client.GetUsername()
+                    Username = client.Username
                 };
                 c.SendData(wReceived);
                 
@@ -57,7 +57,7 @@ namespace MultiNoa.Networking.ControlPackets
                 var client = c.GetClient();
                 if (client == null) return;
                 
-                MultiNoaLoggingManager.Logger.Verbose($"Changed Username of {c.GetEndpointIp()} from '{client.GetUsername()}' to '{s.NewUsername}'");
+                MultiNoaLoggingManager.Logger.Verbose($"Changed Username of {c.GetEndpointIp()} from '{client.Username}' to '{s.NewUsername}'");
                 c.GetClient()?.SetUsername(s.NewUsername, false);
             }
             
@@ -87,7 +87,7 @@ namespace MultiNoa.Networking.ControlPackets
                 var client = c.GetClient();
                 if (client == null) return;
                 
-                MultiNoaLoggingManager.Logger.Verbose($"Changed Username of {c.GetEndpointIp()} from '{client.GetUsername()}' to '{username.NewUsername}'");
+                MultiNoaLoggingManager.Logger.Verbose($"Changed Username of {c.GetEndpointIp()} from '{client.Username}' to '{username.NewUsername}'");
                 c.GetClient()?.SetUsername(username.NewUsername, true);
             }
         }
