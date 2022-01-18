@@ -105,7 +105,10 @@ namespace MultiNoa.Networking.Server
                     OnClientFinishConnecting?.Invoke(client);
 
                     // invoke OnClientReady on user side
-                    client.SendData(new NoaControlPackets.FromServer.ConnectionEstablished());
+                    client.GetConnection().SendData(new NoaControlPackets.FromServer.ConnectionEstablished(), excludes: new []
+                        {
+                            MiddlewareTarget.Encrypting
+                        });
                 }, 0));
         }
         

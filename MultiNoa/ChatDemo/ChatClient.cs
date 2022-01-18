@@ -13,7 +13,7 @@ namespace ChatDemo
         protected readonly ulong ClientId = 0;
 
 
-        private void StartTyping()
+        private void StartTyping(IClient c)
         {
             var exited = false;
             Console.WriteLine("Type '/exit' to exit the chat.");
@@ -65,13 +65,12 @@ namespace ChatDemo
 
         public ChatClient(string username, string ip) : base(username)
         {
+            OnClientConnected += StartTyping;
+            
             MultiNoaLoggingManager.Logger.Information("Starting Client...");
             Connection = new TcpConnection(ChatApp.ProtocolVersion);
             Connection.Connect(ip, ChatApp.ServerPort);
             Connection.SetClient(this);
-
-            Thread.Sleep(2000);
-            StartTyping();
         }
     }
 }

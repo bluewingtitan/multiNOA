@@ -77,7 +77,7 @@ namespace MultiNoa.Networking.PacketHandling
                     foreach (var attr in data)
                         if (attr is NetworkProperty prop)
                         {
-                            prop.useDataContainerManager = useDataContainerManager;
+                            prop.UseDataContainerManager = useDataContainerManager;
                             return new KeyValuePair<PropertyInfo, NetworkProperty>(e, prop);
                         }
 
@@ -141,7 +141,7 @@ namespace MultiNoa.Networking.PacketHandling
                     continue;
                 }
                 
-                if (attributeData.useDataContainerManager)
+                if (attributeData.UseDataContainerManager)
                 {
                     bytes.AddRange(DataContainerManager.ToBytes(value));
                     continue;
@@ -205,7 +205,7 @@ namespace MultiNoa.Networking.PacketHandling
             {
                 var l = 0;
                 
-                if (attributeData.useDataContainerManager)
+                if (attributeData.UseDataContainerManager)
                 {
                     var value = DataContainerManager.ToValueType(b, prop.PropertyType, out l);
                     b = b.GetSubarray(l, b.Length - l);
@@ -280,7 +280,7 @@ namespace MultiNoa.Networking.PacketHandling
             foreach (var (prop, attributeData) in data.Props)
             {
                 var l = 0;
-                if (attributeData.useDataContainerManager)
+                if (attributeData.UseDataContainerManager)
                 {
                     var value = DataContainerManager.ToValueType(b, prop.PropertyType, out l);
                     readBytes += l;
@@ -335,7 +335,7 @@ namespace MultiNoa.Networking.PacketHandling
     [AttributeUsage(AttributeTargets.Property)]
     public class NetworkProperty : Attribute
     {
-        internal bool useDataContainerManager = false;
+        internal bool UseDataContainerManager = false;
         
         /// <summary>
         /// Grants extra information to the Packet Converter, including index (missing indices will be skipped) of the Property.

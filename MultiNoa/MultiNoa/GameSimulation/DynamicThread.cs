@@ -18,7 +18,7 @@ namespace MultiNoa.GameSimulation
 
         public string ThreadName { get;}
         
-        public int GoalTPS;
+        public int GoalTps;
 
         /// <summary>
         /// Percentile Usage of Time (How close to the limit is this thread? Or maybe even over?)
@@ -41,7 +41,7 @@ namespace MultiNoa.GameSimulation
             ThreadName = threadName;
             
             TimePerTick = 1000d / tps;
-            GoalTPS = tps;
+            GoalTps = tps;
 
             _runningThread = new Thread(ThreadFunction) {Name = ThreadName};
             _runningThread.Start();
@@ -59,11 +59,11 @@ namespace MultiNoa.GameSimulation
         
         private void ThreadFunction()
         {
-            MultiNoaLoggingManager.Logger.Verbose($"Thread {ThreadName} was started successfully.");
+            MultiNoaLoggingManager.Logger.Verbose($"Thread [{ThreadName}] was started successfully.");
 
             var nextLoop = DateTime.Now;
             var ticksBehind = 0;
-            var ticksUntilSecondTick = GoalTPS;
+            var ticksUntilSecondTick = GoalTps;
             
             while (IDynamicThread.AreRunning && IsRunning)
             {
@@ -77,16 +77,16 @@ namespace MultiNoa.GameSimulation
 
                     if (ticksUntilSecondTick <= 0)
                     {
-                        ticksUntilSecondTick = GoalTPS;
+                        ticksUntilSecondTick = GoalTps;
                         PerSecondUpdates();
                     }
                     
                     
                     #region Tick management
 
-                    if (ticksBehind > GoalTPS) // If at least one second behind, skip all ticks remaining
+                    if (ticksBehind > GoalTps) // If at least one second behind, skip all ticks remaining
                     {
-                        MultiNoaLoggingManager.Logger.Information($"{ThreadName} was running {ticksBehind} behind and skipepd {ticksBehind * TimePerTick}ms.");
+                        MultiNoaLoggingManager.Logger.Information($"[{ThreadName}] was running {ticksBehind} behind and skipepd {ticksBehind * TimePerTick}ms.");
                         ticksBehind = 0;
                         nextLoop = DateTime.Now;
                     }
@@ -114,8 +114,14 @@ namespace MultiNoa.GameSimulation
                     #endregion
                 }
             }
+            
+            // Call OnStop implementations!
+            foreach (var updatable in Updatables)
+            {
+                updatable.OnThreadStopped();
+            }
 
-            MultiNoaLoggingManager.Logger.Verbose($"Thread {ThreadName} was closed successfully.");
+            MultiNoaLoggingManager.Logger.Verbose($"Thread [{ThreadName}] was closed successfully.");
         }
 
         /**
@@ -194,12 +200,26 @@ namespace MultiNoa.GameSimulation
         /// <summary>
         /// Called with each tick
         /// </summary>
-        public void Update();
-        
+        public virtual void Update()
+        {
+            
+        }
+
         /// <summary>
         /// Called once a second
         /// </summary>
-        public void PerSecondUpdate();
+        public virtual void PerSecondUpdate()
+        {
+            
+        }
+
+        /// <summary>
+        /// Called once, when the thread is forcefully stopped (IDynamicThread.Stop() or IDynamicThread.StopAll())
+        /// </summary>
+        public virtual void OnThreadStopped()
+        {
+            
+        }
     }
     
     /// <summary>

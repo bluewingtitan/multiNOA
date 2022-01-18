@@ -50,7 +50,7 @@ namespace MultiNoa.Networking.Transport.Middleware
         
         public void Setup()
         {
-            MultiNoaLoggingManager.Logger.Information("Initialized NoaRsaMiddleware. Please be aware of the fact, that this middleware bloats up data to a multiple of 256 bytes and may be quite memory-intensive.");
+            MultiNoaLoggingManager.Logger.Information("Initialized NoaRsaMiddleware.");
         }
 
         public void OnConnectedServerside(ConnectionBase connection)

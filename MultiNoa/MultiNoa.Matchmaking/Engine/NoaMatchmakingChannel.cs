@@ -37,7 +37,6 @@ namespace MultiNoa.Matchmaking.Engine
         }
 
         
-        
 
         public void RemoveClient(IMatchmakingClient c)
         {

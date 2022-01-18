@@ -37,7 +37,7 @@ namespace MultiNoa.Networking.Client
         public void SetUsername(string username);
     }
     
-    public interface IUserSideClient: IClient, IUserSideClientAddons, IGroupableClient{}
+    public interface IUserSideClient: IClient, IUserSideClientAddons {}
     
 
     public interface IServersideClientAddons
@@ -48,14 +48,14 @@ namespace MultiNoa.Networking.Client
         public void MoveToRoomCallback(Room room);
     }
 
-    public interface IServersideClient: IClient, IServersideClientAddons
+    public interface IServersideClient: IClient, IServersideClientAddons, IGroupableClient
     {
         
     }
 
     
 
-    public interface IUniversalClient: IUserSideClient, IServersideClient, IGroupableClient
+    public interface IUniversalClient: IUserSideClient, IServersideClient
     {
     }
 

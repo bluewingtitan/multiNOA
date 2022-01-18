@@ -16,9 +16,8 @@ namespace MultiNoa
     public static class MultiNoaSetup
     {
         public static int DataBufferSize { get; private set; }  = 8196;
-
-
-        internal static DynamicThread DefaultThread = new DynamicThread(2, "MultiNoa Default");
+        
+        internal static readonly DynamicThread DefaultThread = new DynamicThread(2, "MultiNoa Default");
         
         public const string VersionCode = "0.1.4";
         private static bool _setupDone = false;
@@ -53,6 +52,26 @@ namespace MultiNoa
         /// <param name="config">Configuration Class Instance</param>
         internal static void CustomSetup(MultiNoaConfig config)
         {
+            // check config
+            if (config.DataBufferSize == 0)
+                config.DataBufferSize = DataBufferSize;
+
+            if (config.MainAssembly == null)
+            {
+                throw new Exception("MainAssembly was not defined. Please define at least one assembly in your MultiNoaSetup-Config to properly use multiNoa!");
+            }
+
+            if (config.Middlewares == null)
+            {
+                config.Middlewares = new INoaMiddleware[0];
+            }
+            
+            if (config.ExtraAssemblies == null)
+            {
+                config.ExtraAssemblies = new Assembly[0];
+            }
+            
+            
             Setup(config);
         }
 

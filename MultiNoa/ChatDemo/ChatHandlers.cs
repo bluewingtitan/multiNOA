@@ -24,7 +24,6 @@ namespace ChatDemo
             
             MultiNoaLoggingManager.Logger.Information($"[{client.Room.GetRoomName()}] <{client.Username}> {m.Message}");
             
-                
             client.Room.Broadcast(answer, client);
         }
         
@@ -33,6 +32,7 @@ namespace ChatDemo
         [HandlerMethod(ChatPackets.FromServer.MessageFromServer.PacketId)]
         public static void HandleMessageReceived(ChatPackets.FromServer.MessageFromServer m)
         {
+            MultiNoaLoggingManager.Logger.Information("HIIII");
             Console.WriteLine($"<{m.Username}> {m.Message}");
             Console.Out.Flush();
         }

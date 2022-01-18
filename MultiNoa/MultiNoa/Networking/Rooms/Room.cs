@@ -156,7 +156,7 @@ namespace MultiNoa.Networking.Rooms
 
         public void Broadcast(object message, IServersideClient exclude = null)
         {
-            MultiNoaLoggingManager.Logger.Debug($"Broadcasting to {_clients.Count} clients");
+            MultiNoaLoggingManager.Logger.Debug($"Broadcasting to room of {_clients.Count} clients");
             foreach (var (_, client) in _clients)
             {
                 if (exclude == client)

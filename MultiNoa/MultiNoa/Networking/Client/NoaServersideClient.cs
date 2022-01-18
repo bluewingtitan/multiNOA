@@ -8,40 +8,34 @@ namespace MultiNoa.Networking.Client
     /// </summary>
     public class NoaServersideClient: ClientBase, IServersideClient
     {
-        protected readonly ServerBase _server;
-        protected readonly ConnectionBase _connection;
-        protected readonly ulong _clientId;
+        protected readonly ServerBase Server;
+        protected readonly ConnectionBase Connection;
         
         public NoaServersideClient(ServerBase server, ConnectionBase connection, ulong id) : base("noa-user")
         {
-            _server = server;
-            _connection = connection;
-            _clientId = id;
+            Server = server;
+            Connection = connection;
+            IdOnServer = id;
         }
 
         public override void SendData(object data)
         {
-            _connection.SendData(data);
+            Connection.SendData(data);
         }
 
         public ServerBase GetServer()
         {
-            return _server;
+            return Server;
         }
 
         public override ConnectionBase GetConnection()
         {
-            return _connection;
-        }
-
-        public ulong GetId()
-        {
-            return _clientId;
+            return Connection;
         }
 
         public override void Disconnect()
         {
-            _connection.Disconnect();
+            Connection.Disconnect();
         }
     }
 }

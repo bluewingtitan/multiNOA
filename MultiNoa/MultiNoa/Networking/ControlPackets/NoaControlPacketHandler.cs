@@ -1,3 +1,4 @@
+using System;
 using MultiNoa.Logging;
 using MultiNoa.Networking.Client;
 using MultiNoa.Networking.PacketHandling;
@@ -48,6 +49,7 @@ namespace MultiNoa.Networking.ControlPackets
             public static void ConnectionEstablished(ConnectionBase c)
             {
                 c.InvokeOnConnected();
+                c.GetClient().InvokeOnClientConnected();
             }
             
 
