@@ -32,8 +32,8 @@ namespace ExampleProject
                 MultiNoaLoggingManager.Logger.Information("----------------GENERATION-----------------");
                 foreach (var result in results)
                 {
-                    var r = result.GetTeamA().Aggregate("", (current, d) => current + (d.GetClient().GetUsername() + " "))
-                        + "vs " + result.GetTeamB().Aggregate("", (current, d) => current + (d.GetClient().GetUsername() + " "));
+                    var r = result.GetTeamA().Aggregate("", (current, d) => current + (d.GetClient().Username + " "))
+                        + "vs " + result.GetTeamB().Aggregate("", (current, d) => current + (d.GetClient().Username + " "));
 
                     MultiNoaLoggingManager.Logger.Information(r);
                 }

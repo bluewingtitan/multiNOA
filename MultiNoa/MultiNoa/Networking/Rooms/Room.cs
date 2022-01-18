@@ -86,6 +86,9 @@ namespace MultiNoa.Networking.Rooms
 
         public bool TryAddClient(IServersideClient client, string password = null)
         {
+            if (_clients.ContainsKey(client.Id))
+                return true;
+            
             if (!string.IsNullOrEmpty(Password) && !string.Equals(password, Password))
             {
                 return false;
@@ -94,11 +97,21 @@ namespace MultiNoa.Networking.Rooms
             MultiNoaLoggingManager.Logger.Debug($"Moving client {client.GetConnection().GetEndpointIp()} to room '{Roomname}'");
             
             
-            var success = _clients.TryAdd(client.GetId(), client);
+            var success = _clients.TryAdd(client.Id, client);
             
             if(success)
             {
-                client.MoveToRoom(this);
+                // move client to room, remove from old room
+                client.Room?.RemoveClient(client);
+            
+                if (client.Room?.GetRoomThread() != Thread)
+                {
+                    client.GetConnection().ChangeThread(Thread);
+                }
+
+                client.MoveToRoomCallback(this);
+                
+                
                 OnClientJoinRoom?.Invoke(client);
             }
             
@@ -137,13 +150,13 @@ namespace MultiNoa.Networking.Rooms
 
         internal void RemoveClient(IServersideClient client)
         {
-            _clients.Remove(client.GetId());
+            _clients.Remove(client.Id);
             OnClientLeaveRoom?.Invoke(client);
         }
 
         public void Broadcast(object message, IServersideClient exclude = null)
         {
-            MultiNoaLoggingManager.Logger.Debug($"Broadcasting to {_clients.Count} clients");
+            MultiNoaLoggingManager.Logger.Debug($"Broadcasting to room of {_clients.Count} clients");
             foreach (var (_, client) in _clients)
             {
                 if (exclude == client)

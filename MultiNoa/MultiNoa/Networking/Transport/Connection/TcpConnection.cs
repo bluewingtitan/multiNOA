@@ -54,6 +54,10 @@ namespace MultiNoa.Networking.Transport.Connection
         protected override void OnDisconnect()
         {
             _socket.Dispose();
+            _stream.Dispose();
+            _stream = null;
+            _receiveBuffer = null;
+            _socket = null;
         }
 
         public override string GetEndpointIp()
@@ -88,13 +92,12 @@ namespace MultiNoa.Networking.Transport.Connection
                 
                 byte[] data = new byte[byteLength];
                 Array.Copy(_receiveBuffer, data, byteLength);
-
-                HandleData(data);
                 
-
-
                 // Start listening again
                 _stream.BeginRead(_receiveBuffer, 0, MultiNoaSetup.DataBufferSize, ReceiveCallback, null);
+                
+                // Handle the data
+                HandleData(data);
             }
             catch (Exception e)
             {
@@ -103,9 +106,5 @@ namespace MultiNoa.Networking.Transport.Connection
             }
         }
 
-        public override void PerSecondUpdate()
-        {
-            
-        }
     }
 }

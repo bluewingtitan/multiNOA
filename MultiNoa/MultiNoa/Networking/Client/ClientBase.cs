@@ -8,21 +8,16 @@ using MultiNoa.Networking.Transport;
 namespace MultiNoa.Networking.Client
 {
     /// <summary>
-    /// The base implementation of IClient
-    /// May be used as a base for any further client implementation.
+    /// The base implementation of IClient, contains virtual implementations for most other client-related interfaces
     ///
-    /// Allready contains basic room management for Serverside clients (As this part is critical and designed for one basic implementation)
+    /// Already contains basic room management for Serverside clients (As this part is critical and designed for one implementation)
     /// </summary>
     public abstract class ClientBase: IClient
     {
         #region Synced Fields
 
-        private string _username = "User";
-
-        public string GetUsername()
-        {
-            return _username;
-        }
+        private string _username;
+        public string Username => _username;
 
         public void SetUsername(string username, bool synced)
         {
@@ -44,7 +39,10 @@ namespace MultiNoa.Networking.Client
 
         #endregion
 
-        protected Room CurrentRoom { get; private set; }
+        public ulong IdOnServer { get; set; }
+        public ulong Id => IdOnServer;
+        
+        public Room Room { get; private set; }
         
         public ClientBase(string username)
         {
@@ -83,20 +81,12 @@ namespace MultiNoa.Networking.Client
 
         public Room GetRoom()
         {
-            return CurrentRoom;
+            return Room;
         }
         
-        public void MoveToRoom(Room room)
+        public void MoveToRoomCallback(Room room)
         {
-            GetRoom()?.RemoveClient((IServersideClient) this);
-            
-            if (GetRoom()?.GetRoomThread() != room.GetRoomThread())
-            {
-                GetConnection().ChangeThread(room.GetRoomThread());
-            }
-            
-            
-            CurrentRoom = room;
+            Room = room;
             OnMovedToRoom(room);
         }
 

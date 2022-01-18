@@ -31,7 +31,6 @@ namespace ChatDemo
                 new MultiNoaConfig
                 {
                     MainAssembly = typeof(ChatClient).Assembly,
-                    ExtraAssemblies = new Assembly[0],
                     Middlewares = new INoaMiddleware[] {new NoaNetworkLoggingMiddleware(), new NoaRsaMiddleware(), new NoaFragmentationMiddleware(),  }
                 });
 
@@ -39,12 +38,12 @@ namespace ChatDemo
             {
                 // => Start Server
                 MultiNoaLoggingManager.Logger.Information("Starting Server...");
-                _server = new NoaTcpServer(ServerPort, ProtocolVersion, 5, "Chat Server");
+                _server = new NoaTcpServer(ServerPort, ProtocolVersion, 1, "Chat Server");
 
             }
             else
             {
-                // No debug messages!
+                // No debug messages on client side!
                 //MultiNoaLoggingManager.Logger = new MultiNoaLoggingManager.NoaNoLogger();
 
                 Console.Write("Username: ");

@@ -38,10 +38,8 @@ namespace ExampleProject
             
         }
 
-        public string GetUsername()
-        {
-            return id + ":" + mmr;
-        }
+        public string Username => id + ":" + mmr;
+
 
         public void SetUsername(string username, bool synced)
         {
@@ -68,17 +66,15 @@ namespace ExampleProject
             return null;
         }
 
+        public ulong Id => id;
+        public Room Room => null;
+
         public ulong GetId()
         {
             return 0;
         }
 
-        public Room GetRoom()
-        {
-            return null;
-        }
-
-        public void MoveToRoom(Room room)
+        public void MoveToRoomCallback(Room room)
         {
             
         }

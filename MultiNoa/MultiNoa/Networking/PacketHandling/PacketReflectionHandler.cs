@@ -161,7 +161,7 @@ namespace MultiNoa.Networking.PacketHandling
                 if (i.HandlerMethod is SecuredHandlerMethod shm)
                 {
                     var c = fromClient.GetClient();
-                    if (c is IServersideClient sc)
+                    if (c is IGroupableClient sc)
                     {
                         // if has allowed group OR is admin
                         var allowed = sc.GetAuthorityGroup(shm.AllowedGroup) || sc.GetAuthorityGroup(AuthorityGroups.Operator);
@@ -178,7 +178,7 @@ namespace MultiNoa.Networking.PacketHandling
                             
                             if (shm.Severity == 2)
                             {
-                                return () => MultiNoaLoggingManager.Logger.Information($"Client {fromClient.GetEndpointIp()} tried to invoke action of type {type.FullName} / Handler {i.MethodInfo.Name}");
+                                return () => MultiNoaLoggingManager.Logger.Warning($"Client {fromClient.GetEndpointIp()} tried to invoke action of type {type.FullName} / Handler {i.MethodInfo.Name}");
                             }
                             
                             if (shm.Severity >= 3)
@@ -190,7 +190,6 @@ namespace MultiNoa.Networking.PacketHandling
                                             $"Client {fromClient.GetEndpointIp()} tried to invoke action of type {type.FullName} / Handler {i.MethodInfo.Name}. Disconnected client.");
                                 };
                             }
-                            
                         }
                     }
                 }
@@ -299,7 +298,7 @@ namespace MultiNoa.Networking.PacketHandling
         /// <param name="packetId">Id of the packet to be handled</param>
         /// <param name="severity">0: Do nothing | 1: Log as verbose | 2: Log as Information | 3: Log as Warning and disconnect client</param>
         /// <param name="allowedGroup">Group-String for allowed group</param>
-        public SecuredHandlerMethod(int packetId, int severity, string allowedGroup) : base(packetId)
+        public SecuredHandlerMethod(int packetId, string allowedGroup, int severity) : base(packetId)
         {
             IsSpecialHandlerAttribute = true;
             AllowedGroup = allowedGroup;

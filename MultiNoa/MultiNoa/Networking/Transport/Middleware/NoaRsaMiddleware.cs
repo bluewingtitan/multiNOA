@@ -12,6 +12,7 @@ namespace MultiNoa.Networking.Transport.Middleware
     [MultiNoaInternal]
     public class NoaRsaMiddleware: INoaMiddleware
     {
+        private static readonly RSACryptoServiceProvider LocalRsa = new RSACryptoServiceProvider(KeySize);
         /// <summary>
         /// Used as key in the clients middleware data storage.
         /// </summary>
@@ -45,11 +46,11 @@ namespace MultiNoa.Networking.Transport.Middleware
             _instance ??= this;
         }
         
-        public MiddlewareTarget GetTarget() => MiddlewareTarget.Encrypting;
+        public MiddlewareTarget Target => MiddlewareTarget.Encrypting;
         
         public void Setup()
         {
-            MultiNoaLoggingManager.Logger.Information("Initialized NoaRsaMiddleware. Please be aware of the fact, that this middleware bloats up data to a multiple of 256 bytes and may be quite memory-intensive.");
+            MultiNoaLoggingManager.Logger.Information("Initialized NoaRsaMiddleware.");
         }
 
         public void OnConnectedServerside(ConnectionBase connection)
@@ -57,10 +58,9 @@ namespace MultiNoa.Networking.Transport.Middleware
             MultiNoaLoggingManager.Logger.Debug($"Initializing Diffie Hellman Key Exchange with connection {connection.GetEndpointIp()}");
             
             // Generate keys
-            var rsa = new RSACryptoServiceProvider(KeySize);
-            var key = rsa.ExportRSAPublicKey();
+            var key = LocalRsa.ExportRSAPublicKey();
             
-            var data = new EncryptionData(rsa, null);
+            var data = new EncryptionData(null);
             connection.SetMiddlewareData(_instance, data);
             
             MultiNoaLoggingManager.Logger.Debug($"Sending {connection.GetEndpointIp()} public key of size {key.Length}");
@@ -126,7 +126,7 @@ namespace MultiNoa.Networking.Transport.Middleware
                 if (!encryptionData.Initialized)
                     return data;
                 
-                return CryptographyHelper(data, BlockSize,(bytes, padding) => encryptionData.LocalRsa.Decrypt(bytes, padding));
+                return CryptographyHelper(data, BlockSize,(bytes, padding) => LocalRsa.Decrypt(bytes, padding));
             }
             
             MultiNoaLoggingManager.Logger.Error($"Wasn't able to encrypt message to {connection.GetEndpointIp()}\n" +
@@ -138,12 +138,10 @@ namespace MultiNoa.Networking.Transport.Middleware
         private class EncryptionData
         {
             public bool Initialized = false;
-            public readonly RSACryptoServiceProvider LocalRsa;
             public RSACryptoServiceProvider DistantRsa = null;
 
-            public EncryptionData(RSACryptoServiceProvider localRsa, RSACryptoServiceProvider distantRsa)
+            public EncryptionData(RSACryptoServiceProvider distantRsa)
             {
-                LocalRsa = localRsa;
                 DistantRsa = distantRsa;
             }
         }
@@ -155,7 +153,7 @@ namespace MultiNoa.Networking.Transport.Middleware
         [PacketStruct(NoaControlPacketIds.FromServer.RsaKeyFromServer)]
         public struct RsaKeyFromServer
         {
-            [NetworkProperty(0)]
+            [NetworkProperty]
             public NetworkArray<byte> Key { get; set; }
         }
         
@@ -163,7 +161,7 @@ namespace MultiNoa.Networking.Transport.Middleware
         [PacketStruct(NoaControlPacketIds.FromClient.RsaKeyFromClient)]
         public struct RsaKeyFromClient
         {
-            [NetworkProperty(0)]
+            [NetworkProperty]
             public NetworkArray<byte> Key { get; set; }
         }
 
@@ -178,10 +176,9 @@ namespace MultiNoa.Networking.Transport.Middleware
             MultiNoaLoggingManager.Logger.Debug($"Initializing Diffie Hellman Key Exchange with connection {connection.GetEndpointIp()}");
             
             // Generate keys
-            var rsa = new RSACryptoServiceProvider(KeySize);
-            var key = rsa.ExportRSAPublicKey();
+            var key = LocalRsa.ExportRSAPublicKey();
 
-            var data = new EncryptionData(rsa, distantRsa) {Initialized = true};
+            var data = new EncryptionData(distantRsa) {Initialized = true};
 
             connection.SetMiddlewareData(_instance, data);
             

@@ -72,5 +72,10 @@ namespace MultiNoa.Networking.Data.DataContainer
         {
             return _v.ToString();
         }
+
+        public void Dispose()
+        {
+            // nothing to do here.
+        }
     }
 }

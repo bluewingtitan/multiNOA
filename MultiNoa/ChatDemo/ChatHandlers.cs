@@ -19,13 +19,12 @@ namespace ChatDemo
             var answer = new ChatPackets.FromServer.MessageFromServer
             {
                 Message = m.Message,
-                Username = client.GetUsername()
+                Username = client.Username
             };
             
-            MultiNoaLoggingManager.Logger.Information($"[{client.GetRoom().GetRoomName()}] <{client.GetUsername()}> message of length {m.Message}");
+            MultiNoaLoggingManager.Logger.Information($"[{client.Room.GetRoomName()}] <{client.Username}> {m.Message}");
             
-                
-            client.GetRoom().Broadcast(answer, client);
+            client.Room.Broadcast(answer, client);
         }
         
         
@@ -33,6 +32,7 @@ namespace ChatDemo
         [HandlerMethod(ChatPackets.FromServer.MessageFromServer.PacketId)]
         public static void HandleMessageReceived(ChatPackets.FromServer.MessageFromServer m)
         {
+            MultiNoaLoggingManager.Logger.Information("HIIII");
             Console.WriteLine($"<{m.Username}> {m.Message}");
             Console.Out.Flush();
         }

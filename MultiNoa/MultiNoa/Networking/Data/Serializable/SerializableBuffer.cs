@@ -5,17 +5,17 @@ namespace MultiNoa.Networking.Data.Serializable
     /// </summary>
     public class SerializableBuffer : INetworkSerializable
     {
-        private readonly byte[] data;
+        private readonly byte[] _data;
 
         public SerializableBuffer(byte[] data)
         {
-            this.data = data;
+            this._data = data;
         }
         
         
         public byte[] TurnIntoBytes()
         {
-            return data;
+            return _data;
         }
     }
 }

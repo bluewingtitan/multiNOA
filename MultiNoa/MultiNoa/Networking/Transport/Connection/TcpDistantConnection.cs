@@ -15,8 +15,7 @@ namespace MultiNoa.Networking.Transport.Connection
         private string _address;
 
         public TcpDistantConnection(string protocolVersion): base(protocolVersion)
-        {
-        }
+        {}
 
         public void Connect(TcpClient socket)
         {
@@ -37,6 +36,7 @@ namespace MultiNoa.Networking.Transport.Connection
         protected override void OnDisconnect()
         {
             Socket?.Close();
+            _stream.Dispose();
             _stream = null;
             _receivedData = null;
             Socket = null;
@@ -73,11 +73,6 @@ namespace MultiNoa.Networking.Transport.Connection
             }
         }
         
-
-        public override void PerSecondUpdate()
-        {
-            
-        }
 
         public override string GetEndpointIp()
         {

@@ -9,8 +9,8 @@ namespace MultiNoa.GameSimulation
     /// </summary>
     public class ExecutionScheduler
     {
-        private readonly List<Action> executeOnThread = new List<Action>();
-        private readonly List<Action> ExecuteCopiedOnThread = new List<Action>();
+        private readonly List<Action> _executeOnThread = new List<Action>();
+        private readonly List<Action> _executeCopiedOnThread = new List<Action>();
         private bool _actionToExecuteOnMainThread = false;
         
         public void ScheduleExecution(Action action)
@@ -21,9 +21,9 @@ namespace MultiNoa.GameSimulation
                 return;
             }
     
-            lock (executeOnThread)
+            lock (_executeOnThread)
             {
-                executeOnThread.Add(action);
+                _executeOnThread.Add(action);
                 _actionToExecuteOnMainThread = true;
             }
         }
@@ -31,16 +31,16 @@ namespace MultiNoa.GameSimulation
         public void ExecuteAll()
         {
             if (!_actionToExecuteOnMainThread) return;
-            ExecuteCopiedOnThread.Clear();
+            _executeCopiedOnThread.Clear();
             
-            lock (executeOnThread)
+            lock (_executeOnThread)
             {
-                ExecuteCopiedOnThread.AddRange(executeOnThread);
-                executeOnThread.Clear();
+                _executeCopiedOnThread.AddRange(_executeOnThread);
+                _executeOnThread.Clear();
                 _actionToExecuteOnMainThread = false;
             }
     
-            foreach (var action in ExecuteCopiedOnThread)
+            foreach (var action in _executeCopiedOnThread)
             {
                 action();
             }

@@ -21,9 +21,9 @@ namespace MultiNoa.Networking.ControlPackets
                 }
                 // TODO: Implement dynamic enums and use this here.
                 
-                [NetworkProperty(0)]
+                [NetworkProperty]
                 private int _reason { get; set; }
-                [NetworkProperty(1)]
+                [NetworkProperty]
                 public string Details { get; set; }
             }
             
@@ -34,35 +34,42 @@ namespace MultiNoa.Networking.ControlPackets
             {
                 /// <summary>
                 /// If the protocol-version does not fit the one used on the receiving end,
-                /// the receiver (client) will disconnect immideatly.
+                /// the receiver (client) will disconnect immediately.
                 ///
                 /// This version is set by the developer themselves when constructing the server/connection.
                 /// It's recommended to change it via a configuration file.
                 /// </summary>
-                [NetworkProperty(0)]
+                [NetworkProperty]
                 public string ProtocolVersion { get; set; }
                 
                 /// <summary>
                 /// Not used for now, besides for logging a warning that two different versions are used.
                 /// Acts as a warning-system for developers.
                 /// </summary>
-                [NetworkProperty(1)]
+                [NetworkProperty]
                 public string RunningNoaVersion { get; set; }
+                
+                
+                
+                /// <summary>
+                /// Not used for now, besides for logging a warning that two different versions are used.
+                /// Acts as a warning-system for developers.
+                /// </summary>
+                [NetworkProperty]
+                public ulong ClientId { get; set; }
             }
             
             [MultiNoaInternal]
             [PacketStruct(NoaControlPacketIds.FromServer.ConnectionEstablishedPacket)]
             public struct ConnectionEstablished
             {
-                [NetworkProperty(0)]
-                public string NewUsername { get; set; }
             }
                         
             [MultiNoaInternal]
             [PacketStruct(NoaControlPacketIds.FromServer.SyncUsername)]
             public struct SyncUsername
             {
-                [NetworkProperty(0)]
+                [NetworkProperty]
                 public string NewUsername { get; set; }
             }
             
@@ -78,17 +85,17 @@ namespace MultiNoa.Networking.ControlPackets
                 /// Not used for now, besides for logging a warning that two different versions are used.
                 /// Acts as a warning-system for developers.
                 /// </summary>
-                [NetworkProperty(0)]
+                [NetworkProperty]
                 public string RunningNoaVersion { get; set; }
                 
-                [NetworkProperty(0)] public string Username { get; set; }
+                [NetworkProperty] public string Username { get; set; }
             }
 
             [MultiNoaInternal]
             [PacketStruct(NoaControlPacketIds.FromClient.SyncUsername)]
             public struct SyncUsername
             {
-                [NetworkProperty(0)]
+                [NetworkProperty]
                 public string NewUsername { get; set; }
             }
             

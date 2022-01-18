@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
@@ -32,7 +33,7 @@ namespace MultiNoa.Networking.Transport
 
                 if (c.GetClient() is IServersideClient sClient)
                 {
-                    sClient.GetRoom().RemoveClient(sClient);
+                    sClient.Room.RemoveClient(sClient);
                 }
             };
 
@@ -82,7 +83,7 @@ namespace MultiNoa.Networking.Transport
         {
             _handlers.ExecuteAll();
         }
-        public abstract void PerSecondUpdate();
+
         public abstract string GetEndpointIp();
         protected abstract void TransferData(byte[] data);
         public IClient GetClient() => _client;
@@ -96,6 +97,11 @@ namespace MultiNoa.Networking.Transport
 
         public void SendData(object objectToSend, bool skipMiddlewares = false, bool stayInThread = false, MiddlewareTarget[] excludes = null)
         {
+            if (_disposed)
+            {
+                MultiNoaLoggingManager.Logger.Warning("Tried to send data on disposed connection. No data was sent. Stack trace:\n" + Environment.StackTrace);
+                return;
+            }
             if (stayInThread)
             {
                 SendDataInThread(objectToSend, skipMiddlewares, excludes);
@@ -185,9 +191,14 @@ namespace MultiNoa.Networking.Transport
         {
             OnConnected?.Invoke(this);
         }
+
+
+        private bool _disposed = false;
         
         public void Disconnect()
         {
+            if(_disposed) return;
+            _disposed = true;
             OnDisconnected?.Invoke(this);
             OnDisconnect();
         }
@@ -197,6 +208,9 @@ namespace MultiNoa.Networking.Transport
         
         public void ChangeThread(IDynamicThread newThread)
         {
+            if(_currentThread == newThread)
+                return;
+            
             if (_currentThread != null)
             {
                 _currentThread.RemoveUpdatable(this); 

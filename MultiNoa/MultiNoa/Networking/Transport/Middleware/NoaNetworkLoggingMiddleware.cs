@@ -5,7 +5,7 @@ namespace MultiNoa.Networking.Transport.Middleware
 {
     public class NoaNetworkLoggingMiddleware: INoaMiddleware
     {
-        public MiddlewareTarget GetTarget() => MiddlewareTarget.NonModifying;
+        public MiddlewareTarget Target => MiddlewareTarget.NonModifying;
         
         public void Setup()
         {

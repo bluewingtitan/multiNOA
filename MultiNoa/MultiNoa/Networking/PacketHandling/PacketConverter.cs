@@ -77,7 +77,7 @@ namespace MultiNoa.Networking.PacketHandling
                     foreach (var attr in data)
                         if (attr is NetworkProperty prop)
                         {
-                            prop.useDataContainerManager = useDataContainerManager;
+                            prop.UseDataContainerManager = useDataContainerManager;
                             return new KeyValuePair<PropertyInfo, NetworkProperty>(e, prop);
                         }
 
@@ -89,10 +89,9 @@ namespace MultiNoa.Networking.PacketHandling
             
             
             
-            // Sorting properties of class by index.
-            props.Sort((pair, valuePair) =>
-                (pair.Value.Index) -
-                (valuePair.Value.Index)
+            // Sorting properties of class by hashcode of name
+            props.Sort((pair1, pair2) =>
+                string.Compare(pair1.Key.Name, pair2.Key.Name, StringComparison.Ordinal)
             );
             
             Infos[attribute.PacketId] = new PacketClassInfo(t, new Dictionary<PropertyInfo, NetworkProperty>(props), attribute);
@@ -125,9 +124,11 @@ namespace MultiNoa.Networking.PacketHandling
 
 
             // write packet id into byte-array
-            bytes.AddRange(new NetworkInt(attribute.PacketId).TurnIntoBytes());
-
-
+            using (var nInt = new NetworkInt(attribute.PacketId))
+            {
+                bytes.AddRange(nInt.TurnIntoBytes());
+            }
+            
 
             foreach (var (prop, attributeData) in data.Props)
             {
@@ -140,7 +141,7 @@ namespace MultiNoa.Networking.PacketHandling
                     continue;
                 }
                 
-                if (attributeData.useDataContainerManager)
+                if (attributeData.UseDataContainerManager)
                 {
                     bytes.AddRange(DataContainerManager.ToBytes(value));
                     continue;
@@ -170,11 +171,16 @@ namespace MultiNoa.Networking.PacketHandling
                 // Strip length
                 b = b.GetSubarray(4, b.Length - 4);
             }
+
+            var pId = 0;
             
-            var idContainer = new NetworkInt();
-            idContainer.LoadFromBytes(b);
-            b = b.GetSubarray(4, b.Length - 4);
-            var pId = idContainer.GetTypedValue();
+            using (var idContainer = new NetworkInt())
+            {
+                idContainer.LoadFromBytes(b);
+                b = b.GetSubarray(4, b.Length - 4);
+                pId = idContainer.GetTypedValue();
+            }
+            
 
             if (!Infos.ContainsKey(pId))
             {
@@ -199,7 +205,7 @@ namespace MultiNoa.Networking.PacketHandling
             {
                 var l = 0;
                 
-                if (attributeData.useDataContainerManager)
+                if (attributeData.UseDataContainerManager)
                 {
                     var value = DataContainerManager.ToValueType(b, prop.PropertyType, out l);
                     b = b.GetSubarray(l, b.Length - l);
@@ -207,12 +213,19 @@ namespace MultiNoa.Networking.PacketHandling
                 }
                 else
                 {
-                    var container = Activator.CreateInstance(prop.PropertyType) as INetworkDataContainer;
-                
-                    l = container.LoadFromBytes(b);
-                    b = b.GetSubarray(l, b.Length - l);
-                    
-                    prop.SetValue(instance, container);
+                    using (var container = Activator.CreateInstance(prop.PropertyType) as INetworkDataContainer)
+                    {
+                        if (container == null)
+                        {
+                            throw new PacketConversionException(
+                                $"Was not able to create instance of INetworkDataContainer of type {prop.PropertyType.FullName}");
+                        }
+                        
+                        l = container.LoadFromBytes(b);
+                        b = b.GetSubarray(l, b.Length - l);
+
+                        prop.SetValue(instance, container);
+                    }
                 }
             }
 
@@ -249,11 +262,14 @@ namespace MultiNoa.Networking.PacketHandling
             
             if (containsPacketId)
             {
-                var idContainer = new NetworkInt();
-                readBytes += idContainer.LoadFromBytes(b);
-                b = b.GetSubarray(4, b.Length - 4);
+                var pId = 0;
+                using (var idContainer = new NetworkInt())
+                {
+                    readBytes += idContainer.LoadFromBytes(b);
+                    b = b.GetSubarray(4, b.Length - 4);
 
-                var pId = idContainer.GetTypedValue();
+                    pId = idContainer.GetTypedValue();
+                }
 
                 if (!skipTypeCheck && pId != attribute.PacketId)
                     throw new PacketConversionException($"Tried to parse packet with type-id #{pId} to {type.FullName}, should be #{attribute.PacketId}\n" +
@@ -264,7 +280,7 @@ namespace MultiNoa.Networking.PacketHandling
             foreach (var (prop, attributeData) in data.Props)
             {
                 var l = 0;
-                if (attributeData.useDataContainerManager)
+                if (attributeData.UseDataContainerManager)
                 {
                     var value = DataContainerManager.ToValueType(b, prop.PropertyType, out l);
                     readBytes += l;
@@ -273,13 +289,20 @@ namespace MultiNoa.Networking.PacketHandling
                 }
                 else
                 {
-                    var container = Activator.CreateInstance(prop.PropertyType) as INetworkDataContainer;
-                
-                    l = container.LoadFromBytes(b);
-                    readBytes += l;
-                    b = b.GetSubarray(l, b.Length - l);
-                    
-                    prop.SetValue(instance, container);
+                    using (var container = Activator.CreateInstance(prop.PropertyType) as INetworkDataContainer)
+                    {
+                        if (container == null)
+                        {
+                            throw new PacketConversionException(
+                                $"Was not able to create instance of INetworkDataContainer of type {prop.PropertyType.FullName}");
+                        }
+                        
+                        l = container.LoadFromBytes(b);
+                        readBytes += l;
+                        b = b.GetSubarray(l, b.Length - l);
+
+                        prop.SetValue(instance, container);
+                    }
                 }
             }
 
@@ -312,16 +335,14 @@ namespace MultiNoa.Networking.PacketHandling
     [AttributeUsage(AttributeTargets.Property)]
     public class NetworkProperty : Attribute
     {
-        internal bool useDataContainerManager = false;
-        public readonly int Index;
+        internal bool UseDataContainerManager = false;
         
         /// <summary>
         /// Grants extra information to the Packet Converter, including index (missing indices will be skipped) of the Property.
         /// </summary>
         /// <param name="index">Force specific index of field in/from (de-)serialized packet</param>
-        public NetworkProperty(int index = 0)
+        public NetworkProperty()
         {
-            Index = index;
         }
     }
 

@@ -3,23 +3,24 @@ using System;
 namespace MultiNoa.Networking.Data.DataContainer
 {
     /// <summary>
-    /// Wraps an Short to NetworkDataContainer
+    /// Wraps an unsigned short to NetworkDataContainer
     /// </summary>
-    [MultiNoa.Networking.PacketHandling.DataContainer(typeof(short))]
-    public struct NetworkShort: INetworkDataContainer<short>
+    [PacketHandling.DataContainer(typeof(ushort))]
+    public struct NetworkUShort: INetworkDataContainer<ushort>
     {
+        
         #region Operators
-        public static NetworkShort operator +(NetworkShort nb, short n) => new NetworkShort( (short) (nb._v + n));
-        public static NetworkShort operator +(short n, NetworkShort nb) => new NetworkShort( (short) (nb._v + n));
-        public static NetworkShort operator -(NetworkShort nb, short n) => new NetworkShort( (short) (nb._v - n));
-        public static NetworkShort operator -(short n, NetworkShort nb) => new NetworkShort((short) (n - nb._v));
-        public static NetworkShort operator + (NetworkShort nb) => new NetworkShort(nb._v);
-        public static NetworkShort operator ++(NetworkShort nb)
+        public static NetworkUShort operator +(NetworkUShort nb, ushort n) => new NetworkUShort( (ushort) (nb._v + n));
+        public static NetworkUShort operator +(ushort n, NetworkUShort nb) => new NetworkUShort( (ushort) (nb._v + n));
+        public static NetworkUShort operator -(NetworkUShort nb, ushort n) => new NetworkUShort( (ushort) (nb._v - n));
+        public static NetworkUShort operator -(ushort n, NetworkUShort nb) => new NetworkUShort((ushort) (n - nb._v));
+        public static NetworkUShort operator + (NetworkUShort nb) => new NetworkUShort(nb._v);
+        public static NetworkUShort operator ++(NetworkUShort nb)
         {
             nb._v++;
             return nb;
         }
-        public static NetworkShort operator --(NetworkShort nb)
+        public static NetworkUShort operator --(NetworkUShort nb)
         {
             nb._v--;
             return nb;
@@ -29,9 +30,9 @@ namespace MultiNoa.Networking.Data.DataContainer
 
         private const int ShortByteLength = 2;
         
-        private short _v;
+        private ushort _v;
 
-        public NetworkShort(short value = 0)
+        public NetworkUShort(ushort value = 0)
         {
             _v = value;
         }
@@ -43,7 +44,7 @@ namespace MultiNoa.Networking.Data.DataContainer
         
         public bool SetValue(object o)
         {
-            if (o is short v)
+            if (o is ushort v)
             {
                 _v = v;
                 return true;
@@ -53,7 +54,7 @@ namespace MultiNoa.Networking.Data.DataContainer
         }
 
 
-        public short GetTypedValue()
+        public ushort GetTypedValue()
         {
             return _v;
         }
@@ -64,7 +65,7 @@ namespace MultiNoa.Networking.Data.DataContainer
 
         public int LoadFromBytes(byte[] bytes)
         {
-            _v = BitConverter.ToInt16(bytes, 0); // Read int from bytes.
+            _v = BitConverter.ToUInt16(bytes, 0); // Read int from bytes.
             return ShortByteLength;
         }
         

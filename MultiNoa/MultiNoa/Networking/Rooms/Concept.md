@@ -1,5 +1,5 @@
 # Rooms
-Rooms are unity that are used to organize clients.
+Rooms are used to organize clients.
 Each Server consists out of one base room that clients normally will get put in (in all default implementations, that is) after connecting.
 
 Each Room is Updatable and may use the thread of the server it's contained in, or use their own in case for games.

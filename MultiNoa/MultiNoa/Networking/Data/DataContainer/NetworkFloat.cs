@@ -71,5 +71,10 @@ namespace MultiNoa.Networking.Data.DataContainer
         {
             return _v.ToString(CultureInfo.CurrentCulture);
         }
+
+        public void Dispose()
+        {
+            // nothing to do here.
+        }
     }
 }

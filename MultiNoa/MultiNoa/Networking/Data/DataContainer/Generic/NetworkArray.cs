@@ -59,17 +59,18 @@ namespace MultiNoa.Networking.Data.DataContainer.Generic
         {
             var workingCopy = new byte[bytes.Length];
             bytes.CopyTo(workingCopy, 0);
-
-            var nInt = new NetworkInt();
             var bytesReadTotal = 0;
-            
-            var readBytes = nInt.LoadFromBytes(workingCopy);
-            workingCopy = workingCopy.GetSubarray(readBytes, workingCopy.Length - readBytes);
+            var length = 0;
 
-            bytesReadTotal = readBytes;
+            using (var nInt = new NetworkInt())
+            {
+                var readBytes = nInt.LoadFromBytes(workingCopy);
+                workingCopy = workingCopy.GetSubarray(readBytes, workingCopy.Length - readBytes);
 
-            var length = nInt.GetTypedValue();
-            
+                bytesReadTotal = readBytes;
+                length = nInt.GetTypedValue();
+            }
+
             _v = new T[length];
 
             for (var i = 0; i < length; i++)
@@ -87,32 +88,41 @@ namespace MultiNoa.Networking.Data.DataContainer.Generic
         {
             var workingCopy = new byte[bytes.Length];
             bytes.CopyTo(workingCopy, 0);
-
-            var nInt = new NetworkInt();
             var bytesReadTotal = 0;
-            
-            var readBytes = nInt.LoadFromBytes(workingCopy);
-            workingCopy = workingCopy.GetSubarray(readBytes, workingCopy.Length - readBytes);
+            var length = 0;
+            var readBytes = 0;
 
-            bytesReadTotal = readBytes;
+            using (var nInt = new NetworkInt())
+            {
+                readBytes = nInt.LoadFromBytes(workingCopy);
+                workingCopy = workingCopy.GetSubarray(readBytes, workingCopy.Length - readBytes);
 
-            var length = nInt.GetTypedValue();
+                bytesReadTotal = readBytes;
+                length = nInt.GetTypedValue();
+            }
             
             _v = new T[length];
+            
+            if (!typeof(IDisposable).IsAssignableFrom(typeof(T)))
+            {
+                // Just want to note, that IDisposable is a forced part of the proper implementation. This error should NEVER EVER occur in a properly compiled project.
+                throw new Exception($"DataContainer for {typeof(T).FullName} does not seem to be properly implemented. Please check your implementation (IDisposable not implemented)\nThis error should NEVER occur in a properly compiled project!");
+            }
 
             for (var i = 0; i < length; i++)
             {
-                
-                T instance = Activator.CreateInstance<T>();
 
-                if (instance is INetworkDataContainer c)
+                using (var instance = Activator.CreateInstance<T>() as IDisposable)
                 {
-                    readBytes = c.LoadFromBytes(workingCopy);
-                    _v[i] = (T) c;
-                }
-                else
-                {
-                    throw new Exception($"Wasn't able to read bytes: {typeof(T).FullName} does not implement assumed {typeof(INetworkDataContainer).FullName}");
+                    if (instance is INetworkDataContainer c)
+                    {
+                        readBytes = c.LoadFromBytes(workingCopy);
+                        _v[i] = (T) c;
+                    }
+                    else
+                    {
+                        throw new Exception($"Wasn't able to read bytes: {typeof(T).FullName} does not implement assumed INetworkDataContainer");
+                    }
                 }
                 
                 workingCopy = workingCopy.GetSubarray(readBytes, workingCopy.Length - readBytes);
@@ -162,8 +172,11 @@ namespace MultiNoa.Networking.Data.DataContainer.Generic
 
 
         #endregion
-        
-        
-        
+
+
+        public void Dispose()
+        {
+            // nothing to do here.
+        }
     }
 }

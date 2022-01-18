@@ -12,7 +12,7 @@ namespace ChatDemo
             {
                 public const int PacketId = 0;
                 
-                [NetworkProperty(0)]
+                [NetworkProperty]
                 public string Message { get; set; }
             }
         }
@@ -23,10 +23,10 @@ namespace ChatDemo
             public struct MessageFromServer
             {
                 public const int PacketId = 1;
-                [NetworkProperty(0)]
+                [NetworkProperty]
                 public string Message { get; set; }
                 
-                [NetworkProperty(1)]
+                [NetworkProperty]
                 public string Username { get; set; }
             }
         }
