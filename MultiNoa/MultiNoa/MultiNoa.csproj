@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
-        <PackageVersion>0.1.0</PackageVersion>
+        <PackageVersion>0.1.4</PackageVersion>
         <Title>multiNoa Networking Library</Title>
         <Authors>bluewingtitan</Authors>
         <Description>A multiplayer game networking library with focus on easy and fast implementation, extendability and scalability of the final product.
@@ -13,6 +13,7 @@ Still very much in developement.</Description>
         <PackageIconUrl>https://github.com/bluewingtitan/multiNOA/raw/master/Resources/LogoSketch2.png</PackageIconUrl>
         <RepositoryUrl>https://github.com/bluewingtitan/multiNOA</RepositoryUrl>
         <PackageTags>multiplayer, networking</PackageTags>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 
 </Project>
