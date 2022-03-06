@@ -34,4 +34,4 @@ multiNoa tries to be a big, sturdy base for anything you want to place onto it. 
 Not yet. I am working on it for my current project!
 
 
-MultiNoa is that flexible, I was able to write a basic chat app with it in around 5 minutes.
+MultiNoa is that flexible, I was able to write a basic chat app with it in around 10 minutes.
