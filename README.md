@@ -10,12 +10,12 @@ multiNoa is a highly dynamic networking library for creating **tick-based, tcp-f
 multiNoa handles all things low level networking for you, so you can focus on what's most important: The game.
 
 ## What multiNoa is **not**
-multiNoa isn't a Entity-Manager, a Event System, an engine in any way ...
+multiNoa isn't a Entity-Manager, a Event System, a engine in any way ...
 
-It's a base layer, designed to fit right into your game while being as flexible as possible — so you always are the one having control.
+It's a base layer, designed to be easy to build upon, extenable and reliable.
 
-And: It's carefully designed to fit games, especially minigames with small player counts per lobby! You technically could use it for something else, but you might be better of using something else.
-It's the perfect tool for **some** projects and designed to fit those.
+And: It's carefully designed to fit games, especially minigames with multiple game instances per server instance. You technically could use it for something else (a chat-app, a discord clone), but you might be better of using something else.
+It's a great tool for **some** projects and designed to fit those.
 
 ## Why the name?
 This project is based upon the networking solution I wrote for my indie-game project aton (feel free to wishlist/buy on steam to support me!). I first went with Photon for Unity (PUN), but quickly decided, that I really wanted server-authorized multiplayer and over all felt like any reasonable existing solutions either did not enough or too little to me, or forced me into a structure I did not like. Don't get me wrong, multiNoa also needs a structure, it's just the one I like.
