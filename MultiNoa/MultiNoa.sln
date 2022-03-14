@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatDemo", "ChatDemo\ChatDe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiNoa.Matchmaking", "MultiNoa.Matchmaking\MultiNoa.Matchmaking.csproj", "{D203C554-56F7-4085-B299-54D132EA2C7D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiNoa.PluginKit", "MultiNoa.PluginKit\MultiNoa.PluginKit.csproj", "{D61FB2EC-95FE-46A5-912F-2530AC6F7787}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{D203C554-56F7-4085-B299-54D132EA2C7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D203C554-56F7-4085-B299-54D132EA2C7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D203C554-56F7-4085-B299-54D132EA2C7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D61FB2EC-95FE-46A5-912F-2530AC6F7787}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D61FB2EC-95FE-46A5-912F-2530AC6F7787}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D61FB2EC-95FE-46A5-912F-2530AC6F7787}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D61FB2EC-95FE-46A5-912F-2530AC6F7787}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
